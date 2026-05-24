@@ -1,0 +1,25 @@
+{
+  "name": "panda-notes",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Standalone developer and alpha/beta tester feedback console.",
+  "author": "P4ND4907",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "vite": "^8.0.14"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.7",
+    "playwright": "^1.57.0"
+  }
+}

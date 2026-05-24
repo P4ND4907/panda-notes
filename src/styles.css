@@ -1,0 +1,513 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #071014;
+  color: #f1fbf8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+    radial-gradient(circle at 14% 0%, rgba(18, 201, 154, 0.18), transparent 29%),
+    radial-gradient(circle at 88% 12%, rgba(246, 177, 61, 0.13), transparent 27%),
+    #071014;
+  background-size: 34px 34px, 34px 34px, auto, auto, auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+.import-button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.075);
+  color: #eef8f5;
+  padding: 0 14px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+button.primary {
+  background: #12c99a;
+  color: #04100d;
+}
+
+button:hover,
+.import-button:hover {
+  filter: brightness(1.08);
+}
+
+.import-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 284px minmax(0, 1fr);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 24px;
+  padding: 24px 20px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  background: rgba(5, 12, 16, 0.86);
+  backdrop-filter: blur(18px);
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #12c99a, #f6b13d);
+  color: #071014;
+}
+
+.brand-block strong,
+.brand-block span {
+  display: block;
+}
+
+.brand-block strong {
+  font-size: 19px;
+}
+
+.brand-block span {
+  color: #91a7aa;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+nav {
+  display: grid;
+  gap: 8px;
+}
+
+nav button {
+  justify-content: flex-start;
+  color: #a9bbbf;
+}
+
+nav button.active {
+  background: rgba(18,201,154,0.16);
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(18,201,154,0.36);
+}
+
+.side-note {
+  align-self: end;
+  display: flex;
+  gap: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  color: #9fb3b6;
+  padding: 14px;
+  line-height: 1.4;
+}
+
+.workspace {
+  min-width: 0;
+  padding: 30px clamp(16px, 3vw, 44px) 54px;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+h1,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 8px;
+  font-size: clamp(46px, 7vw, 92px);
+  line-height: 0.88;
+  letter-spacing: 0;
+}
+
+.hero p {
+  max-width: 780px;
+  margin-bottom: 8px;
+  color: #d8f7f0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+.hero span {
+  display: block;
+  max-width: 760px;
+  color: #8fb0b4;
+  line-height: 1.5;
+}
+
+.hero-actions,
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.status-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.metric,
+.panel,
+.empty-state,
+.issue-card,
+.evidence-card,
+.code-map article {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 8px;
+  background: rgba(13, 24, 29, 0.88);
+  box-shadow: 0 18px 70px rgba(0,0,0,0.22);
+}
+
+.metric {
+  display: grid;
+  gap: 8px;
+  padding: 15px;
+}
+
+.metric span,
+.panel-title {
+  color: #8fb0b4;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.metric strong {
+  color: #f1fbf8;
+  font-size: 30px;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.metric.green strong {
+  color: #12c99a;
+}
+
+.metric.amber strong {
+  color: #f6b13d;
+}
+
+.callout {
+  border-left: 3px solid #12c99a;
+  border-radius: 0 8px 8px 0;
+  background: rgba(18,201,154,0.09);
+  color: #c8dddd;
+  padding: 12px;
+  line-height: 1.45;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.two {
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.72fr);
+}
+
+.panel {
+  min-width: 0;
+  padding: 18px;
+  overflow: hidden;
+}
+
+.wide-panel {
+  margin-top: 16px;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  color: #b8c8cb;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.wide-field {
+  grid-column: 1 / -1;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  background: #081116;
+  color: #eef8f5;
+  padding: 0 12px;
+}
+
+textarea {
+  min-height: 120px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.button-row {
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+.step-list {
+  display: grid;
+  gap: 10px;
+}
+
+.step-list div {
+  display: grid;
+  gap: 5px;
+  border-left: 3px solid #12c99a;
+  border-radius: 0 8px 8px 0;
+  background: rgba(18,201,154,0.08);
+  padding: 12px;
+}
+
+.step-list span,
+.empty-state span,
+.issue-card span,
+.issue-card small,
+.evidence-card span,
+.evidence-card small,
+.issue-detail p,
+.issue-detail > span,
+.snippet span,
+.code-map span {
+  color: #a9bbbf;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.issue-workspace {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.8fr) minmax(0, 1.2fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.issue-list,
+.evidence-stack,
+.code-map {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.issue-card {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  text-align: left;
+  padding: 13px;
+}
+
+.issue-card.selected {
+  border-color: rgba(18,201,154,0.52);
+  background: rgba(18,201,154,0.12);
+}
+
+.issue-card strong,
+.issue-detail strong,
+.snippet strong,
+.evidence-card strong,
+.code-map strong {
+  overflow-wrap: anywhere;
+}
+
+.issue-detail {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid rgba(246,177,61,0.26);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(246,177,61,0.08), rgba(18,201,154,0.04)),
+    #081116;
+  padding: 16px;
+}
+
+.issue-detail > strong {
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.evidence-card,
+.empty-state {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+}
+
+.snippet {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.snippet span {
+  color: #f6b13d;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+pre {
+  min-width: 0;
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  background: #050b0f;
+  color: #baf3e4;
+  padding: 14px;
+  font-size: 12px;
+}
+
+.code-map article {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.44fr) minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 13px;
+}
+
+.code-map em {
+  color: #f6b13d;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 900;
+  text-align: right;
+}
+
+@media (max-width: 980px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+  }
+
+  nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .side-note {
+    align-self: auto;
+  }
+
+  .hero,
+  .two,
+  .issue-workspace {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .hero-actions {
+    justify-content: flex-start;
+  }
+
+  .status-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .code-map article {
+    grid-template-columns: 1fr;
+  }
+
+  .code-map em {
+    text-align: left;
+  }
+}
+
+@media (max-width: 560px) {
+  .workspace {
+    padding: 20px 12px 34px;
+  }
+
+  .sidebar {
+    padding: 18px 12px;
+  }
+
+  nav,
+  .status-strip,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 48px;
+  }
+
+  .hero-actions > *,
+  .button-row > * {
+    flex: 1 1 100%;
+  }
+}
