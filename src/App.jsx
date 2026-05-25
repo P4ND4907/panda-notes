@@ -7,13 +7,15 @@ import {
   Code2,
   Download,
   FileJson,
+  FilterX,
   GitBranch,
   Github,
   ListChecks,
-  RotateCcw,
+  RefreshCw,
   Search,
   ShieldCheck,
   Sparkles,
+  Trash2,
   Users
 } from 'lucide-react';
 import {
@@ -95,6 +97,7 @@ export default function App() {
   const selectedIssueDraft = useMemo(() => buildGithubIssueDraft(selectedAction), [selectedAction]);
   const activeAudience = pandaAudiences.find((item) => item.key === selectedAudience) || pandaAudiences[0];
   const activeGuide = getAudienceGuide(selectedAudience);
+  const hasIssueFilters = Boolean(issueFilters.query || issueFilters.tag !== 'all' || issueFilters.audience !== 'all');
 
   function updateDraft(path, value) {
     setDraft((current) => {
@@ -113,6 +116,12 @@ export default function App() {
   function updateIssueFilter(name, value) {
     setIssueFilters((current) => ({ ...current, [name]: value }));
     setSelectedId('');
+  }
+
+  function clearIssueFilters() {
+    setIssueFilters({ query: '', tag: 'all', audience: 'all' });
+    setSelectedId('');
+    setStatus('Issue filters cleared. Showing the full repair queue.');
   }
 
   function addNote() {
@@ -222,6 +231,7 @@ export default function App() {
         <nav aria-label="Audience focus">
           {pandaAudiences.map((audience) => (
             <button
+              aria-pressed={selectedAudience === audience.key}
               className={selectedAudience === audience.key ? 'active' : ''}
               key={audience.key}
               onClick={() => setSelectedAudience(audience.key)}
@@ -262,7 +272,7 @@ export default function App() {
           <Metric label="Visible issues" value={filteredActions.length} tone="amber" />
         </section>
 
-        <p className="callout">{status}</p>
+        <p className="callout" aria-live="polite">{status}</p>
 
         <section className="grid two">
           <Panel title="Capture Tester Note" icon={Users}>
@@ -306,8 +316,8 @@ export default function App() {
             </div>
             <div className="button-row">
               <button className="primary" onClick={addNote}><Bug size={18} /> Add note</button>
-              <button onClick={resetSeed}><RotateCcw size={18} /> Restore demo</button>
-              <button onClick={clearNotes}><RotateCcw size={18} /> Clear local</button>
+              <button onClick={resetSeed}><RefreshCw size={18} /> Restore demo</button>
+              <button className="danger-action" onClick={clearNotes}><Trash2 size={18} /> Clear local</button>
             </div>
           </Panel>
 
@@ -350,6 +360,10 @@ export default function App() {
                 {pandaAudiences.map((audience) => <option value={audience.key} key={audience.key}>{audience.label}</option>)}
               </select>
             </label>
+            <div className="filter-action">
+              <span aria-hidden="true">Filters</span>
+              <button disabled={!hasIssueFilters} onClick={clearIssueFilters}><FilterX size={18} /> Clear filters</button>
+            </div>
           </div>
           <div className="issue-workspace">
             <div className="issue-list">
@@ -363,10 +377,13 @@ export default function App() {
                 <article className="empty-state">
                   <strong>No matching issues</strong>
                   <span>Clear the filters or search for another page, tag, target, or tester note.</span>
+                  <button onClick={clearIssueFilters}><FilterX size={18} /> Clear filters</button>
                 </article>
               )}
               {filteredActions.map((action) => (
                 <button
+                  aria-label={`${action.title}. ${action.count} note${action.count === 1 ? '' : 's'}, priority ${action.priority}.`}
+                  aria-pressed={selectedAction?.id === action.id}
                   className={selectedAction?.id === action.id ? 'issue-card selected' : 'issue-card'}
                   key={action.id}
                   onClick={() => setSelectedId(action.id)}
