@@ -4,6 +4,7 @@
   "private": false,
   "description": "Standalone developer and alpha/beta tester feedback console.",
   "author": "P4ND4907",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
