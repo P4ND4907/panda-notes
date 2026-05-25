@@ -319,6 +319,7 @@ textarea {
   gap: 10px;
 }
 
+.guide-card,
 .step-list div {
   display: grid;
   gap: 5px;
@@ -328,12 +329,32 @@ textarea {
   padding: 12px;
 }
 
+.guide-card {
+  margin-bottom: 12px;
+}
+
+.guide-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 20px;
+  color: #c8dddd;
+  line-height: 1.45;
+}
+
+.guide-list li {
+  padding-left: 2px;
+}
+
+.guide-card span,
 .step-list span,
 .empty-state span,
 .issue-card span,
 .issue-card small,
 .evidence-card span,
 .evidence-card small,
+.handoff-card span,
+.handoff-card small,
 .issue-detail p,
 .issue-detail > span,
 .snippet span,
@@ -341,6 +362,31 @@ textarea {
   color: #a9bbbf;
   line-height: 1.45;
   overflow-wrap: anywhere;
+}
+
+.issue-toolbar {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(150px, 0.35fr) minmax(160px, 0.35fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.input-with-icon {
+  position: relative;
+  min-width: 0;
+}
+
+.input-with-icon svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8fb0b4;
+  pointer-events: none;
+}
+
+.input-with-icon input {
+  padding-left: 38px;
 }
 
 .issue-workspace {
@@ -394,6 +440,41 @@ textarea {
 .issue-detail > strong {
   font-size: 24px;
   line-height: 1.1;
+}
+
+.handoff-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid rgba(18,201,154,0.26);
+  border-radius: 8px;
+  background: rgba(18,201,154,0.08);
+  padding: 12px;
+}
+
+.handoff-card > div:first-child,
+.handoff-actions {
+  min-width: 0;
+}
+
+.handoff-card strong,
+.handoff-card span,
+.handoff-card small {
+  display: block;
+}
+
+.handoff-card strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.handoff-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 .evidence-card,
@@ -465,6 +546,7 @@ pre {
 
   .hero,
   .two,
+  .issue-toolbar,
   .issue-workspace {
     grid-template-columns: 1fr;
     display: grid;
@@ -507,6 +589,7 @@ pre {
   }
 
   .hero-actions > *,
+  .handoff-actions > *,
   .button-row > * {
     flex: 1 1 100%;
   }

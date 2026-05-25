@@ -69,6 +69,42 @@ export const starterCodeStructure = [
   }
 ];
 
+export const audienceGuides = [
+  {
+    key: 'developer',
+    label: 'Developer handoff',
+    summary: 'Start with the highest priority target, inspect the attached code snippet, then make one focused fix.',
+    steps: [
+      'Open the top repair action and read the newest evidence first.',
+      'Use the snippet as the first file to inspect, then follow nearby imports or handlers.',
+      'Copy the GitHub draft when the fix needs tracking, or copy the developer packet when it needs handoff.',
+      'Run unit tests, build, and browser QA before marking the issue done.'
+    ]
+  },
+  {
+    key: 'alpha',
+    label: 'Alpha tester pass',
+    summary: 'Capture rough first-run friction while the product is still changing quickly.',
+    steps: [
+      'Walk the first-run path and write down the first moment that feels broken, slow, confusing, or silent.',
+      'Use one note per target so developers can map the feedback to a specific component.',
+      'Prefer plain words over diagnosis: what you clicked, what happened, and what you expected.',
+      'Export JSON at the end of the pass if someone else needs to merge your notes.'
+    ]
+  },
+  {
+    key: 'beta',
+    label: 'Beta tester proof',
+    summary: 'Repeat real user flows and prove which issues are stable enough to prioritize.',
+    steps: [
+      'Repeat the same flow twice before marking it as broken or slow.',
+      'Add viewport, page, target label, and any exact text that misled you.',
+      'Look for repeated patterns in the target issue list before filing a new issue.',
+      'Share the GitHub draft when a repeated issue is ready for the backlog.'
+    ]
+  }
+];
+
 export const starterSnippets = {
   broken: {
     file: 'src/App.jsx',
@@ -306,8 +342,109 @@ export function buildDeveloperPacket(notes = [], options = {}) {
   return lines.join('\n').trim();
 }
 
+export function filterRepairActions(actions = [], filters = {}) {
+  if (!Array.isArray(actions)) return [];
+
+  const query = normalizeQuery(filters.query);
+  const tag = filters.tag && filters.tag !== 'all' ? String(filters.tag) : '';
+  const audience = filters.audience && filters.audience !== 'all' ? String(filters.audience) : '';
+
+  return actions.filter((action) => {
+    if (tag && action.tag !== tag) return false;
+    if (audience && !action.evidence?.some((item) => item.audience === audience)) return false;
+    if (!query) return true;
+
+    const searchable = [
+      action.title,
+      action.page,
+      action.target,
+      action.tag,
+      action.suggestedFix,
+      action.testPlan,
+      action.snippet?.file,
+      action.snippet?.title,
+      ...(action.evidence || []).flatMap((item) => [
+        item.audience,
+        item.note,
+        item.page,
+        item.target
+      ])
+    ].join(' ');
+
+    return normalizeQuery(searchable).includes(query);
+  });
+}
+
+export function getAudienceGuide(key = 'alpha') {
+  return audienceGuides.find((guide) => guide.key === key) || audienceGuides.find((guide) => guide.key === 'alpha');
+}
+
+export function buildGithubIssueDraft(action) {
+  if (!action) {
+    return {
+      title: '[Panda Notes] New tester issue',
+      body: [
+        '## Summary',
+        'No repair action is selected yet.',
+        '',
+        '## Privacy boundary',
+        'No hidden telemetry. Tester notes stay local until someone explicitly exports or copies a packet.'
+      ].join('\n'),
+      labels: ['panda-notes', 'tester-feedback']
+    };
+  }
+
+  const snippet = action.snippet || getSnippetForTag(action.tag);
+  const language = snippet.language || '';
+  const lines = [
+    '## Summary',
+    action.suggestedFix,
+    '',
+    '## Target',
+    `- Page: ${action.page}`,
+    `- Target: ${action.target}`,
+    `- Tag: ${action.tag}`,
+    `- Priority: ${action.priority}`,
+    `- Evidence count: ${action.count}`,
+    '',
+    '## Tester evidence'
+  ];
+
+  (action.evidence || []).forEach((item) => {
+    const viewport = `${item.viewport?.width || 0}x${item.viewport?.height || 0}`;
+    lines.push(`- ${item.audience}: ${item.note || '[empty]'} (target: ${item.target || '[unknown]'}, viewport: ${viewport})`);
+  });
+
+  lines.push(
+    '',
+    '## Suggested test plan',
+    action.testPlan,
+    '',
+    '## Target code',
+    `- File: ${snippet.file}`,
+    `- Snippet: ${snippet.title}`,
+    '',
+    `\`\`\`${language}`,
+    snippet.code,
+    '```',
+    '',
+    '## Privacy boundary',
+    'No hidden telemetry. Tester notes stay local until someone explicitly exports or copies a packet.'
+  );
+
+  return {
+    title: `[Panda Notes] ${action.title}`,
+    body: lines.join('\n').trim(),
+    labels: ['panda-notes', 'tester-feedback', action.tag]
+  };
+}
+
 export function getSnippetForTag(tag) {
   return starterSnippets[pandaNoteTags.includes(tag) ? tag : 'confusing'];
+}
+
+function normalizeQuery(value) {
+  return String(value || '').trim().toLowerCase();
 }
 
 function sanitizeLongText(value) {

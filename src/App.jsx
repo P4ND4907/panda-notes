@@ -3,19 +3,26 @@ import {
   Activity,
   Bug,
   ClipboardCopy,
+  ClipboardList,
   Code2,
   Download,
   FileJson,
   GitBranch,
+  Github,
+  ListChecks,
   RotateCcw,
+  Search,
   ShieldCheck,
   Sparkles,
   Users
 } from 'lucide-react';
 import {
   buildDeveloperPacket,
+  buildGithubIssueDraft,
   buildRepairQueue,
   createPandaNote,
+  filterRepairActions,
+  getAudienceGuide,
   PANDA_NOTES_STORAGE_KEY,
   pandaAudiences,
   pandaNoteTags,
@@ -71,6 +78,7 @@ export default function App() {
   const [selectedAudience, setSelectedAudience] = useState('developer');
   const [selectedId, setSelectedId] = useState('');
   const [status, setStatus] = useState('Local-first console ready. Notes stay in this browser until you export or copy a packet.');
+  const [issueFilters, setIssueFilters] = useState({ query: '', tag: 'all', audience: 'all' });
   const [draft, setDraft] = useState({
     audience: 'alpha',
     page: 'Standalone App',
@@ -82,8 +90,11 @@ export default function App() {
 
   const summary = useMemo(() => summarizePandaNotes(notes), [notes]);
   const repairQueue = useMemo(() => buildRepairQueue(notes), [notes]);
-  const selectedAction = repairQueue.actions.find((item) => item.id === selectedId) || repairQueue.actions[0] || null;
+  const filteredActions = useMemo(() => filterRepairActions(repairQueue.actions, issueFilters), [repairQueue.actions, issueFilters]);
+  const selectedAction = filteredActions.find((item) => item.id === selectedId) || filteredActions[0] || null;
+  const selectedIssueDraft = useMemo(() => buildGithubIssueDraft(selectedAction), [selectedAction]);
   const activeAudience = pandaAudiences.find((item) => item.key === selectedAudience) || pandaAudiences[0];
+  const activeGuide = getAudienceGuide(selectedAudience);
 
   function updateDraft(path, value) {
     setDraft((current) => {
@@ -97,6 +108,11 @@ export default function App() {
       }
       return { ...current, [path]: value };
     });
+  }
+
+  function updateIssueFilter(name, value) {
+    setIssueFilters((current) => ({ ...current, [name]: value }));
+    setSelectedId('');
   }
 
   function addNote() {
@@ -119,6 +135,29 @@ export default function App() {
     } catch {
       setStatus('Clipboard was blocked. Export the packet instead.');
     }
+  }
+
+  async function copyGithubIssueDraft() {
+    if (!selectedAction) {
+      setStatus('Select a target issue before copying a GitHub draft.');
+      return;
+    }
+    const draftText = `${selectedIssueDraft.title}\n\n${selectedIssueDraft.body}`;
+    try {
+      await navigator.clipboard.writeText(draftText);
+      setStatus('GitHub issue draft copied with evidence, target code, and test plan.');
+    } catch {
+      setStatus('Clipboard was blocked. Export the GitHub issue draft instead.');
+    }
+  }
+
+  function exportGithubIssueDraft() {
+    if (!selectedAction) {
+      setStatus('Select a target issue before exporting a GitHub draft.');
+      return;
+    }
+    downloadText('panda-notes-github-issue.md', `# ${selectedIssueDraft.title}\n\n${selectedIssueDraft.body}`);
+    setStatus('GitHub issue draft exported.');
   }
 
   function exportDeveloperPacket() {
@@ -212,7 +251,7 @@ export default function App() {
           <Metric label="Notes" value={summary.total} tone="green" />
           <Metric label="Top tag" value={summary.topTag} tone="amber" />
           <Metric label="Repair actions" value={repairQueue.actionCount} tone="green" />
-          <Metric label="Code map" value={starterCodeStructure.length} tone="amber" />
+          <Metric label="Visible issues" value={filteredActions.length} tone="amber" />
         </section>
 
         <p className="callout">{status}</p>
@@ -264,17 +303,46 @@ export default function App() {
             </div>
           </Panel>
 
-          <Panel title="Tester Rules" icon={ShieldCheck}>
-            <div className="step-list">
-              <div><strong>Alpha</strong><span>Flag rough edges as soon as they feel wrong.</span></div>
-              <div><strong>Beta</strong><span>Repeat the flow, add context, and prove whether it keeps happening.</span></div>
-              <div><strong>Dev</strong><span>Select the issue, inspect snippet and evidence, then fix with tests.</span></div>
-            </div>
+          <Panel title="Role Quick Start" icon={ListChecks}>
+            <article className="guide-card">
+              <strong>{activeGuide.label}</strong>
+              <span>{activeGuide.summary}</span>
+            </article>
+            <ol className="guide-list">
+              {activeGuide.steps.map((step) => <li key={step}>{step}</li>)}
+            </ol>
           </Panel>
         </section>
 
         <section className="panel wide-panel">
           <div className="panel-title"><GitBranch size={18} /><span>Target Issues + Code Snippet Popout</span></div>
+          <div className="issue-toolbar">
+            <label className="search-field">
+              <span>Search issues</span>
+              <div className="input-with-icon">
+                <Search size={16} />
+                <input
+                  value={issueFilters.query}
+                  onChange={(event) => updateIssueFilter('query', event.target.value)}
+                  placeholder="Target, page, note, or snippet"
+                />
+              </div>
+            </label>
+            <label>
+              <span>Tag</span>
+              <select value={issueFilters.tag} onChange={(event) => updateIssueFilter('tag', event.target.value)}>
+                <option value="all">All tags</option>
+                {pandaNoteTags.map((tag) => <option value={tag} key={tag}>{tag}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Evidence from</span>
+              <select value={issueFilters.audience} onChange={(event) => updateIssueFilter('audience', event.target.value)}>
+                <option value="all">All roles</option>
+                {pandaAudiences.map((audience) => <option value={audience.key} key={audience.key}>{audience.label}</option>)}
+              </select>
+            </label>
+          </div>
           <div className="issue-workspace">
             <div className="issue-list">
               {!repairQueue.actions.length && (
@@ -283,7 +351,13 @@ export default function App() {
                   <span>Add a tester note and Panda Notes will turn it into a developer action.</span>
                 </article>
               )}
-              {repairQueue.actions.map((action) => (
+              {!!repairQueue.actions.length && !filteredActions.length && (
+                <article className="empty-state">
+                  <strong>No matching issues</strong>
+                  <span>Clear the filters or search for another page, tag, target, or tester note.</span>
+                </article>
+              )}
+              {filteredActions.map((action) => (
                 <button
                   className={selectedAction?.id === action.id ? 'issue-card selected' : 'issue-card'}
                   key={action.id}
@@ -301,6 +375,17 @@ export default function App() {
                   <strong>{selectedAction.title}</strong>
                   <p>{selectedAction.suggestedFix}</p>
                   <span>{selectedAction.testPlan}</span>
+                  <div className="handoff-card">
+                    <div>
+                      <strong><Github size={17} /> GitHub draft</strong>
+                      <span>{selectedIssueDraft.title}</span>
+                      <small>Labels: {selectedIssueDraft.labels.join(', ')}</small>
+                    </div>
+                    <div className="handoff-actions">
+                      <button onClick={copyGithubIssueDraft}><ClipboardList size={18} /> Copy issue</button>
+                      <button onClick={exportGithubIssueDraft}><Download size={18} /> Export MD</button>
+                    </div>
+                  </div>
                   <div className="evidence-stack">
                     {selectedAction.evidence.map((item, index) => (
                       <article className="evidence-card" key={`${item.createdAt}-${index}`}>

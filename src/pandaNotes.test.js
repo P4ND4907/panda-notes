@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildDeveloperPacket,
+  buildGithubIssueDraft,
   buildRepairQueue,
   createPandaNote,
+  filterRepairActions,
+  getAudienceGuide,
   pandaNoteTags,
   starterCodeStructure,
   starterSnippets
@@ -74,5 +77,70 @@ describe('panda notes standalone engine', () => {
     expect(starterCodeStructure.length).toBeGreaterThanOrEqual(6);
     expect(starterSnippets.broken.code).toContain('copyDeveloperPacket');
     expect(pandaNoteTags).toContain('missing feedback');
+  });
+
+  it('filters repair actions by search text, tag, and evidence audience', () => {
+    const notes = [
+      createPandaNote({
+        audience: 'beta',
+        page: 'Invite Flow',
+        tag: 'broken',
+        note: 'The invite modal closes before the share link is copied.',
+        target: { label: 'Share link', component: 'InviteModal' }
+      }),
+      createPandaNote({
+        audience: 'alpha',
+        page: 'Settings',
+        tag: 'text issue',
+        note: 'The button label does not explain what will change.',
+        target: { label: 'Privacy save', component: 'SettingsPanel' }
+      }),
+      createPandaNote({
+        audience: 'developer',
+        page: 'Settings',
+        tag: 'layout issue',
+        note: 'The settings grid overflows at 390px.',
+        target: { label: 'Settings grid', component: 'SettingsPanel' }
+      })
+    ];
+    const queue = buildRepairQueue(notes);
+
+    expect(filterRepairActions(queue.actions, { query: 'invite' })).toHaveLength(1);
+    expect(filterRepairActions(queue.actions, { tag: 'text issue' })[0].target).toBe('SettingsPanel');
+    expect(filterRepairActions(queue.actions, { audience: 'beta' })[0].page).toBe('Invite Flow');
+    expect(filterRepairActions(queue.actions, { query: 'settings', tag: 'layout issue', audience: 'developer' })).toHaveLength(1);
+    expect(filterRepairActions(queue.actions, { query: 'settings', audience: 'beta' })).toHaveLength(0);
+  });
+
+  it('builds audience guides with concrete next actions', () => {
+    const developerGuide = getAudienceGuide('developer');
+    const alphaGuide = getAudienceGuide('alpha');
+    const fallbackGuide = getAudienceGuide('unknown-role');
+
+    expect(developerGuide.label).toBe('Developer handoff');
+    expect(developerGuide.steps).toContain('Open the top repair action and read the newest evidence first.');
+    expect(alphaGuide.steps[0]).toContain('first-run');
+    expect(fallbackGuide.key).toBe('alpha');
+  });
+
+  it('builds a GitHub-ready issue draft from a selected repair action', () => {
+    const note = createPandaNote({
+      audience: 'beta',
+      page: 'Developer Packet',
+      tag: 'missing feedback',
+      note: 'Copying the packet needs a clearer success message.',
+      target: { label: 'Copy developer packet', component: 'PacketActions' },
+      viewport: { width: 1440, height: 900 },
+      now: new Date('2026-05-24T20:20:00.000Z')
+    });
+    const action = buildRepairQueue([note]).actions[0];
+    const issueDraft = buildGithubIssueDraft(action);
+
+    expect(issueDraft.title).toBe('[Panda Notes] Add missing feedback: PacketActions');
+    expect(issueDraft.body).toContain('## Tester evidence');
+    expect(issueDraft.body).toContain('- beta: Copying the packet needs a clearer success message.');
+    expect(issueDraft.body).toContain('```js');
+    expect(issueDraft.body).toContain('src/pandaNotes.js');
+    expect(issueDraft.body).toContain('No hidden telemetry');
   });
 });
