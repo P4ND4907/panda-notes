@@ -205,7 +205,15 @@ export default function App() {
     <main className="app-shell">
       <aside className="sidebar">
         <div className="brand-block">
-          <div className="brand-mark"><Bug size={26} /></div>
+          <div className="brand-mark" aria-hidden="true">
+            <span className="panda-face">
+              <span className="panda-ear panda-ear-left" />
+              <span className="panda-ear panda-ear-right" />
+              <span className="panda-eye panda-eye-left" />
+              <span className="panda-eye panda-eye-right" />
+              <span className="panda-nose" />
+            </span>
+          </div>
           <div>
             <strong>Panda Notes</strong>
             <span>Developer + tester repair loop</span>
