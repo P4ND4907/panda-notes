@@ -1,0 +1,25 @@
+{
+  "mode": "stripe-payment-links",
+  "currency": "usd",
+  "links": {
+    "setup-sprint": {
+      "label": "Pay $250 setup deposit",
+      "amount": "$250",
+      "url": "",
+      "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
+    },
+    "developer-handoff": {
+      "label": "Pay $150 handoff deposit",
+      "amount": "$150",
+      "url": "",
+      "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
+    },
+    "private-integration": {
+      "label": "Pay $1,000 private build deposit",
+      "amount": "$1,000",
+      "url": "",
+      "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml"
+    }
+  },
+  "updatedAt": null
+}

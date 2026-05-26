@@ -11,6 +11,7 @@ Panda Notes helps small teams turn alpha/beta feedback into developer-ready repa
 - MIT licensed GitHub repo.
 - Hosted demo console and widget demo.
 - Hosted services page with clear paid offers.
+- Stripe Payment Links config for paid deposits.
 - Copy-paste right-click widget.
 - Public docs for teams to add `data-panda-target` and `data-component`.
 - GitHub issues tracking the roadmap.
@@ -59,6 +60,7 @@ Suggested starting price: `$1,000+`.
 - Setup sprint intake: <https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml>
 - Developer handoff intake: <https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml>
 - Private integration intake: <https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml>
+- Stripe setup: [Stripe Setup](STRIPE.md)
 
 Public intake should collect scope only. Keep credentials, private user data, source code, and paid contract details in a private channel after the public request is opened.
 
@@ -82,6 +84,7 @@ Suggested tiers:
 
 ## Next Money Features
 
+- Live Stripe Payment Link URLs in `public/stripe-links.json` after account setup.
 - Funding link in `.github/FUNDING.yml` once a Sponsor, Ko-fi, or payment profile is ready.
 - Screenshot/DOM capture hooks.
 - Export formats for GitHub, Linear, and Jira.

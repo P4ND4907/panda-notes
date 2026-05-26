@@ -9,6 +9,7 @@ function readProjectFile(path) {
 
 describe('Panda Notes services conversion path', () => {
   const servicesHtml = readProjectFile('public/services.html');
+  const stripeConfig = JSON.parse(readProjectFile('public/stripe-links.json'));
 
   it('links every paid intake form from the public services page', () => {
     expect(servicesHtml).toContain('/issues/new?template=setup-sprint.yml');
@@ -33,5 +34,32 @@ describe('Panda Notes services conversion path', () => {
     expect(handoffForm).toContain('labels: ["paid-service", "developer-handoff"]');
     expect(privateForm).toContain('labels: ["paid-service", "private-integration"]');
     expect(config).toContain('Panda Notes paid services');
+  });
+
+  it('ships Stripe Payment Link wiring with safe GitHub fallbacks', () => {
+    expect(servicesHtml).toContain('./stripe-links.json');
+    expect(servicesHtml).toContain('data-stripe-offer="setup-sprint"');
+    expect(servicesHtml).toContain('data-stripe-offer="developer-handoff"');
+    expect(servicesHtml).toContain('data-stripe-offer="private-integration"');
+    expect(servicesHtml).toContain('data-stripe-status');
+
+    expect(stripeConfig.mode).toBe('stripe-payment-links');
+    expect(stripeConfig.currency).toBe('usd');
+    expect(Object.keys(stripeConfig.links).sort()).toEqual([
+      'developer-handoff',
+      'private-integration',
+      'setup-sprint'
+    ]);
+    expect(stripeConfig.links['setup-sprint'].fallbackUrl).toContain('setup-sprint.yml');
+  });
+
+  it('includes a Stripe API helper without committing secret keys', () => {
+    const stripeScript = readProjectFile('scripts/create-stripe-payment-links.mjs');
+
+    expect(stripeScript).toContain('STRIPE_SECRET_KEY');
+    expect(stripeScript).toContain('payment_links');
+    expect(stripeScript).toContain('2026-02-25.clover');
+    expect(JSON.stringify(stripeConfig)).not.toContain('sk_test_');
+    expect(JSON.stringify(stripeConfig)).not.toContain('sk_live_');
   });
 });

@@ -71,6 +71,8 @@ Live intake is set up through GitHub issue forms:
 
 See [Panda Notes Services](https://p4nd4907.github.io/panda-notes/services.html) and [Monetization Plan](docs/MONETIZATION.md).
 
+Stripe Payment Links are wired through `public/stripe-links.json`. Create or paste the three deposit links, then the Services page will send buyers to Stripe-hosted checkout. See [Stripe Setup](docs/STRIPE.md).
+
 ## Workflow
 
 1. Pick a role in the sidebar.
@@ -91,6 +93,13 @@ npm.cmd run dev
 ```powershell
 npm.cmd test
 npm.cmd run build
+```
+
+## Stripe Links
+
+```powershell
+$env:STRIPE_SECRET_KEY="sk_test_your_key_here"
+npm.cmd run stripe:links
 ```
 
 ## Privacy Boundary

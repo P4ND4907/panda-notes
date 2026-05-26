@@ -416,6 +416,37 @@
         margin-top: 4px;
       }
 
+      .cta-stack {
+        display: grid;
+        gap: 8px;
+        align-items: start;
+      }
+
+      .payment-note,
+      .stripe-status {
+        color: var(--ink-soft);
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.42;
+      }
+
+      .stripe-status {
+        display: inline-flex;
+        width: fit-content;
+        max-width: 100%;
+        margin-top: 14px;
+        border: 1px solid rgba(35, 89, 64, 0.18);
+        border-radius: 8px;
+        background: rgba(251, 246, 232, 0.68);
+        padding: 9px 12px;
+      }
+
+      .stripe-link[data-checkout-state="stripe"] {
+        border-color: rgba(31, 101, 64, 0.32);
+        background: linear-gradient(135deg, var(--bamboo), var(--bamboo-light));
+        color: #102017;
+      }
+
       .step-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         margin-top: 28px;
@@ -590,6 +621,7 @@
               <span>No hidden telemetry</span>
               <span>GitHub-ready repair work</span>
             </div>
+            <p class="stripe-status" data-stripe-status>Stripe Payment Links are ready to connect; GitHub intake is live now.</p>
           </div>
         </section>
 
@@ -610,7 +642,17 @@
                 <li>Document tester import/export workflow.</li>
                 <li>Deliver a small developer handoff checklist.</li>
               </ul>
-              <a class="button-link light" href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml">Start setup request</a>
+              <div class="cta-stack">
+                <a
+                  class="button-link light stripe-link"
+                  data-stripe-offer="setup-sprint"
+                  data-stripe-label="Pay $250 setup deposit"
+                  data-fallback-label="Start setup request"
+                  data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
+                  href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
+                >Start setup request</a>
+                <span class="payment-note">Stripe checkout uses a $250 deposit once the payment link is connected.</span>
+              </div>
             </article>
 
             <article class="offer-card secondary">
@@ -623,7 +665,17 @@
                 <li>Add suggested code paths and snippets.</li>
                 <li>Return a clear fix order for the beta pass.</li>
               </ul>
-              <a class="button-link light" href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml">Send handoff request</a>
+              <div class="cta-stack">
+                <a
+                  class="button-link light stripe-link"
+                  data-stripe-offer="developer-handoff"
+                  data-stripe-label="Pay $150 handoff deposit"
+                  data-fallback-label="Send handoff request"
+                  data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
+                  href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
+                >Send handoff request</a>
+                <span class="payment-note">Stripe checkout uses a $150 deposit once the payment link is connected.</span>
+              </div>
             </article>
 
             <article class="offer-card private">
@@ -636,7 +688,17 @@
                 <li>GitHub, Jira, or Linear export shaping.</li>
                 <li>Optional screenshot or DOM snapshot hooks.</li>
               </ul>
-              <a class="button-link light" href="https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml">Discuss private build</a>
+              <div class="cta-stack">
+                <a
+                  class="button-link light stripe-link"
+                  data-stripe-offer="private-integration"
+                  data-stripe-label="Pay $1,000 private build deposit"
+                  data-fallback-label="Discuss private build"
+                  data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml"
+                  href="https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml"
+                >Discuss private build</a>
+                <span class="payment-note">Stripe checkout uses a $1,000 deposit once the payment link is connected.</span>
+              </div>
             </article>
           </div>
 
@@ -700,5 +762,64 @@
         Panda Notes is MIT licensed. Paid requests start in public GitHub issues for simple intake; do not post credentials, private customer data, or confidential code there.
       </footer>
     </div>
+    <script>
+      const stripeStatus = document.querySelector('[data-stripe-status]');
+
+      hydrateStripeLinks();
+
+      async function hydrateStripeLinks() {
+        try {
+          const response = await fetch('./stripe-links.json', { cache: 'no-store' });
+          if (!response.ok) throw new Error('Stripe link config not found.');
+          const config = await response.json();
+          const links = config.links || {};
+          let enabledCount = 0;
+
+          document.querySelectorAll('[data-stripe-offer]').forEach((anchor) => {
+            const offerKey = anchor.dataset.stripeOffer;
+            const configured = links[offerKey];
+            const stripeUrl = configured?.url || '';
+
+            if (isSafeCheckoutUrl(stripeUrl)) {
+              anchor.href = stripeUrl;
+              anchor.textContent = configured.label || anchor.dataset.stripeLabel || 'Pay with Stripe';
+              anchor.dataset.checkoutState = 'stripe';
+              anchor.rel = 'noopener';
+              enabledCount += 1;
+              return;
+            }
+
+            anchor.href = configured?.fallbackUrl || anchor.dataset.fallbackUrl;
+            anchor.textContent = anchor.dataset.fallbackLabel || 'Request scope first';
+            anchor.dataset.checkoutState = 'fallback';
+          });
+
+          if (stripeStatus) {
+            stripeStatus.textContent = enabledCount
+              ? `Stripe checkout is live for ${enabledCount} deposit option${enabledCount === 1 ? '' : 's'}.`
+              : 'Stripe Payment Links are ready to connect; GitHub intake is live now.';
+          }
+        } catch {
+          document.querySelectorAll('[data-stripe-offer]').forEach((anchor) => {
+            anchor.href = anchor.dataset.fallbackUrl;
+            anchor.textContent = anchor.dataset.fallbackLabel || 'Request scope first';
+            anchor.dataset.checkoutState = 'fallback';
+          });
+          if (stripeStatus) {
+            stripeStatus.textContent = 'Stripe Payment Links are ready to connect; GitHub intake is live now.';
+          }
+        }
+      }
+
+      function isSafeCheckoutUrl(value) {
+        if (!value) return false;
+        try {
+          const url = new URL(value);
+          return url.protocol === 'https:' && url.hostname !== window.location.hostname;
+        } catch {
+          return false;
+        }
+      }
+    </script>
   </body>
 </html>
