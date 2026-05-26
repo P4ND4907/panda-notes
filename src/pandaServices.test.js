@@ -21,9 +21,10 @@ describe('Panda Notes services conversion path', () => {
 
   it('keeps the free product and privacy boundary visible', () => {
     expect(servicesHtml).toContain('The Free Product Stays Useful');
-    expect(servicesHtml).toContain('MIT licensed');
-    expect(servicesHtml).toContain('No hidden telemetry');
-    expect(servicesHtml).toContain('do not post credentials');
+    expect(servicesHtml).toContain('Local-first workflow');
+    expect(servicesHtml).toContain('Private-first intake available');
+    expect(servicesHtml).toContain('GitHub/Jira/Linear-ready outputs');
+    expect(servicesHtml).toContain('Do not post credentials');
   });
 
   it('configures GitHub issue forms for paid service leads', () => {
@@ -47,6 +48,7 @@ describe('Panda Notes services conversion path', () => {
   it('documents service workflows and free-to-paid positioning', () => {
     const readme = readProjectFile('README.md');
     const serviceOps = readProjectFile('docs/SERVICE_OPERATIONS.md');
+    const abTests = readProjectFile('docs/AB_TESTS.md');
 
     expect(readme).toContain('How the money works even though GitHub is free');
     expect(readme).toContain('## Service Flows');
@@ -57,6 +59,9 @@ describe('Panda Notes services conversion path', () => {
     expect(serviceOps).toContain('The free repo helps people evaluate and adopt Panda Notes');
     expect(serviceOps).toContain('## Request Workflow');
     expect(serviceOps).toContain('Delivery checklist');
+    expect(abTests).toContain('Hero framing');
+    expect(abTests).toContain('Turn messy tester feedback into developer-ready work');
+    expect(abTests).toContain('CTA verb');
   });
 
   it('auto-triages paid service issues with a reusable checklist', () => {
@@ -75,6 +80,12 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('data-service-guide');
     expect(servicesHtml).toContain('serviceGuideAnswers');
     expect(servicesHtml).toContain('How Panda Notes makes money');
+    expect(servicesHtml).toContain('Turn messy tester feedback into developer-ready work');
+    expect(servicesHtml).toContain('Setup Panda Notes fast, clean up noisy exports');
+    expect(servicesHtml).toContain('Get a scoped setup plan');
+    expect(servicesHtml).toContain('Upload exports privately');
+    expect(servicesHtml).toContain('Request a private integration proposal');
+    expect(servicesHtml).toContain('Need privacy? Use the private intake path');
     expect(servicesHtml).toContain('The tool is free');
     expect(servicesHtml).toContain('The service is paid');
     expect(servicesHtml).toContain('Built For The Handoff Gap');
