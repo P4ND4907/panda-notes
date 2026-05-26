@@ -5,30 +5,30 @@
     "setup-sprint": {
       "label": "Pay $250 setup deposit",
       "amount": "$250",
-      "url": "https://buy.stripe.com/test_6oU4gz1mnaXV7Nr7FMfbq00",
+      "url": "https://buy.stripe.com/eVq6oH4AJ4G90v4bt46AM03",
       "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml",
-      "paymentLinkId": "plink_1TbEAoEBWfBBMjnmlAKw1L8A",
-      "productId": "prod_UaOyoD2bg31EkB",
-      "priceId": "price_1TbEAoEBWfBBMjnmNIgLQBfI"
+      "paymentLinkId": "plink_1TbFGaEMK98IVofFxZbXOcdo",
+      "productId": "prod_UaQ69bhwBLA8Hq",
+      "priceId": "price_1TbFGaEMK98IVofFd6bMyaWB"
     },
     "developer-handoff": {
       "label": "Pay $150 handoff deposit",
       "amount": "$150",
-      "url": "https://buy.stripe.com/test_5kQcN5d553vt4BfaRYfbq01",
+      "url": "https://buy.stripe.com/8x24gzffnc8B6Ts54G6AM04",
       "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml",
-      "paymentLinkId": "plink_1TbEApEBWfBBMjnmOLvsg62D",
-      "productId": "prod_UaOyCpxGEu6z7l",
-      "priceId": "price_1TbEApEBWfBBMjnmkswCb7Qo"
+      "paymentLinkId": "plink_1TbFGbEMK98IVofFMwgGoQAV",
+      "productId": "prod_UaQ6aeChEEX48x",
+      "priceId": "price_1TbFGbEMK98IVofFqCc79ygm"
     },
     "private-integration": {
       "label": "Pay $1,000 private build deposit",
       "amount": "$1,000",
-      "url": "https://buy.stripe.com/test_fZudR97KL9TRd7L2lsfbq02",
+      "url": "https://buy.stripe.com/5kQ7sLaZ7egJ5Po9kW6AM05",
       "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml",
-      "paymentLinkId": "plink_1TbEAqEBWfBBMjnmgDwnG3z5",
-      "productId": "prod_UaOyEJ63FtXaJ1",
-      "priceId": "price_1TbEApEBWfBBMjnmka4Zp5FR"
+      "paymentLinkId": "plink_1TbFGcEMK98IVofFRSIYGVmy",
+      "productId": "prod_UaQ67aOdzapaz7",
+      "priceId": "price_1TbFGbEMK98IVofFEPuauRA1"
     }
   },
-  "updatedAt": "2026-05-26T06:09:08.386Z"
+  "updatedAt": "2026-05-26T07:19:10.336Z"
 }
