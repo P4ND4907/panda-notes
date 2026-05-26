@@ -58,6 +58,8 @@ describe('panda notes embeddable widget core', () => {
       viewport: {
         width: 390,
         height: 844,
+        x: 164,
+        y: 743,
         xPercent: 42,
         yPercent: 88
       },
@@ -73,5 +75,9 @@ describe('panda notes embeddable widget core', () => {
     expect(note.target.label).toBe('Checkout submit');
     expect(note.target.component).toBe('CheckoutSubmitButton');
     expect(note.viewport.width).toBe(390);
+    expect(note.viewport.x).toBe(164);
+    expect(note.viewport.y).toBe(743);
+    expect(note.viewport.xPercent).toBe(42);
+    expect(note.viewport.yPercent).toBe(88);
   });
 });

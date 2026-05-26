@@ -35,7 +35,7 @@ Expected tester flow:
 1. Tester right-clicks a target UI element.
 2. Panda Notes opens a small themed note popup.
 3. Tester picks a tag and writes what happened.
-4. The widget captures page, route, viewport, element label, and optional `data-component`.
+4. The widget captures page, route, viewport, exact right-click point, element label, CSS path, and optional `data-component`.
 5. Notes remain local until the tester exports JSON or copies a handoff packet.
 
 ## Suggested Markup

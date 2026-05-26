@@ -198,6 +198,8 @@ export function createPandaNote({
     viewport: {
       width: clampNumber(viewport.width, 0, 10000),
       height: clampNumber(viewport.height, 0, 10000),
+      x: clampNumber(viewport.x, 0, 10000),
+      y: clampNumber(viewport.y, 0, 10000),
       xPercent: clampNumber(viewport.xPercent, 0, 100),
       yPercent: clampNumber(viewport.yPercent, 0, 100)
     }
@@ -334,7 +336,7 @@ export function buildDeveloperPacket(notes = [], options = {}) {
     action.snippet.code.split('\n').forEach((line) => lines.push(`   > ${line}`));
     action.evidence.forEach((item, itemIndex) => {
       lines.push(`   Note ${itemIndex + 1} (${item.audience}): ${item.note || '[empty]'}`);
-      lines.push(`   Target ${itemIndex + 1}: ${item.target || '[unknown]'} at ${item.viewport.width}x${item.viewport.height}`);
+      lines.push(`   Target ${itemIndex + 1}: ${item.target || '[unknown]'} at ${formatViewport(item.viewport)}`);
     });
     lines.push('');
   });
@@ -411,7 +413,7 @@ export function buildGithubIssueDraft(action) {
   ];
 
   (action.evidence || []).forEach((item) => {
-    const viewport = `${item.viewport?.width || 0}x${item.viewport?.height || 0}`;
+    const viewport = formatViewport(item.viewport);
     lines.push(`- ${item.audience}: ${item.note || '[empty]'} (target: ${item.target || '[unknown]'}, viewport: ${viewport})`);
   });
 
@@ -437,6 +439,53 @@ export function buildGithubIssueDraft(action) {
     body: lines.join('\n').trim(),
     labels: ['panda-notes', 'tester-feedback', action.tag]
   };
+}
+
+export function buildRepairPrompt(action) {
+  if (!action) {
+    return [
+      'You are helping repair a Panda Notes tester issue.',
+      'No target issue is selected yet. Ask for the exported Panda Notes JSON or a selected repair action before writing code.'
+    ].join('\n');
+  }
+
+  const snippet = action.snippet || getSnippetForTag(action.tag);
+  const evidence = (action.evidence || []).map((item, index) => [
+    `Evidence ${index + 1}:`,
+    `- Role: ${item.audience}`,
+    `- Note: ${item.note || '[empty]'}`,
+    `- Target: ${item.target || '[unknown]'}`,
+    `- Viewport: ${formatViewport(item.viewport)}`
+  ].join('\n')).join('\n\n');
+
+  return [
+    'You are helping repair a Panda Notes tester issue.',
+    'Use the tester evidence, target location, and code snippet to propose the smallest safe fix.',
+    'Do not invent private app details. If a file or behavior is missing, ask for that code before writing a patch.',
+    '',
+    `Issue: ${action.title}`,
+    `Page: ${action.page}`,
+    `Tag: ${action.tag}`,
+    `Suggested fix: ${action.suggestedFix}`,
+    `Test plan: ${action.testPlan}`,
+    '',
+    'Tester evidence:',
+    evidence || '[none]',
+    '',
+    'Starting code target:',
+    `File: ${snippet.file}`,
+    `Snippet: ${snippet.title}`,
+    '',
+    `\`\`\`${snippet.language || ''}`,
+    snippet.code,
+    '```',
+    '',
+    'Return:',
+    '1. Probable cause.',
+    '2. Minimal code change plan.',
+    '3. Patch or exact code edits if enough source is provided.',
+    '4. Verification steps.'
+  ].join('\n').trim();
 }
 
 export function getSnippetForTag(tag) {
@@ -469,6 +518,16 @@ function safeDate(value) {
 
 function clampNumber(value, min, max) {
   return Math.max(min, Math.min(max, Math.round(Number(value) || 0)));
+}
+
+function formatViewport(viewport = {}) {
+  const size = `${viewport.width || 0}x${viewport.height || 0}`;
+  const hasExactPoint = Number(viewport.x) > 0 || Number(viewport.y) > 0;
+  const hasPercentPoint = Number(viewport.xPercent) > 0 || Number(viewport.yPercent) > 0;
+  const exact = hasExactPoint ? `, click ${viewport.x || 0},${viewport.y || 0}` : '';
+  const percent = hasPercentPoint ? ` (${viewport.xPercent || 0}%,${viewport.yPercent || 0}%)` : '';
+
+  return `${size}${exact}${percent}`;
 }
 
 function priorityForTag(tag) {

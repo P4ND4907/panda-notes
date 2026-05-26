@@ -30,6 +30,8 @@
         activeViewport = {
           width: window.innerWidth || 0,
           height: window.innerHeight || 0,
+          x: event.clientX,
+          y: event.clientY,
           xPercent: percent(event.clientX, window.innerWidth || 1),
           yPercent: percent(event.clientY, window.innerHeight || 1)
         };
@@ -153,6 +155,8 @@
       viewport: activeViewport || {
         width: window.innerWidth || 0,
         height: window.innerHeight || 0,
+        x: 0,
+        y: 0,
         xPercent: 0,
         yPercent: 0
       }
@@ -207,6 +211,8 @@
       viewport: {
         width: clamp(viewport.width, 0, 10000),
         height: clamp(viewport.height, 0, 10000),
+        x: clamp(viewport.x, 0, 10000),
+        y: clamp(viewport.y, 0, 10000),
         xPercent: clamp(viewport.xPercent, 0, 100),
         yPercent: clamp(viewport.yPercent, 0, 100)
       }

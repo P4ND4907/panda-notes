@@ -19,11 +19,12 @@ Paid services: <https://p4nd4907.github.io/panda-notes/services.html>
 ## What It Does Now
 
 - Role quick starts for developers, alpha testers, and beta testers.
-- Local tester note capture with page, target, component, viewport, tag, and redacted note text.
+- Local tester note capture with page, target, component, viewport, exact right-click point, tag, and redacted note text.
 - Target issue repair queue grouped by page, target, and tag.
 - Search, tag, and evidence-role filters for narrowing the repair queue.
 - Code snippet popout for the selected target issue.
 - GitHub-ready issue draft copy/export with tester evidence, labels, target code, and test plan.
+- Repair prompt copy/export for handing a selected issue to Codex, ChatGPT, or another code assistant without adding secrets to the widget.
 - Developer packet copy/export and JSON import/export for moving notes between browsers or projects.
 - Alpha embeddable right-click widget at `/panda-notes-widget.js`.
 

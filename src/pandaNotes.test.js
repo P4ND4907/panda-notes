@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildDeveloperPacket,
   buildGithubIssueDraft,
+  buildRepairPrompt,
   buildRepairQueue,
   createPandaNote,
   filterRepairActions,
@@ -19,7 +20,7 @@ describe('panda notes standalone engine', () => {
       tag: 'broken',
       note: 'Click failed for C:\\Users\\tester\\secret.txt and tester@example.com 555-123-4567',
       target: { label: 'Submit report', component: 'ReportActions' },
-      viewport: { width: 390, height: 844, xPercent: 80, yPercent: 66 },
+      viewport: { width: 390, height: 844, x: 312, y: 557, xPercent: 80, yPercent: 66 },
       now: new Date('2026-05-24T20:00:00.000Z')
     });
 
@@ -29,6 +30,10 @@ describe('panda notes standalone engine', () => {
     expect(note.note).toContain('[redacted-path]');
     expect(note.note).toContain('[redacted-email]');
     expect(note.note).toContain('[redacted-phone]');
+    expect(note.viewport.x).toBe(312);
+    expect(note.viewport.y).toBe(557);
+    expect(note.viewport.xPercent).toBe(80);
+    expect(note.viewport.yPercent).toBe(66);
     expect(JSON.stringify(note)).not.toContain('tester@example.com');
   });
 
@@ -130,7 +135,7 @@ describe('panda notes standalone engine', () => {
       tag: 'missing feedback',
       note: 'Copying the packet needs a clearer success message.',
       target: { label: 'Copy developer packet', component: 'PacketActions' },
-      viewport: { width: 1440, height: 900 },
+      viewport: { width: 1440, height: 900, x: 688, y: 420, xPercent: 48, yPercent: 47 },
       now: new Date('2026-05-24T20:20:00.000Z')
     });
     const action = buildRepairQueue([note]).actions[0];
@@ -139,8 +144,15 @@ describe('panda notes standalone engine', () => {
     expect(issueDraft.title).toBe('[Panda Notes] Add missing feedback: PacketActions');
     expect(issueDraft.body).toContain('## Tester evidence');
     expect(issueDraft.body).toContain('- beta: Copying the packet needs a clearer success message.');
+    expect(issueDraft.body).toContain('viewport: 1440x900, click 688,420 (48%,47%)');
     expect(issueDraft.body).toContain('```js');
     expect(issueDraft.body).toContain('src/pandaNotes.js');
     expect(issueDraft.body).toContain('No hidden telemetry');
+
+    const prompt = buildRepairPrompt(action);
+    expect(prompt).toContain('Use the tester evidence, target location, and code snippet');
+    expect(prompt).toContain('Viewport: 1440x900, click 688,420 (48%,47%)');
+    expect(prompt).toContain('Return:');
+    expect(prompt).toContain('Verification steps.');
   });
 });

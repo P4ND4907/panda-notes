@@ -23,6 +23,7 @@ import {
 import {
   buildDeveloperPacket,
   buildGithubIssueDraft,
+  buildRepairPrompt,
   buildRepairQueue,
   createPandaNote,
   filterRepairActions,
@@ -41,7 +42,7 @@ const seedNotes = [
     tag: 'missing feedback',
     note: 'The import button looked idle after I picked a JSON file.',
     target: { label: 'Import notes', component: 'ImportPanel' },
-    viewport: { width: 390, height: 844, xPercent: 58, yPercent: 52 },
+    viewport: { width: 390, height: 844, x: 226, y: 439, xPercent: 58, yPercent: 52 },
     now: new Date('2026-05-24T18:00:00.000Z')
   }),
   createPandaNote({
@@ -50,7 +51,7 @@ const seedNotes = [
     tag: 'broken',
     note: 'Copy developer packet did not show confirmation on the second try.',
     target: { label: 'Copy developer packet', component: 'PacketActions' },
-    viewport: { width: 1440, height: 900, xPercent: 74, yPercent: 42 },
+    viewport: { width: 1440, height: 900, x: 1066, y: 378, xPercent: 74, yPercent: 42 },
     now: new Date('2026-05-24T18:08:00.000Z')
   }),
   createPandaNote({
@@ -59,7 +60,7 @@ const seedNotes = [
     tag: 'layout issue',
     note: 'Code snippet and evidence need to stay readable side by side.',
     target: { label: 'Selected issue detail', component: 'IssueDetail' },
-    viewport: { width: 1180, height: 820, xPercent: 66, yPercent: 58 },
+    viewport: { width: 1180, height: 820, x: 779, y: 476, xPercent: 66, yPercent: 58 },
     now: new Date('2026-05-24T18:14:00.000Z')
   })
 ];
@@ -89,7 +90,7 @@ export default function App() {
     tag: 'broken',
     note: '',
     target: { label: 'Describe the target', component: 'ComponentName' },
-    viewport: { width: 1440, height: 900, xPercent: 50, yPercent: 50 }
+    viewport: { width: 1440, height: 900, x: 720, y: 450, xPercent: 50, yPercent: 50 }
   });
 
   const summary = useMemo(() => summarizePandaNotes(notes), [notes]);
@@ -97,6 +98,7 @@ export default function App() {
   const filteredActions = useMemo(() => filterRepairActions(repairQueue.actions, issueFilters), [repairQueue.actions, issueFilters]);
   const selectedAction = filteredActions.find((item) => item.id === selectedId) || filteredActions[0] || null;
   const selectedIssueDraft = useMemo(() => buildGithubIssueDraft(selectedAction), [selectedAction]);
+  const selectedRepairPrompt = useMemo(() => buildRepairPrompt(selectedAction), [selectedAction]);
   const activeAudience = pandaAudiences.find((item) => item.key === selectedAudience) || pandaAudiences[0];
   const activeGuide = getAudienceGuide(selectedAudience);
   const hasIssueFilters = Boolean(issueFilters.query || issueFilters.tag !== 'all' || issueFilters.audience !== 'all');
@@ -162,6 +164,19 @@ export default function App() {
     }
   }
 
+  async function copyRepairPrompt() {
+    if (!selectedAction) {
+      setStatus('Select a target issue before copying a repair prompt.');
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(selectedRepairPrompt);
+      setStatus('Repair prompt copied with evidence, exact click point, target code, and test plan.');
+    } catch {
+      setStatus('Clipboard was blocked. Export the repair prompt instead.');
+    }
+  }
+
   function exportGithubIssueDraft() {
     if (!selectedAction) {
       setStatus('Select a target issue before exporting a GitHub draft.');
@@ -169,6 +184,15 @@ export default function App() {
     }
     downloadText('panda-notes-github-issue.md', `# ${selectedIssueDraft.title}\n\n${selectedIssueDraft.body}`);
     setStatus('GitHub issue draft exported.');
+  }
+
+  function exportRepairPrompt() {
+    if (!selectedAction) {
+      setStatus('Select a target issue before exporting a repair prompt.');
+      return;
+    }
+    downloadText('panda-notes-repair-prompt.md', selectedRepairPrompt);
+    setStatus('Repair prompt exported.');
   }
 
   function exportDeveloperPacket() {
@@ -413,6 +437,8 @@ export default function App() {
                     <div className="handoff-actions">
                       <button onClick={copyGithubIssueDraft}><ClipboardList size={18} /> Copy issue</button>
                       <button onClick={exportGithubIssueDraft}><Download size={18} /> Export MD</button>
+                      <button onClick={copyRepairPrompt}><Code2 size={18} /> Copy repair prompt</button>
+                      <button onClick={exportRepairPrompt}><Download size={18} /> Export prompt</button>
                     </div>
                   </div>
                   <div className="evidence-stack">
@@ -420,7 +446,7 @@ export default function App() {
                       <article className="evidence-card" key={`${item.createdAt}-${index}`}>
                         <strong>{item.audience} note {index + 1}</strong>
                         <span>{item.note || 'No note text.'}</span>
-                        <small>{item.target} / {item.viewport.width}x{item.viewport.height}</small>
+                        <small>{item.target} / {formatViewport(item.viewport)}</small>
                       </article>
                     ))}
                   </div>
@@ -483,4 +509,14 @@ function downloadText(filename, text) {
   anchor.download = filename;
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+function formatViewport(viewport = {}) {
+  const size = `${viewport.width || 0}x${viewport.height || 0}`;
+  const hasExactPoint = Number(viewport.x) > 0 || Number(viewport.y) > 0;
+  const hasPercentPoint = Number(viewport.xPercent) > 0 || Number(viewport.yPercent) > 0;
+  const exact = hasExactPoint ? `, click ${viewport.x || 0},${viewport.y || 0}` : '';
+  const percent = hasPercentPoint ? ` (${viewport.xPercent || 0}%,${viewport.yPercent || 0}%)` : '';
+
+  return `${size}${exact}${percent}`;
 }
