@@ -128,6 +128,39 @@
         color: inherit;
       }
 
+      .skip-link {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        transform: translateY(-200%);
+        border: 2px solid var(--grove);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--ink);
+        z-index: 1000;
+        padding: 10px 14px;
+        box-shadow: 0 10px 24px rgba(24, 34, 29, 0.16);
+        font-weight: 850;
+        text-decoration: none;
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      .button-link:focus-visible,
+      .guide-chip:focus-visible {
+        outline: 3px solid var(--grove);
+        outline-offset: 3px;
+      }
+
+      main:focus {
+        outline: none;
+      }
+
       .sr-only {
         position: absolute;
         width: 1px;
@@ -342,11 +375,6 @@
       .button-link:hover,
       .offer-card:hover {
         filter: brightness(1.05);
-      }
-
-      .button-link:focus-visible {
-        outline: 3px solid rgba(79, 179, 106, 0.34);
-        outline-offset: 2px;
       }
 
       .hero {
@@ -716,13 +744,6 @@
         padding: 0 14px;
       }
 
-      .guide-chip:focus-visible,
-      .guide-form input:focus-visible,
-      .guide-form button:focus-visible {
-        outline: 3px solid rgba(79, 179, 106, 0.34);
-        outline-offset: 2px;
-      }
-
       .service-guide .guide-note {
         margin-bottom: 0;
         color: var(--ink-soft);
@@ -837,6 +858,7 @@
     </style>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <div class="page-shell">
       <header class="topbar">
         <a class="brand" href="./">
@@ -861,7 +883,7 @@
         </nav>
       </header>
 
-      <main>
+      <main id="main-content" tabindex="-1">
         <section class="hero">
           <div class="hero-inner">
             <span class="panda-stamp" aria-hidden="true">
@@ -1180,6 +1202,7 @@
       initServiceGuide();
       initServiceAnalytics();
       initServiceViewTracking();
+      initSkipLinkFocus();
 
       async function hydrateStripeLinks() {
         try {
@@ -1256,6 +1279,16 @@
         } catch {
           return false;
         }
+      }
+
+      function initSkipLinkFocus() {
+        const skipLink = document.querySelector('.skip-link');
+        const mainContent = document.getElementById('main-content');
+        if (!skipLink || !mainContent) return;
+
+        skipLink.addEventListener('click', () => {
+          mainContent.focus();
+        });
       }
 
       function initServiceGuide() {

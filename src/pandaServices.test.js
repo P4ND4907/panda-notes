@@ -135,6 +135,19 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain("category: 'comparison'");
   });
 
+  it('keeps keyboard navigation and focus states accessible on the services page', () => {
+    expect(servicesHtml).toContain('<a class="skip-link" href="#main-content">Skip to main content</a>');
+    expect(servicesHtml).toContain('<main id="main-content" tabindex="-1">');
+    expect(servicesHtml).toContain('.skip-link:focus');
+    expect(servicesHtml).toContain('a:focus-visible');
+    expect(servicesHtml).toContain('button:focus-visible');
+    expect(servicesHtml).toContain('input:focus-visible');
+    expect(servicesHtml).toContain('outline: 3px solid var(--grove)');
+    expect(servicesHtml).toContain('outline-offset: 3px');
+    expect(servicesHtml).toContain('initSkipLinkFocus()');
+    expect(servicesHtml).toContain('document.getElementById(\'main-content\')');
+  });
+
   it('ships Stripe Payment Link wiring with safe GitHub fallbacks', () => {
     expect(servicesHtml).toContain('./stripe-links.json');
     expect(servicesHtml).toContain('data-stripe-offer="setup-sprint"');
