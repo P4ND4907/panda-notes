@@ -10,6 +10,8 @@ function readProjectFile(path) {
 describe('Panda Notes services conversion path', () => {
   const servicesHtml = readProjectFile('public/services.html');
   const stripeConfig = JSON.parse(readProjectFile('public/stripe-links.json'));
+  const robotsTxt = readProjectFile('public/robots.txt');
+  const sitemapXml = readProjectFile('public/sitemap.xml');
 
   it('links every paid intake form from the public services page', () => {
     expect(servicesHtml).toContain('/issues/new?template=setup-sprint.yml');
@@ -83,6 +85,37 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('After payment');
     expect(servicesHtml).toContain('Do not post secrets');
     expect(servicesHtml).toContain('phone-friendly');
+  });
+
+  it('ships search metadata, canonical URLs, sitemap, robots, and service schema', () => {
+    expect(servicesHtml).toContain('<title>Panda Notes Services | Bug Triage, Setup, and Developer Handoff</title>');
+    expect(servicesHtml).toContain('name="description"');
+    expect(servicesHtml).toContain('rel="canonical" href="https://p4nd4907.github.io/panda-notes/services.html"');
+    expect(servicesHtml).toContain('property="og:title" content="Panda Notes Services"');
+    expect(servicesHtml).toContain('name="twitter:card" content="summary"');
+    expect(servicesHtml).toContain('application/ld+json');
+    expect(servicesHtml).toContain('"@type": "Organization"');
+    expect(servicesHtml).toContain('"@type": "OfferCatalog"');
+    expect(servicesHtml).toContain('"Setup Sprint"');
+    expect(servicesHtml).toContain('"Developer Handoff Pack"');
+    expect(servicesHtml).toContain('"Private Integration"');
+
+    expect(robotsTxt).toContain('User-agent: *');
+    expect(robotsTxt).toContain('Sitemap: https://p4nd4907.github.io/panda-notes/sitemap.xml');
+    expect(sitemapXml).toContain('<loc>https://p4nd4907.github.io/panda-notes/services.html</loc>');
+    expect(sitemapXml).toContain('<lastmod>2026-05-26</lastmod>');
+  });
+
+  it('adds privacy-aligned analytics hooks for the service funnel', () => {
+    expect(servicesHtml).toContain('https://plausible.io/js/script.js');
+    expect(servicesHtml).toContain('data-domain="p4nd4907.github.io"');
+    expect(servicesHtml).toContain('data-analytics-event="Hero Setup Sprint CTA"');
+    expect(servicesHtml).toContain('data-analytics-event="Hero Handoff Pack CTA"');
+    expect(servicesHtml).toContain('data-analytics-event="Service Offer CTA"');
+    expect(servicesHtml).toContain('trackServiceEvent');
+    expect(servicesHtml).toContain('panda-service-event');
+    expect(servicesHtml).toContain('Service Guide Question');
+    expect(servicesHtml).toContain("category: 'comparison'");
   });
 
   it('ships Stripe Payment Link wiring with safe GitHub fallbacks', () => {

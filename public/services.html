@@ -3,7 +3,78 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panda Notes Services</title>
+    <title>Panda Notes Services | Bug Triage, Setup, and Developer Handoff</title>
+    <meta
+      name="description"
+      content="Hire Panda Notes for setup sprints, tester-feedback cleanup, and developer-ready handoff packs. Local-first workflow, private-first options, and GitHub/Jira/Linear-ready outputs."
+    />
+    <meta name="theme-color" content="#193429" />
+    <link rel="canonical" href="https://p4nd4907.github.io/panda-notes/services.html" />
+    <meta property="og:title" content="Panda Notes Services" />
+    <meta property="og:description" content="Turn messy tester feedback into developer-ready work." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://p4nd4907.github.io/panda-notes/services.html" />
+    <meta property="og:site_name" content="Panda Notes" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Panda Notes Services" />
+    <meta name="twitter:description" content="Turn messy tester feedback into developer-ready work." />
+    <script defer data-domain="p4nd4907.github.io" src="https://plausible.io/js/script.js"></script>
+    <script>
+      window.plausible = window.plausible || function () {
+        (window.plausible.q = window.plausible.q || []).push(arguments);
+      };
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Panda Notes",
+        "url": "https://p4nd4907.github.io/panda-notes/",
+        "sameAs": ["https://github.com/P4ND4907/panda-notes"],
+        "description": "Local-first developer feedback capture and handoff tooling.",
+        "makesOffer": {
+          "@type": "OfferCatalog",
+          "name": "Panda Notes Services",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "name": "Setup Sprint",
+              "description": "Install Panda Notes into a staging or beta app and configure tester capture workflows.",
+              "priceSpecification": {
+                "@type": "PriceSpecification",
+                "priceCurrency": "USD",
+                "minPrice": 250,
+                "maxPrice": 750
+              },
+              "availability": "https://schema.org/InStock"
+            },
+            {
+              "@type": "Offer",
+              "name": "Developer Handoff Pack",
+              "description": "Turn tester exports into prioritized, developer-ready repair issues.",
+              "priceSpecification": {
+                "@type": "PriceSpecification",
+                "priceCurrency": "USD",
+                "minPrice": 150,
+                "maxPrice": 500
+              },
+              "availability": "https://schema.org/InStock"
+            },
+            {
+              "@type": "Offer",
+              "name": "Private Integration",
+              "description": "Build a private or white-label Panda Notes workflow with custom exports.",
+              "priceSpecification": {
+                "@type": "PriceSpecification",
+                "priceCurrency": "USD",
+                "minPrice": 1000
+              },
+              "availability": "https://schema.org/InStock"
+            }
+          ]
+        }
+      }
+    </script>
     <style>
       :root {
         color-scheme: light;
@@ -805,8 +876,18 @@
             <h1>Panda Notes Services</h1>
             <p>Keep the open-source console and widget free. Hire focused help when you want Panda Notes installed, tester exports cleaned up, or a private developer handoff built around your product.</p>
             <div class="button-row">
-              <a class="button-link primary" href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml">Book setup sprint</a>
-              <a class="button-link light" href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml">Request handoff pack</a>
+              <a
+                class="button-link primary"
+                data-analytics-event="Hero Setup Sprint CTA"
+                data-analytics-offer="setup-sprint"
+                href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
+              >Book setup sprint</a>
+              <a
+                class="button-link light"
+                data-analytics-event="Hero Handoff Pack CTA"
+                data-analytics-offer="developer-handoff"
+                href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
+              >Request handoff pack</a>
             </div>
             <div class="trust-row" aria-label="Service promises">
               <span>MIT licensed</span>
@@ -857,6 +938,8 @@
                   data-stripe-label="Pay $250 setup deposit"
                   data-fallback-label="Start setup request"
                   data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
+                  data-analytics-event="Service Offer CTA"
+                  data-analytics-offer="setup-sprint"
                   href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
                 >Start setup request</a>
                 <span class="payment-note">Stripe checkout uses a $250 deposit once the payment link is connected.</span>
@@ -880,6 +963,8 @@
                   data-stripe-label="Pay $150 handoff deposit"
                   data-fallback-label="Send handoff request"
                   data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
+                  data-analytics-event="Service Offer CTA"
+                  data-analytics-offer="developer-handoff"
                   href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
                 >Send handoff request</a>
                 <span class="payment-note">Stripe checkout uses a $150 deposit once the payment link is connected.</span>
@@ -903,6 +988,8 @@
                   data-stripe-label="Pay $1,000 private build deposit"
                   data-fallback-label="Discuss private build"
                   data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml"
+                  data-analytics-event="Service Offer CTA"
+                  data-analytics-offer="private-integration"
                   href="https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml"
                 >Discuss private build</a>
                 <span class="payment-note">Stripe checkout uses a $1,000 deposit once the payment link is connected.</span>
@@ -1012,9 +1099,9 @@
             <h2 id="free-title">The Free Product Stays Useful</h2>
             <p>The standalone console, widget demo, script install, local JSON exports, and GitHub-ready drafts remain free so developers and alpha/beta testers can adopt Panda Notes without a sales gate.</p>
             <div class="button-row">
-              <a class="button-link primary" href="./">Open console</a>
-              <a class="button-link" href="./widget-demo.html">Try widget demo</a>
-              <a class="button-link" href="https://github.com/P4ND4907/panda-notes/blob/main/docs/MONETIZATION.md">Read plan</a>
+              <a class="button-link primary" data-analytics-event="Open Console CTA" href="./">Open console</a>
+              <a class="button-link" data-analytics-event="Widget Demo CTA" href="./widget-demo.html">Try widget demo</a>
+              <a class="button-link" data-analytics-event="Read Plan CTA" href="https://github.com/P4ND4907/panda-notes/blob/main/docs/MONETIZATION.md">Read plan</a>
             </div>
           </section>
         </section>
@@ -1029,50 +1116,62 @@
       const allowTestCheckout = new URLSearchParams(window.location.search).get('checkout') === 'test';
       const serviceGuideAnswers = [
         {
+          category: 'after-payment',
           keywords: ['after payment', 'after i pay', 'pay', 'paid', 'deposit', 'stripe', 'checkout'],
           answer: 'After payment, open the matching GitHub request form from this page. Panda Notes confirms the deposit, reviews scope, sets a delivery date, and sends the setup notes, repair queue, or private integration handoff.'
         },
         {
+          category: 'why-pay',
           keywords: ['money', 'make money', 'github free', 'free on github', 'why pay', 'paid service'],
           answer: 'The GitHub repo is free so teams can try Panda Notes and trust the workflow. The paid service sells saved time: setup, tester-note cleanup, developer-ready repair queues, private exports, and custom integration work.'
         },
         {
+          category: 'privacy',
           keywords: ['secret', 'private code', 'credential', 'token', 'password', 'confidential', 'customer data'],
           answer: 'Do not post secrets, credentials, private customer data, or confidential source code in public GitHub issues. Use the issue only for public-safe scope. If private details are needed, ask for a private channel during scope confirmation.'
         },
         {
+          category: 'choose-service',
           keywords: ['which service', 'choose', 'setup', 'handoff', 'private integration', 'white label', 'integration'],
           answer: 'Choose Setup Sprint if you want Panda Notes installed in a staging or beta app. Choose Developer Handoff Pack if you already have tester notes and need them turned into prioritized issues. Choose Private Integration if you need custom branding, private exports, or deeper workflow support.'
         },
         {
+          category: 'timeline',
           keywords: ['timeline', 'deadline', 'delivery', 'how long', 'when'],
           answer: 'Typical turnaround depends on scope. A small handoff pack can often fit a short beta window, setup sprints usually need clear access to the target app, and private integrations need discovery first. Add your preferred delivery window in the GitHub form.'
         },
         {
+          category: 'phone-workflow',
           keywords: ['phone', 'mobile', 'manage', 'github mobile', 'passive'],
           answer: 'The workflow is phone-friendly: Stripe collects deposits, GitHub issue forms collect intake, and GitHub Mobile makes it easy to reply, label, and close requests. The goal is clean intake and clear delivery, not a confusing back-and-forth.'
         },
         {
+          category: 'comparison',
           keywords: ['marker', 'bugherd', 'userback', 'jam', 'linear', 'obsidian', 'compare', 'comparison', 'different', 'alternative'],
           answer: 'Panda Notes is narrower than full feedback platforms and more hands-on than a plain notes app. It focuses on the handoff gap: exact target context, code hints, local-first tester notes, and developer-ready repair drafts. You can use the open tool yourself, or pay for setup and cleanup when you want that loop handled faster.'
         },
         {
+          category: 'exports',
           keywords: ['github', 'jira', 'linear', 'export', 'issue', 'repo'],
           answer: 'Panda Notes already creates GitHub-ready drafts and developer packets. Setup or private work can shape exports for GitHub, Jira, or Linear as long as the format is agreed during scope.'
         },
         {
+          category: 'refunds',
           keywords: ['refund', 'cancel', 'dispute', 'chargeback'],
           answer: 'Refunds and cancellations are handled case by case based on scope and work already delivered. Open or update the GitHub request with the concern, but keep private payment details out of the public issue.'
         },
         {
+          category: 'open-source',
           keywords: ['free', 'mit', 'license', 'open source', 'cost'],
           answer: 'The Panda Notes console, widget demo, script install, JSON exports, and GitHub-ready drafts stay free under the MIT license. Paid services are for installation help, handoff cleanup, and private custom work.'
         },
         {
+          category: 'tester-notes',
           keywords: ['tester notes', 'json', 'export', 'alpha', 'beta', 'notes'],
           answer: 'For tester notes, export Panda Notes JSON or paste a public-safe summary. The handoff pack groups duplicates, ranks target issues, and turns the notes into repair work developers can act on.'
         },
         {
+          category: 'automation',
           keywords: ['automated', 'automatic', 'handled for me', 'service delivery', 'fully'],
           answer: 'Payment collection and intake are streamlined with Stripe and GitHub forms. Scope, private communication, delivery, and refunds are reviewed before final handoff so the work stays clear and accountable.'
         }
@@ -1080,6 +1179,7 @@
 
       hydrateStripeLinks();
       initServiceGuide();
+      initServiceAnalytics();
 
       async function hydrateStripeLinks() {
         try {
@@ -1183,6 +1283,9 @@
           if (!cleanQuestion) return;
           appendGuideMessage(cleanQuestion, 'user');
           appendGuideMessage(answerServiceQuestion(cleanQuestion));
+          trackServiceEvent('Service Guide Question', {
+            answerType: getServiceQuestionCategory(cleanQuestion)
+          });
           log.scrollTop = log.scrollHeight;
         }
 
@@ -1195,12 +1298,48 @@
       }
 
       function answerServiceQuestion(question) {
+        return getServiceQuestionMatch(question)?.answer || 'Best next step: open the matching GitHub service request and include your app URL, tester role, requested deadline, and public-safe project context. Panda Notes will confirm the right service and handoff before work starts.';
+      }
+
+      function getServiceQuestionCategory(question) {
+        return getServiceQuestionMatch(question)?.category || 'fallback';
+      }
+
+      function getServiceQuestionMatch(question) {
         const normalized = question.toLowerCase();
-        const match = serviceGuideAnswers.find((entry) =>
+        return serviceGuideAnswers.find((entry) =>
           entry.keywords.some((keyword) => normalized.includes(keyword))
         );
+      }
 
-        return match?.answer || 'Best next step: open the matching GitHub service request and include your app URL, tester role, requested deadline, and public-safe project context. Panda Notes will confirm the right service and handoff before work starts.';
+      function initServiceAnalytics() {
+        document.querySelectorAll('[data-analytics-event]').forEach((element) => {
+          element.addEventListener('click', () => {
+            trackServiceEvent(element.dataset.analyticsEvent, {
+              offer: element.dataset.analyticsOffer || element.dataset.stripeOffer || 'general',
+              checkoutState: element.dataset.checkoutState || 'link',
+              destination: getSafeDestination(element)
+            });
+          });
+        });
+      }
+
+      function trackServiceEvent(eventName, props = {}) {
+        if (!eventName) return;
+        const detail = { eventName, props };
+        window.dispatchEvent(new CustomEvent('panda-service-event', { detail }));
+        if (typeof window.plausible === 'function') {
+          window.plausible(eventName, { props });
+        }
+      }
+
+      function getSafeDestination(element) {
+        try {
+          const url = new URL(element.href, window.location.href);
+          return url.hostname;
+        } catch {
+          return 'unknown';
+        }
       }
     </script>
   </body>
