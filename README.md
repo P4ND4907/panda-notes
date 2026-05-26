@@ -73,6 +73,48 @@ See [Panda Notes Services](https://p4nd4907.github.io/panda-notes/services.html)
 
 Stripe Payment Links are wired through `public/stripe-links.json`. Create or paste the three deposit links, then the Services page will send buyers to Stripe-hosted checkout. See [Stripe Setup](docs/STRIPE.md).
 
+## Service Flows
+
+Panda Notes is set up to be managed from a phone-friendly stack: Stripe Payment Links collect deposits, GitHub issue forms collect public-safe intake, GitHub Actions add the owner checklist, and GitHub Mobile can be used as the daily service desk.
+
+More detail: [Service Operations](docs/SERVICE_OPERATIONS.md).
+
+### Setup Sprint
+
+```mermaid
+flowchart LR
+  Buyer["Buyer pays setup deposit"] --> Intake["Setup sprint GitHub form"]
+  Intake --> AutoReply["GitHub Action posts scope checklist"]
+  AutoReply --> Confirm["Confirm app URL, tester roles, flows, timeline"]
+  Confirm --> Install["Install widget and configure project hints"]
+  Install --> Handoff["Send install notes and tester workflow"]
+  Handoff --> Close["Close issue with delivery summary"]
+```
+
+### Developer Handoff Pack
+
+```mermaid
+flowchart LR
+  Buyer["Buyer pays handoff deposit"] --> Intake["Handoff GitHub form"]
+  Intake --> AutoReply["GitHub Action posts handoff checklist"]
+  AutoReply --> Export["Collect Panda Notes JSON or public-safe notes"]
+  Export --> Triage["Group duplicates and rank target issues"]
+  Triage --> Drafts["Write GitHub-ready issue drafts"]
+  Drafts --> Deliver["Deliver repair queue and next-fix order"]
+```
+
+### Private Integration
+
+```mermaid
+flowchart LR
+  Buyer["Buyer pays private build deposit"] --> Intake["Private integration GitHub form"]
+  Intake --> AutoReply["GitHub Action posts discovery checklist"]
+  AutoReply --> Scope["Confirm branding, privacy, exports, and budget"]
+  Scope --> PrivateChannel["Move secrets or private code to agreed private channel"]
+  PrivateChannel --> Build["Build custom widget, console, or export path"]
+  Build --> Review["Review deliverables and handoff docs"]
+```
+
 ## Workflow
 
 1. Pick a role in the sidebar.

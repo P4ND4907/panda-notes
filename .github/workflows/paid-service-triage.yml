@@ -1,0 +1,60 @@
+name: Paid service triage
+
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  triage:
+    if: contains(join(github.event.issue.labels.*.name, ','), 'paid-service')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Panda Notes service checklist
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- panda-paid-service-triage -->';
+            const issue = context.payload.issue;
+            const { owner, repo } = context.repo;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number: issue.number,
+              per_page: 100
+            });
+
+            if (comments.some((comment) => comment.user.type === 'Bot' && comment.body?.includes(marker))) {
+              core.info('Paid service checklist already posted.');
+              return;
+            }
+
+            const body = [
+              marker,
+              'Thanks for opening a Panda Notes service request.',
+              '',
+              '**Customer next steps**',
+              '- Confirm whether your deposit is paid or you need the Stripe link.',
+              '- Keep secrets, credentials, private customer data, and confidential source code out of this public issue.',
+              '- Add a public-safe project URL, GitHub repo, tester notes export, or deadline if you did not include it yet.',
+              '- If private details are required, ask for a private channel before posting them.',
+              '',
+              '**Owner checklist**',
+              '- Confirm deposit in Stripe.',
+              '- Confirm scope, service type, delivery date, and expected handoff.',
+              '- Add labels: `payment-confirmed`, `scope-needed`, `waiting-on-customer`, `in-progress`, or `delivered`.',
+              '- Deliver the setup notes, repair queue, issue drafts, or private integration handoff.',
+              '',
+              'Service flows: https://github.com/P4ND4907/panda-notes/blob/main/docs/SERVICE_OPERATIONS.md',
+              'Services page: https://p4nd4907.github.io/panda-notes/services.html'
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issue.number,
+              body
+            });

@@ -57,6 +57,18 @@
         color: inherit;
       }
 
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        padding: 0;
+      }
+
       .page-shell {
         position: relative;
         z-index: 1;
@@ -479,6 +491,149 @@
         margin-top: 28px;
       }
 
+      .service-bot {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+        gap: 18px;
+        margin-top: 28px;
+        border: 1px solid rgba(43, 68, 54, 0.18);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(25, 52, 41, 0.96), rgba(35, 89, 64, 0.92)),
+          var(--forest);
+        color: var(--paper);
+        box-shadow: var(--shadow-soft);
+        padding: 20px;
+      }
+
+      .service-bot h2 {
+        margin-bottom: 8px;
+        font-size: clamp(28px, 4vw, 42px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .service-bot p {
+        color: #d9e9d8;
+        line-height: 1.5;
+      }
+
+      .service-bot-list {
+        display: grid;
+        gap: 9px;
+        margin: 16px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .service-bot-list li {
+        border-left: 3px solid var(--bamboo-light);
+        border-radius: 0 8px 8px 0;
+        background: rgba(251, 246, 232, 0.08);
+        padding: 9px 11px;
+        color: #edf6e7;
+        line-height: 1.4;
+      }
+
+      .service-bot-panel {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+        border: 1px solid rgba(251, 246, 232, 0.18);
+        border-radius: 8px;
+        background: rgba(251, 246, 232, 0.94);
+        color: var(--ink);
+        padding: 14px;
+      }
+
+      .bot-log {
+        display: grid;
+        gap: 10px;
+        min-height: 172px;
+        max-height: 300px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .bot-message {
+        width: fit-content;
+        max-width: min(100%, 680px);
+        border-radius: 8px;
+        background: #eef7e6;
+        color: var(--ink-soft);
+        padding: 10px 12px;
+        line-height: 1.45;
+      }
+
+      .bot-message.user {
+        justify-self: end;
+        background: #f4d37c;
+        color: #2d2112;
+        font-weight: 800;
+      }
+
+      .bot-question-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .bot-chip {
+        min-height: 36px;
+        border: 1px solid rgba(35, 89, 64, 0.22);
+        border-radius: 8px;
+        background: #fbf6e8;
+        color: var(--ink);
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 850;
+        padding: 0 10px;
+      }
+
+      .bot-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+      }
+
+      .bot-form input {
+        min-width: 0;
+        min-height: 42px;
+        border: 1px solid rgba(35, 89, 64, 0.22);
+        border-radius: 8px;
+        background: #fffdf5;
+        color: var(--ink);
+        font: inherit;
+        padding: 0 12px;
+      }
+
+      .bot-form button {
+        min-height: 42px;
+        border: 1px solid rgba(31, 101, 64, 0.32);
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--bamboo), var(--bamboo-light));
+        color: #102017;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 900;
+        padding: 0 14px;
+      }
+
+      .bot-chip:focus-visible,
+      .bot-form input:focus-visible,
+      .bot-form button:focus-visible {
+        outline: 3px solid rgba(79, 179, 106, 0.34);
+        outline-offset: 2px;
+      }
+
+      .service-bot .bot-note {
+        margin-bottom: 0;
+        color: var(--ink-soft);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
       .proof-card,
       .free-band {
         padding: 18px;
@@ -544,7 +699,8 @@
 
         .offer-grid,
         .step-grid,
-        .proof-grid {
+        .proof-grid,
+        .service-bot {
           grid-template-columns: 1fr;
         }
       }
@@ -572,8 +728,13 @@
         }
 
         .button-row > *,
-        .nav-links > * {
+        .nav-links > *,
+        .bot-form button {
           flex: 1 1 100%;
+        }
+
+        .bot-form {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -752,6 +913,37 @@
             </article>
           </div>
 
+          <section class="service-bot" aria-labelledby="service-bot-title" data-service-bot>
+            <div>
+              <h2 id="service-bot-title">Panda Service Bot</h2>
+              <p>Use this built-in helper to answer common service questions before opening a request. It runs from a curated local answer book, so there is no API key, no monthly AI bill, and no chat data leaving this page.</p>
+              <ul class="service-bot-list">
+                <li>Helps buyers pick setup, handoff, or private integration.</li>
+                <li>Explains what happens after Stripe checkout.</li>
+                <li>Repeats the privacy rule: never post secrets in public issues.</li>
+              </ul>
+            </div>
+            <div class="service-bot-panel" role="region" aria-label="Panda Service Bot chat">
+              <div class="bot-log" data-bot-log aria-live="polite">
+                <div class="bot-message">Ask about pricing, timelines, refunds, GitHub intake, private code, or which Panda Notes service fits your project.</div>
+              </div>
+              <div class="bot-question-grid" aria-label="Common service questions">
+                <button class="bot-chip" type="button" data-bot-question="What happens after I pay?">After payment</button>
+                <button class="bot-chip" type="button" data-bot-question="Which service should I choose?">Choose service</button>
+                <button class="bot-chip" type="button" data-bot-question="Should I share secrets or private code?">Secrets</button>
+                <button class="bot-chip" type="button" data-bot-question="How long does delivery take?">Timeline</button>
+                <button class="bot-chip" type="button" data-bot-question="Can I manage this from my phone?">Phone workflow</button>
+                <button class="bot-chip" type="button" data-bot-question="Do you support GitHub, Jira, or Linear?">Export tools</button>
+              </div>
+              <form class="bot-form" data-bot-form>
+                <label class="sr-only" for="service-bot-question">Ask a service question</label>
+                <input id="service-bot-question" data-bot-input type="text" autocomplete="off" placeholder="Ask about setup, handoff, refunds, GitHub, timelines..." />
+                <button type="submit">Ask</button>
+              </form>
+              <p class="bot-note">For custom scope, open the matching GitHub request and include your app URL, deadline, and public-safe project context.</p>
+            </div>
+          </section>
+
           <section class="free-band" aria-labelledby="free-title">
             <h2 id="free-title">The Free Product Stays Useful</h2>
             <p>The standalone console, widget demo, script install, local JSON exports, and GitHub-ready drafts remain free so developers and alpha/beta testers can adopt Panda Notes without a sales gate.</p>
@@ -771,8 +963,51 @@
     <script>
       const stripeStatus = document.querySelector('[data-stripe-status]');
       const allowTestCheckout = new URLSearchParams(window.location.search).get('checkout') === 'test';
+      const serviceBotAnswers = [
+        {
+          keywords: ['after payment', 'after i pay', 'pay', 'paid', 'deposit', 'stripe', 'checkout'],
+          answer: 'After payment, open the matching GitHub request form from this page. I confirm the deposit in Stripe, confirm scope in the issue, set a delivery date, and then deliver the setup notes, repair queue, or private integration handoff.'
+        },
+        {
+          keywords: ['secret', 'private code', 'credential', 'token', 'password', 'confidential', 'customer data'],
+          answer: 'Do not post secrets, credentials, private customer data, or confidential source code in public GitHub issues. Use the issue only for public-safe scope. If private details are needed, ask for a private channel during scope confirmation.'
+        },
+        {
+          keywords: ['which service', 'choose', 'setup', 'handoff', 'private integration', 'white label', 'integration'],
+          answer: 'Choose Setup Sprint if you want Panda Notes installed in a staging or beta app. Choose Developer Handoff Pack if you already have tester notes and need them turned into prioritized issues. Choose Private Integration if you need custom branding, private exports, or deeper workflow support.'
+        },
+        {
+          keywords: ['timeline', 'deadline', 'delivery', 'how long', 'when'],
+          answer: 'Typical turnaround depends on scope. A small handoff pack can often fit a short beta window, setup sprints usually need clear access to the target app, and private integrations need discovery first. Add your preferred delivery window in the GitHub form.'
+        },
+        {
+          keywords: ['phone', 'mobile', 'manage', 'github mobile', 'passive'],
+          answer: 'The lightweight operating stack is phone-friendly: Stripe collects deposits, GitHub issue forms collect intake, GitHub Actions posts the checklist, and GitHub Mobile lets you reply, label, and close work. It is semi-passive, not fully passive, because service delivery still needs human judgment.'
+        },
+        {
+          keywords: ['github', 'jira', 'linear', 'export', 'issue', 'repo'],
+          answer: 'Panda Notes already creates GitHub-ready drafts and developer packets. Setup or private work can shape exports for GitHub, Jira, or Linear as long as the format is agreed during scope.'
+        },
+        {
+          keywords: ['refund', 'cancel', 'dispute', 'chargeback'],
+          answer: 'Refunds and cancellations are handled case by case based on scope and work already delivered. Open or update the GitHub request with the concern, but keep private payment details out of the public issue.'
+        },
+        {
+          keywords: ['free', 'mit', 'license', 'open source', 'cost'],
+          answer: 'The Panda Notes console, widget demo, script install, JSON exports, and GitHub-ready drafts stay free under the MIT license. Paid services are for installation help, handoff cleanup, and private custom work.'
+        },
+        {
+          keywords: ['tester notes', 'json', 'export', 'alpha', 'beta', 'notes'],
+          answer: 'For tester notes, export Panda Notes JSON or paste a public-safe summary. The handoff pack groups duplicates, ranks target issues, and turns the notes into repair work developers can act on.'
+        },
+        {
+          keywords: ['automated', 'automatic', 'handled for me', 'service delivery', 'fully'],
+          answer: 'Payment collection and intake can be automated with Stripe, GitHub forms, and GitHub Actions. The actual service work is not fully automated yet: scope confirmation, private communication, implementation, delivery, and refunds still need a human owner.'
+        }
+      ];
 
       hydrateStripeLinks();
+      initServiceBot();
 
       async function hydrateStripeLinks() {
         try {
@@ -849,6 +1084,51 @@
         } catch {
           return false;
         }
+      }
+
+      function initServiceBot() {
+        const form = document.querySelector('[data-bot-form]');
+        const input = document.querySelector('[data-bot-input]');
+        const log = document.querySelector('[data-bot-log]');
+        const quickQuestions = document.querySelectorAll('[data-bot-question]');
+        if (!form || !input || !log) return;
+
+        quickQuestions.forEach((button) => {
+          button.addEventListener('click', () => {
+            askServiceBot(button.dataset.botQuestion || button.textContent || '');
+          });
+        });
+
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          askServiceBot(input.value);
+          input.value = '';
+          input.focus();
+        });
+
+        function askServiceBot(question) {
+          const cleanQuestion = question.trim();
+          if (!cleanQuestion) return;
+          appendBotMessage(cleanQuestion, 'user');
+          appendBotMessage(answerServiceQuestion(cleanQuestion));
+          log.scrollTop = log.scrollHeight;
+        }
+
+        function appendBotMessage(message, tone = 'bot') {
+          const bubble = document.createElement('div');
+          bubble.className = tone === 'user' ? 'bot-message user' : 'bot-message';
+          bubble.textContent = message;
+          log.appendChild(bubble);
+        }
+      }
+
+      function answerServiceQuestion(question) {
+        const normalized = question.toLowerCase();
+        const match = serviceBotAnswers.find((entry) =>
+          entry.keywords.some((keyword) => normalized.includes(keyword))
+        );
+
+        return match?.answer || 'Best next step: open the matching GitHub service request and include your app URL, tester role, requested deadline, and public-safe project context. I will confirm the right service and the handoff before work starts.';
       }
     </script>
   </body>

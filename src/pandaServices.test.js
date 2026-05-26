@@ -33,7 +33,48 @@ describe('Panda Notes services conversion path', () => {
     expect(setupForm).toContain('labels: ["paid-service", "setup-sprint"]');
     expect(handoffForm).toContain('labels: ["paid-service", "developer-handoff"]');
     expect(privateForm).toContain('labels: ["paid-service", "private-integration"]');
+    expect(setupForm).toContain('id: payment-status');
+    expect(handoffForm).toContain('id: payment-status');
+    expect(privateForm).toContain('id: payment-status');
+    expect(setupForm).toContain('Preferred delivery window');
+    expect(handoffForm).toContain('Preferred delivery window');
+    expect(privateForm).toContain('Preferred delivery window');
     expect(config).toContain('Panda Notes paid services');
+  });
+
+  it('documents phone-manageable service operations and service flowcharts', () => {
+    const readme = readProjectFile('README.md');
+    const serviceOps = readProjectFile('docs/SERVICE_OPERATIONS.md');
+
+    expect(readme).toContain('## Service Flows');
+    expect(readme).toContain('```mermaid');
+    expect(readme).toContain('Setup Sprint');
+    expect(readme).toContain('Developer Handoff Pack');
+    expect(readme).toContain('Private Integration');
+    expect(serviceOps).toContain('GitHub Mobile');
+    expect(serviceOps).toContain('Daily Phone Workflow');
+    expect(serviceOps).toContain('not fully passive');
+  });
+
+  it('auto-triages paid service issues with a reusable checklist', () => {
+    const paidServiceTriage = readProjectFile('.github/workflows/paid-service-triage.yml');
+
+    expect(paidServiceTriage).toContain('name: Paid service triage');
+    expect(paidServiceTriage).toContain('types: [opened, labeled]');
+    expect(paidServiceTriage).toContain('paid-service');
+    expect(paidServiceTriage).toContain('panda-paid-service-triage');
+    expect(paidServiceTriage).toContain('Confirm deposit in Stripe');
+    expect(paidServiceTriage).toContain('SERVICE_OPERATIONS.md');
+  });
+
+  it('ships a no-key service bot for common buyer questions', () => {
+    expect(servicesHtml).toContain('Panda Service Bot');
+    expect(servicesHtml).toContain('data-service-bot');
+    expect(servicesHtml).toContain('serviceBotAnswers');
+    expect(servicesHtml).toContain('After payment');
+    expect(servicesHtml).toContain('Do not post secrets');
+    expect(servicesHtml).toContain('phone-friendly');
+    expect(servicesHtml).toContain('no API key');
   });
 
   it('ships Stripe Payment Link wiring with safe GitHub fallbacks', () => {

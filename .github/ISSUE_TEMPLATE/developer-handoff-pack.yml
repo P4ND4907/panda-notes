@@ -18,6 +18,18 @@ body:
     validations:
       required: true
   - type: dropdown
+    id: payment-status
+    attributes:
+      label: Payment status
+      description: Do not post card numbers, bank details, receipts, or private payment data.
+      options:
+        - Deposit paid
+        - Need Stripe link
+        - Need invoice
+        - Not sure
+    validations:
+      required: true
+  - type: dropdown
     id: note-volume
     attributes:
       label: Approximate note volume
@@ -39,6 +51,12 @@ body:
         - Mix of the above
     validations:
       required: true
+  - type: input
+    id: delivery-window
+    attributes:
+      label: Preferred delivery window
+      description: Share the best public-safe deadline or time window.
+      placeholder: Before next beta release, this weekend, next sprint, etc.
   - type: textarea
     id: project-context
     attributes:
