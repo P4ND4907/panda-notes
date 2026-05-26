@@ -11,6 +11,7 @@ import {
   FilterX,
   GitBranch,
   Github,
+  Handshake,
   ListChecks,
   RefreshCw,
   Search,
@@ -260,6 +261,7 @@ export default function App() {
             <button onClick={exportDeveloperPacket}><Download size={18} /> Export packet</button>
             <button onClick={exportJson}><FileJson size={18} /> Export JSON</button>
             <a className="button-link" href="./widget-demo.html"><ExternalLink size={18} /> Widget demo</a>
+            <a className="button-link" href="./services.html"><Handshake size={18} /> Services</a>
             <label className="import-button">
               <FileJson size={18} /> Import JSON
               <input type="file" accept="application/json,.json" onChange={importJson} />

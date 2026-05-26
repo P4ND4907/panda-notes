@@ -1,0 +1,63 @@
+name: Paid setup sprint
+description: Request help installing Panda Notes into a staging or beta app.
+title: "[Setup Sprint] "
+labels: ["paid-service", "setup-sprint"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Setup sprints usually start around $250-$750 depending on scope.
+
+        Keep credentials, private customer data, and confidential source code out of this public issue.
+  - type: input
+    id: contact
+    attributes:
+      label: Public-safe contact
+      description: GitHub username or another contact path you are comfortable posting publicly.
+      placeholder: "@username"
+    validations:
+      required: true
+  - type: input
+    id: app-url
+    attributes:
+      label: App or staging URL
+      description: Share a public-safe URL, or write "private" if it cannot be shared here.
+      placeholder: https://example.com/beta
+    validations:
+      required: true
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Main tester audience
+      options:
+        - Alpha testers
+        - Beta testers
+        - Developers
+        - Mixed team
+    validations:
+      required: true
+  - type: textarea
+    id: flows
+    attributes:
+      label: Flows to instrument
+      description: List the main screens, features, or user journeys where right-click notes should work.
+      placeholder: Sign-up, onboarding, dashboard filters, issue detail, checkout, etc.
+    validations:
+      required: true
+  - type: dropdown
+    id: timeline
+    attributes:
+      label: Target timeline
+      options:
+        - This week
+        - 1-2 weeks
+        - Flexible
+    validations:
+      required: true
+  - type: textarea
+    id: success
+    attributes:
+      label: What should be true when the sprint is done?
+      placeholder: Testers can right-click key UI, export JSON, and developers can turn notes into issues.
+    validations:
+      required: true

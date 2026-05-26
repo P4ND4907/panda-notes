@@ -10,9 +10,11 @@ Panda Notes helps small teams turn alpha/beta feedback into developer-ready repa
 
 - MIT licensed GitHub repo.
 - Hosted demo console and widget demo.
+- Hosted services page with clear paid offers.
 - Copy-paste right-click widget.
 - Public docs for teams to add `data-panda-target` and `data-component`.
 - GitHub issues tracking the roadmap.
+- GitHub issue forms for paid service intake.
 
 This creates trust and shareability.
 
@@ -51,6 +53,15 @@ For teams that need branding, private docs, or deeper integrations.
 
 Suggested starting price: `$1,000+`.
 
+## Live Conversion Setup
+
+- Services page: <https://p4nd4907.github.io/panda-notes/services.html>
+- Setup sprint intake: <https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml>
+- Developer handoff intake: <https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml>
+- Private integration intake: <https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml>
+
+Public intake should collect scope only. Keep credentials, private user data, source code, and paid contract details in a private channel after the public request is opened.
+
 ## Sponsor/Donation Layer
 
 Use GitHub Sponsors, Ko-fi, or another funding link once an account is ready. Add the funding URL to `.github/FUNDING.yml` so GitHub shows a Sponsor button.
@@ -71,8 +82,7 @@ Suggested tiers:
 
 ## Next Money Features
 
-- Hosted landing page with "Hire setup help" call to action.
-- Optional issue template for paid integration requests.
+- Funding link in `.github/FUNDING.yml` once a Sponsor, Ko-fi, or payment profile is ready.
 - Screenshot/DOM capture hooks.
 - Export formats for GitHub, Linear, and Jira.
 - npm package for installable versioned widget.

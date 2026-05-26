@@ -8,6 +8,8 @@ Live app: <https://p4nd4907.github.io/panda-notes/>
 
 Widget demo: <https://p4nd4907.github.io/panda-notes/widget-demo.html>
 
+Paid services: <https://p4nd4907.github.io/panda-notes/services.html>
+
 ## Focus
 
 - Developers select target issues, inspect tester evidence, review mapped code snippets, and export a repair packet.
@@ -61,7 +63,13 @@ Panda Notes is free and MIT licensed, with a practical path to paid setup/suppor
 - Paid developer handoff packs for turning tester exports into repair queues.
 - Optional private/white-label integrations later.
 
-See [Monetization Plan](docs/MONETIZATION.md).
+Live intake is set up through GitHub issue forms:
+
+- [Setup sprint](https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml)
+- [Developer handoff pack](https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml)
+- [Private integration](https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml)
+
+See [Panda Notes Services](https://p4nd4907.github.io/panda-notes/services.html) and [Monetization Plan](docs/MONETIZATION.md).
 
 ## Workflow
 

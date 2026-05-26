@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Panda Notes live console
+    url: https://p4nd4907.github.io/panda-notes/
+    about: Try the standalone developer and tester console.
+  - name: Panda Notes widget demo
+    url: https://p4nd4907.github.io/panda-notes/widget-demo.html
+    about: Test the right-click feedback widget.
+  - name: Panda Notes paid services
+    url: https://p4nd4907.github.io/panda-notes/services.html
+    about: Review setup sprints, developer handoff packs, and private integrations.

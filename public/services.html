@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panda Notes Services</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --ink: #18221d;
+        --ink-soft: #32443a;
+        --forest: #193429;
+        --grove: #235940;
+        --bamboo: #4fb36a;
+        --bamboo-light: #b8e26b;
+        --leaf-mist: #e8f2df;
+        --paper: #fbf6e8;
+        --paper-deep: #efe3c4;
+        --paper-warm: #f8edd7;
+        --clay: #d5815f;
+        --gold: #d4a33f;
+        --berry: #c45f69;
+        --border-soft: rgba(43, 68, 54, 0.18);
+        --shadow-soft: 0 18px 54px rgba(39, 61, 48, 0.16);
+        background: #e8f2df;
+        color: var(--ink);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        position: relative;
+        margin: 0;
+        min-width: 320px;
+        overflow-x: hidden;
+        background:
+          linear-gradient(90deg, rgba(35, 89, 64, 0.09) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(35, 89, 64, 0.07) 1px, transparent 1px),
+          linear-gradient(135deg, #edf6e7 0%, #dfeccc 44%, #f8ecd1 100%);
+        background-size: 42px 42px, 42px 42px, auto;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          repeating-linear-gradient(90deg, transparent 0 104px, rgba(35, 89, 64, 0.045) 104px 108px, transparent 108px 176px),
+          repeating-linear-gradient(0deg, transparent 0 156px, rgba(212, 163, 63, 0.075) 156px 158px, transparent 158px 312px);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page-shell {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 18px clamp(16px, 4vw, 54px);
+        background: rgba(25, 52, 41, 0.96);
+        color: var(--paper);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        text-decoration: none;
+      }
+
+      .brand-mark,
+      .panda-stamp {
+        position: relative;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #dff0c2, #f4d37c);
+        box-shadow: inset 0 -8px 0 rgba(31, 101, 64, 0.18), 0 12px 28px rgba(0, 0, 0, 0.22);
+      }
+
+      .brand-mark {
+        width: 46px;
+        height: 46px;
+        flex: 0 0 auto;
+      }
+
+      .panda-stamp {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 20px;
+      }
+
+      .panda-face {
+        position: relative;
+        display: block;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--paper);
+        box-shadow: inset 0 -4px 0 rgba(212, 163, 63, 0.22);
+      }
+
+      .panda-stamp .panda-face {
+        width: 42px;
+        height: 42px;
+      }
+
+      .panda-ear,
+      .panda-eye,
+      .panda-nose {
+        position: absolute;
+        display: block;
+        background: #1a211d;
+      }
+
+      .panda-ear {
+        width: 11px;
+        height: 11px;
+        top: -3px;
+        border-radius: 50%;
+      }
+
+      .panda-stamp .panda-ear {
+        width: 16px;
+        height: 16px;
+        top: -4px;
+      }
+
+      .panda-ear-left {
+        left: -2px;
+      }
+
+      .panda-ear-right {
+        right: -2px;
+      }
+
+      .panda-eye {
+        width: 7px;
+        height: 10px;
+        top: 9px;
+        border-radius: 50%;
+      }
+
+      .panda-stamp .panda-eye {
+        width: 10px;
+        height: 15px;
+        top: 13px;
+      }
+
+      .panda-eye-left {
+        left: 7px;
+        transform: rotate(12deg);
+      }
+
+      .panda-stamp .panda-eye-left {
+        left: 10px;
+      }
+
+      .panda-eye-right {
+        right: 7px;
+        transform: rotate(-12deg);
+      }
+
+      .panda-stamp .panda-eye-right {
+        right: 10px;
+      }
+
+      .panda-nose {
+        width: 7px;
+        height: 5px;
+        left: 50%;
+        bottom: 6px;
+        border-radius: 50% 50% 60% 60%;
+        transform: translateX(-50%);
+      }
+
+      .panda-stamp .panda-nose {
+        width: 10px;
+        height: 7px;
+        bottom: 9px;
+      }
+
+      .brand strong,
+      .brand span {
+        display: block;
+        overflow-wrap: anywhere;
+      }
+
+      .brand strong {
+        font-size: 19px;
+      }
+
+      .brand span {
+        color: #c4d9c7;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .nav-links,
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .nav-links {
+        justify-content: flex-end;
+      }
+
+      .button-link {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid rgba(251, 246, 232, 0.18);
+        border-radius: 8px;
+        background: rgba(251, 246, 232, 0.08);
+        color: var(--paper);
+        padding: 0 14px;
+        font-weight: 850;
+        text-decoration: none;
+      }
+
+      .button-link.primary {
+        border-color: rgba(31, 101, 64, 0.32);
+        background: linear-gradient(135deg, var(--bamboo), var(--bamboo-light));
+        color: #102017;
+      }
+
+      .button-link.light {
+        border-color: rgba(43, 68, 54, 0.16);
+        background: rgba(251, 246, 232, 0.78);
+        color: var(--ink);
+        box-shadow: 0 8px 22px rgba(39, 61, 48, 0.08);
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .button-link,
+        .offer-card,
+        .step-card {
+          transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, filter 160ms ease, transform 160ms ease;
+        }
+      }
+
+      .button-link:hover,
+      .offer-card:hover {
+        filter: brightness(1.05);
+      }
+
+      .button-link:focus-visible {
+        outline: 3px solid rgba(79, 179, 106, 0.34);
+        outline-offset: 2px;
+      }
+
+      .hero {
+        min-height: 460px;
+        display: grid;
+        align-items: center;
+        padding: 54px clamp(16px, 6vw, 76px) 38px;
+        background:
+          linear-gradient(180deg, rgba(251, 246, 232, 0.28), rgba(232, 242, 223, 0)),
+          linear-gradient(135deg, rgba(35, 89, 64, 0.12), rgba(213, 129, 95, 0.1));
+      }
+
+      .hero-inner {
+        max-width: 980px;
+      }
+
+      h1,
+      h2,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 900px;
+        margin-bottom: 14px;
+        font-size: clamp(44px, 7vw, 88px);
+        line-height: 0.92;
+        letter-spacing: 0;
+      }
+
+      .hero p {
+        max-width: 760px;
+        margin-bottom: 22px;
+        color: var(--grove);
+        font-size: 21px;
+        line-height: 1.4;
+      }
+
+      .trust-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+      }
+
+      .trust-row span {
+        border: 1px solid rgba(35, 89, 64, 0.2);
+        border-radius: 8px;
+        background: rgba(251, 246, 232, 0.58);
+        color: var(--ink-soft);
+        padding: 9px 12px;
+        font-size: 13px;
+        font-weight: 850;
+      }
+
+      .content {
+        padding: 22px clamp(16px, 6vw, 76px) 54px;
+      }
+
+      .section-heading {
+        max-width: 850px;
+        margin: 0 0 18px;
+      }
+
+      .section-heading h2 {
+        margin-bottom: 8px;
+        font-size: clamp(28px, 4vw, 46px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .section-heading p {
+        color: var(--ink-soft);
+        line-height: 1.5;
+      }
+
+      .offer-grid,
+      .step-grid,
+      .proof-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .offer-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .offer-card,
+      .step-card,
+      .proof-card,
+      .free-band {
+        border: 1px solid var(--border-soft);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(255, 252, 241, 0.94), rgba(248, 237, 215, 0.88)),
+          var(--paper);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .offer-card {
+        display: grid;
+        gap: 14px;
+        align-content: start;
+        min-height: 100%;
+        padding: 18px;
+        border-top: 4px solid rgba(79, 179, 106, 0.52);
+      }
+
+      .offer-card.secondary {
+        border-top-color: rgba(213, 129, 95, 0.62);
+      }
+
+      .offer-card.private {
+        border-top-color: rgba(196, 95, 105, 0.6);
+      }
+
+      .offer-card h3,
+      .step-card h3,
+      .proof-card h3 {
+        margin: 0;
+        font-size: 22px;
+        line-height: 1.12;
+      }
+
+      .price {
+        color: var(--grove);
+        font-size: 34px;
+        font-weight: 900;
+        line-height: 1;
+      }
+
+      .offer-card p,
+      .step-card p,
+      .proof-card p,
+      .free-band p,
+      .offer-card li {
+        color: var(--ink-soft);
+        line-height: 1.46;
+      }
+
+      .offer-card ul {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .offer-card .button-link {
+        justify-self: start;
+        margin-top: 4px;
+      }
+
+      .step-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-top: 28px;
+      }
+
+      .step-card {
+        padding: 16px;
+      }
+
+      .step-card span {
+        display: inline-grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        background: rgba(79, 179, 106, 0.16);
+        color: var(--grove);
+        font-weight: 900;
+      }
+
+      .proof-grid {
+        grid-template-columns: minmax(0, 1.1fr) minmax(290px, 0.8fr);
+        margin-top: 28px;
+      }
+
+      .proof-card,
+      .free-band {
+        padding: 18px;
+      }
+
+      .proof-list {
+        display: grid;
+        gap: 10px;
+        margin: 12px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .proof-list li {
+        border-left: 3px solid var(--bamboo);
+        border-radius: 0 8px 8px 0;
+        background: rgba(184, 226, 107, 0.18);
+        color: var(--ink-soft);
+        padding: 10px 12px;
+        line-height: 1.42;
+      }
+
+      .free-band {
+        display: grid;
+        gap: 12px;
+        margin-top: 28px;
+        background:
+          linear-gradient(135deg, rgba(35, 89, 64, 0.96), rgba(25, 52, 41, 0.96)),
+          var(--forest);
+        color: var(--paper);
+      }
+
+      .free-band p {
+        max-width: 860px;
+        margin-bottom: 0;
+        color: #d9e9d8;
+      }
+
+      .free-band .button-row {
+        margin-top: 2px;
+      }
+
+      footer {
+        padding: 0 clamp(16px, 6vw, 76px) 38px;
+        color: var(--ink-soft);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      footer a {
+        font-weight: 850;
+      }
+
+      @media (max-width: 980px) {
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .nav-links {
+          justify-content: flex-start;
+        }
+
+        .offer-grid,
+        .step-grid,
+        .proof-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .topbar,
+        .hero,
+        .content,
+        footer {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 34px;
+        }
+
+        h1 {
+          font-size: 46px;
+        }
+
+        .hero p {
+          font-size: 18px;
+        }
+
+        .button-row > *,
+        .nav-links > * {
+          flex: 1 1 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="./">
+          <span class="brand-mark" aria-hidden="true">
+            <span class="panda-face">
+              <span class="panda-ear panda-ear-left"></span>
+              <span class="panda-ear panda-ear-right"></span>
+              <span class="panda-eye panda-eye-left"></span>
+              <span class="panda-eye panda-eye-right"></span>
+              <span class="panda-nose"></span>
+            </span>
+          </span>
+          <span>
+            <strong>Panda Notes</strong>
+            <span>Developer + tester repair loop</span>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Panda Notes pages">
+          <a class="button-link" href="./">Console</a>
+          <a class="button-link" href="./widget-demo.html">Widget demo</a>
+          <a class="button-link" href="https://github.com/P4ND4907/panda-notes">GitHub</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-inner">
+            <span class="panda-stamp" aria-hidden="true">
+              <span class="panda-face">
+                <span class="panda-ear panda-ear-left"></span>
+                <span class="panda-ear panda-ear-right"></span>
+                <span class="panda-eye panda-eye-left"></span>
+                <span class="panda-eye panda-eye-right"></span>
+                <span class="panda-nose"></span>
+              </span>
+            </span>
+            <h1>Panda Notes Services</h1>
+            <p>Keep the open-source console and widget free. Hire focused help when you want Panda Notes installed, tester exports cleaned up, or a private developer handoff built around your product.</p>
+            <div class="button-row">
+              <a class="button-link primary" href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml">Book setup sprint</a>
+              <a class="button-link light" href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml">Request handoff pack</a>
+            </div>
+            <div class="trust-row" aria-label="Service promises">
+              <span>MIT licensed</span>
+              <span>Local-first by default</span>
+              <span>No hidden telemetry</span>
+              <span>GitHub-ready repair work</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="content" aria-labelledby="offers-title">
+          <div class="section-heading">
+            <h2 id="offers-title">Paid Help That Fits The Free Tool</h2>
+            <p>These offers are designed for small teams, indie builders, and beta programs that need cleaner bug reports without buying a whole feedback platform.</p>
+          </div>
+
+          <div class="offer-grid">
+            <article class="offer-card">
+              <h3>Setup Sprint</h3>
+              <div class="price">$250-$750</div>
+              <p>Install Panda Notes into a staging or beta app and get testers capturing useful target context quickly.</p>
+              <ul>
+                <li>Add the right-click widget to key flows.</li>
+                <li>Map target and component hints.</li>
+                <li>Document tester import/export workflow.</li>
+                <li>Deliver a small developer handoff checklist.</li>
+              </ul>
+              <a class="button-link light" href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml">Start setup request</a>
+            </article>
+
+            <article class="offer-card secondary">
+              <h3>Developer Handoff Pack</h3>
+              <div class="price">$150-$500</div>
+              <p>Send tester exports and get back a prioritized repair queue your developer can actually work through.</p>
+              <ul>
+                <li>Group duplicate feedback into target issues.</li>
+                <li>Write GitHub-ready issue drafts.</li>
+                <li>Add suggested code paths and snippets.</li>
+                <li>Return a clear fix order for the beta pass.</li>
+              </ul>
+              <a class="button-link light" href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml">Send handoff request</a>
+            </article>
+
+            <article class="offer-card private">
+              <h3>Private Integration</h3>
+              <div class="price">$1,000+</div>
+              <p>Build a deeper or white-label workflow for teams that need private docs, branding, or custom exports.</p>
+              <ul>
+                <li>Custom theme and project-specific copy.</li>
+                <li>Private widget configuration.</li>
+                <li>GitHub, Jira, or Linear export shaping.</li>
+                <li>Optional screenshot or DOM snapshot hooks.</li>
+              </ul>
+              <a class="button-link light" href="https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml">Discuss private build</a>
+            </article>
+          </div>
+
+          <div class="step-grid" aria-label="Service process">
+            <article class="step-card">
+              <span>1</span>
+              <h3>Open Request</h3>
+              <p>Use the matching GitHub form and keep secrets, credentials, and private user data out of the public issue.</p>
+            </article>
+            <article class="step-card">
+              <span>2</span>
+              <h3>Confirm Scope</h3>
+              <p>Agree on target app, tester roles, flows, deliverables, and the price range before work starts.</p>
+            </article>
+            <article class="step-card">
+              <span>3</span>
+              <h3>Ship Handoff</h3>
+              <p>Receive installed widget guidance, cleaned issue drafts, or a private integration plan depending on the offer.</p>
+            </article>
+            <article class="step-card">
+              <span>4</span>
+              <h3>Use The Loop</h3>
+              <p>Keep Panda Notes free in the project and reuse the console, widget, JSON exports, and issue drafts.</p>
+            </article>
+          </div>
+
+          <div class="proof-grid">
+            <article class="proof-card">
+              <h3>What People Are Buying</h3>
+              <p>Not a notes app. They are buying a tighter repair loop: tester context, target components, code hints, and developer-ready issue drafts.</p>
+              <ul class="proof-list">
+                <li>Setup sprints reduce the time between tester confusion and developer action.</li>
+                <li>Handoff packs turn messy beta feedback into a ranked queue.</li>
+                <li>Private builds let teams keep their branding, workflows, and exports clean.</li>
+              </ul>
+            </article>
+            <article class="proof-card">
+              <h3>Privacy Boundary</h3>
+              <p>Panda Notes stays local-first. Paid work is for setup, support, handoff, and optional private builds. The public tool does not quietly collect tester data.</p>
+              <ul class="proof-list">
+                <li>Notes stay in browser storage until copied or exported.</li>
+                <li>GitHub request forms are for project scope only.</li>
+                <li>Private data belongs in a private channel agreed during scope.</li>
+              </ul>
+            </article>
+          </div>
+
+          <section class="free-band" aria-labelledby="free-title">
+            <h2 id="free-title">The Free Product Stays Useful</h2>
+            <p>The standalone console, widget demo, script install, local JSON exports, and GitHub-ready drafts remain free so developers and alpha/beta testers can adopt Panda Notes without a sales gate.</p>
+            <div class="button-row">
+              <a class="button-link primary" href="./">Open console</a>
+              <a class="button-link" href="./widget-demo.html">Try widget demo</a>
+              <a class="button-link" href="https://github.com/P4ND4907/panda-notes/blob/main/docs/MONETIZATION.md">Read plan</a>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <footer>
+        Panda Notes is MIT licensed. Paid requests start in public GitHub issues for simple intake; do not post credentials, private customer data, or confidential code there.
+      </footer>
+    </div>
+  </body>
+</html>

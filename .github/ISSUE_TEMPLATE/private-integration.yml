@@ -1,0 +1,60 @@
+name: Private or white-label integration
+description: Request a private, branded, or deeper Panda Notes integration.
+title: "[Private Integration] "
+labels: ["paid-service", "private-integration"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Private and white-label builds usually start around $1,000+ depending on depth.
+
+        Keep secrets, credentials, private customer data, and confidential source code out of this public issue.
+  - type: input
+    id: contact
+    attributes:
+      label: Public-safe contact
+      description: GitHub username or another contact path you are comfortable posting publicly.
+      placeholder: "@username"
+    validations:
+      required: true
+  - type: dropdown
+    id: integration-type
+    attributes:
+      label: Integration type
+      options:
+        - Private branded widget
+        - White-label console
+        - Custom export format
+        - Screenshot or DOM snapshot hooks
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: needs
+    attributes:
+      label: What needs to be custom?
+      description: Describe branding, export targets, privacy requirements, tester roles, and developer workflows.
+      placeholder: We need a branded widget, Linear export, and separate alpha/beta tester labels.
+    validations:
+      required: true
+  - type: dropdown
+    id: budget
+    attributes:
+      label: Budget range
+      options:
+        - $1,000-$2,500
+        - $2,500-$5,000
+        - $5,000+
+        - Need estimate
+    validations:
+      required: true
+  - type: dropdown
+    id: timeline
+    attributes:
+      label: Target timeline
+      options:
+        - This month
+        - 1-2 months
+        - Flexible
+    validations:
+      required: true

@@ -1,0 +1,55 @@
+name: Developer handoff pack
+description: Request help turning tester exports into prioritized developer issues.
+title: "[Developer Handoff] "
+labels: ["paid-service", "developer-handoff"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Developer handoff packs usually start around $150-$500 depending on note volume and depth.
+
+        Do not attach private customer data, credentials, or confidential source code to this public issue.
+  - type: input
+    id: contact
+    attributes:
+      label: Public-safe contact
+      description: GitHub username or another contact path you are comfortable posting publicly.
+      placeholder: "@username"
+    validations:
+      required: true
+  - type: dropdown
+    id: note-volume
+    attributes:
+      label: Approximate note volume
+      options:
+        - 1-25 notes
+        - 26-75 notes
+        - 76-150 notes
+        - 150+ notes
+    validations:
+      required: true
+  - type: dropdown
+    id: destination
+    attributes:
+      label: Preferred output
+      options:
+        - GitHub issue drafts
+        - Prioritized repair queue
+        - Developer packet
+        - Mix of the above
+    validations:
+      required: true
+  - type: textarea
+    id: project-context
+    attributes:
+      label: Project context
+      description: Describe the app, beta goal, and the type of developer work the notes should become.
+      placeholder: We are testing onboarding and dashboard workflows before a public beta.
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints or labels
+      description: Share public-safe priority labels, repo labels, release names, or issue formatting preferences.
+      placeholder: Use labels bug, beta-feedback, priority-high. Keep auth issues first.
