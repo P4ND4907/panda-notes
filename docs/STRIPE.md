@@ -47,6 +47,14 @@ npm.cmd run stripe:links
 
 Use a test key first. When the links look right in Stripe, rerun with a live key and commit the generated `public/stripe-links.json`.
 
+If `public/stripe-links.json` contains `https://buy.stripe.com/test_...` links, the public Services page keeps using GitHub intake by default. Preview test checkout with:
+
+```text
+https://p4nd4907.github.io/panda-notes/services.html?checkout=test
+```
+
+Live checkout appears on the public Services page only after the config contains non-test Stripe Payment Links.
+
 Never commit `sk_test_...` or `sk_live_...` keys. `.env` and `.env.local` are ignored by git.
 
 ## Go Live Checklist

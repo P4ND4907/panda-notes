@@ -447,6 +447,12 @@
         color: #102017;
       }
 
+      .stripe-link[data-checkout-state="stripe-test"] {
+        border-color: rgba(213, 129, 95, 0.42);
+        background: linear-gradient(135deg, #f4d37c, #f8edd7);
+        color: #3f2a16;
+      }
+
       .step-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         margin-top: 28px;
@@ -764,6 +770,7 @@
     </div>
     <script>
       const stripeStatus = document.querySelector('[data-stripe-status]');
+      const allowTestCheckout = new URLSearchParams(window.location.search).get('checkout') === 'test';
 
       hydrateStripeLinks();
 
@@ -774,18 +781,28 @@
           const config = await response.json();
           const links = config.links || {};
           let enabledCount = 0;
+          let enabledTestCount = 0;
+          let configuredTestCount = 0;
 
           document.querySelectorAll('[data-stripe-offer]').forEach((anchor) => {
             const offerKey = anchor.dataset.stripeOffer;
             const configured = links[offerKey];
             const stripeUrl = configured?.url || '';
+            const isTestUrl = isTestCheckoutUrl(stripeUrl);
+            if (isTestUrl) configuredTestCount += 1;
 
-            if (isSafeCheckoutUrl(stripeUrl)) {
+            if (isSafeCheckoutUrl(stripeUrl) && (!isTestUrl || allowTestCheckout)) {
               anchor.href = stripeUrl;
-              anchor.textContent = configured.label || anchor.dataset.stripeLabel || 'Pay with Stripe';
-              anchor.dataset.checkoutState = 'stripe';
+              anchor.textContent = isTestUrl
+                ? `Test ${configured.label || anchor.dataset.stripeLabel || 'Stripe checkout'}`
+                : configured.label || anchor.dataset.stripeLabel || 'Pay with Stripe';
+              anchor.dataset.checkoutState = isTestUrl ? 'stripe-test' : 'stripe';
               anchor.rel = 'noopener';
-              enabledCount += 1;
+              if (isTestUrl) {
+                enabledTestCount += 1;
+              } else {
+                enabledCount += 1;
+              }
               return;
             }
 
@@ -797,6 +814,10 @@
           if (stripeStatus) {
             stripeStatus.textContent = enabledCount
               ? `Stripe checkout is live for ${enabledCount} deposit option${enabledCount === 1 ? '' : 's'}.`
+              : enabledTestCount
+                ? `Stripe test checkout is enabled for ${enabledTestCount} deposit option${enabledTestCount === 1 ? '' : 's'}. Use live links before sharing publicly.`
+                : configuredTestCount
+                  ? 'Stripe test links are configured. Live checkout still needs live Stripe links.'
               : 'Stripe Payment Links are ready to connect; GitHub intake is live now.';
           }
         } catch {
@@ -815,7 +836,16 @@
         if (!value) return false;
         try {
           const url = new URL(value);
-          return url.protocol === 'https:' && url.hostname !== window.location.hostname;
+          return url.protocol === 'https:' && url.hostname === 'buy.stripe.com';
+        } catch {
+          return false;
+        }
+      }
+
+      function isTestCheckoutUrl(value) {
+        try {
+          const url = new URL(value);
+          return url.hostname === 'buy.stripe.com' && url.pathname.startsWith('/test_');
         } catch {
           return false;
         }

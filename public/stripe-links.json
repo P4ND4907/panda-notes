@@ -5,21 +5,30 @@
     "setup-sprint": {
       "label": "Pay $250 setup deposit",
       "amount": "$250",
-      "url": "",
-      "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
+      "url": "https://buy.stripe.com/test_6oU4gz1mnaXV7Nr7FMfbq00",
+      "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml",
+      "paymentLinkId": "plink_1TbEAoEBWfBBMjnmlAKw1L8A",
+      "productId": "prod_UaOyoD2bg31EkB",
+      "priceId": "price_1TbEAoEBWfBBMjnmNIgLQBfI"
     },
     "developer-handoff": {
       "label": "Pay $150 handoff deposit",
       "amount": "$150",
-      "url": "",
-      "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
+      "url": "https://buy.stripe.com/test_5kQcN5d553vt4BfaRYfbq01",
+      "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml",
+      "paymentLinkId": "plink_1TbEApEBWfBBMjnmOLvsg62D",
+      "productId": "prod_UaOyCpxGEu6z7l",
+      "priceId": "price_1TbEApEBWfBBMjnmkswCb7Qo"
     },
     "private-integration": {
       "label": "Pay $1,000 private build deposit",
       "amount": "$1,000",
-      "url": "",
-      "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml"
+      "url": "https://buy.stripe.com/test_fZudR97KL9TRd7L2lsfbq02",
+      "fallbackUrl": "https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml",
+      "paymentLinkId": "plink_1TbEAqEBWfBBMjnmgDwnG3z5",
+      "productId": "prod_UaOyEJ63FtXaJ1",
+      "priceId": "price_1TbEApEBWfBBMjnmka4Zp5FR"
     }
   },
-  "updatedAt": null
+  "updatedAt": "2026-05-26T06:09:08.386Z"
 }

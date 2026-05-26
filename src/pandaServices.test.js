@@ -42,6 +42,8 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('data-stripe-offer="developer-handoff"');
     expect(servicesHtml).toContain('data-stripe-offer="private-integration"');
     expect(servicesHtml).toContain('data-stripe-status');
+    expect(servicesHtml).toContain('checkout');
+    expect(servicesHtml).toContain('isTestCheckoutUrl');
 
     expect(stripeConfig.mode).toBe('stripe-payment-links');
     expect(stripeConfig.currency).toBe('usd');
