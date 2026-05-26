@@ -6,6 +6,8 @@ Panda Notes started as the CueForge right-click note loop. This repo splits it i
 
 Live app: <https://p4nd4907.github.io/panda-notes/>
 
+Widget demo: <https://p4nd4907.github.io/panda-notes/widget-demo.html>
+
 ## Focus
 
 - Developers select target issues, inspect tester evidence, review mapped code snippets, and export a repair packet.
@@ -21,6 +23,7 @@ Live app: <https://p4nd4907.github.io/panda-notes/>
 - Code snippet popout for the selected target issue.
 - GitHub-ready issue draft copy/export with tester evidence, labels, target code, and test plan.
 - Developer packet copy/export and JSON import/export for moving notes between browsers or projects.
+- Alpha embeddable right-click widget at `/panda-notes-widget.js`.
 
 ## Can I Use It In My Project?
 
@@ -31,11 +34,23 @@ Current integration:
 - Link testers to the hosted console.
 - Import/export Panda Notes JSON between projects or browsers.
 - Copy developer packets and GitHub-ready issue drafts.
+- Add the alpha right-click widget to a project with one script tag.
 
-Not shipped yet:
+Alpha widget install:
 
-- The embeddable right-click popup/debugger widget is planned, but not included in the current build.
-- See [Embedding Panda Notes](docs/EMBEDDING.md) for the planned script API and markup hints.
+```html
+<script src="https://p4nd4907.github.io/panda-notes/panda-notes-widget.js"></script>
+<script>
+  PandaNotes.init({
+    project: "my-app",
+    role: "beta",
+    mode: "local",
+    contextMenu: true
+  });
+</script>
+```
+
+See [Embedding Panda Notes](docs/EMBEDDING.md) for the widget API, demo page, and markup hints.
 
 ## Workflow
 

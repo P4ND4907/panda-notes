@@ -54,7 +54,8 @@ textarea {
 }
 
 button,
-.import-button {
+.import-button,
+.button-link {
   min-height: 40px;
   display: inline-flex;
   align-items: center;
@@ -68,11 +69,13 @@ button,
   font-weight: 850;
   cursor: pointer;
   box-shadow: 0 8px 22px rgba(39, 61, 48, 0.08);
+  text-decoration: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   button,
   .import-button,
+  .button-link,
   .issue-card,
   input,
   select,
@@ -93,12 +96,14 @@ button.primary {
 }
 
 button:hover,
-.import-button:hover {
+.import-button:hover,
+.button-link:hover {
   filter: brightness(1.08);
 }
 
 button:not(.issue-card):active,
-.import-button:active {
+.import-button:active,
+.button-link:active {
   transform: translateY(1px);
 }
 
@@ -110,7 +115,8 @@ button:disabled {
 }
 
 button:focus-visible,
-.import-button:focus-within {
+.import-button:focus-within,
+.button-link:focus-visible {
   outline: 3px solid rgba(79, 179, 106, 0.34);
   outline-offset: 2px;
 }

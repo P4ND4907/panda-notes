@@ -6,6 +6,7 @@ import {
   ClipboardList,
   Code2,
   Download,
+  ExternalLink,
   FileJson,
   FilterX,
   GitBranch,
@@ -258,6 +259,7 @@ export default function App() {
             <button className="primary" onClick={copyDeveloperPacket}><ClipboardCopy size={18} /> Copy dev packet</button>
             <button onClick={exportDeveloperPacket}><Download size={18} /> Export packet</button>
             <button onClick={exportJson}><FileJson size={18} /> Export JSON</button>
+            <a className="button-link" href="./widget-demo.html"><ExternalLink size={18} /> Widget demo</a>
             <label className="import-button">
               <FileJson size={18} /> Import JSON
               <input type="file" accept="application/json,.json" onChange={importJson} />
