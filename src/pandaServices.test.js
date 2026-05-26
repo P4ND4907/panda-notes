@@ -75,8 +75,11 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('How Panda Notes makes money');
     expect(servicesHtml).toContain('The tool is free');
     expect(servicesHtml).toContain('The service is paid');
+    expect(servicesHtml).toContain('Built For The Handoff Gap');
     expect(servicesHtml).toContain('Why pay?');
     expect(servicesHtml).toContain('The GitHub repo is free so teams can try Panda Notes');
+    expect(servicesHtml).toContain('How is Panda Notes different from Marker');
+    expect(servicesHtml).toContain('Panda Notes is narrower than full feedback platforms');
     expect(servicesHtml).toContain('After payment');
     expect(servicesHtml).toContain('Do not post secrets');
     expect(servicesHtml).toContain('phone-friendly');
