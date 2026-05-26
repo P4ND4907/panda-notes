@@ -52,6 +52,17 @@ Alpha widget install:
 
 See [Embedding Panda Notes](docs/EMBEDDING.md) for the widget API, demo page, and markup hints.
 
+## Monetization
+
+Panda Notes is free and MIT licensed, with a practical path to paid setup/support:
+
+- Free console and right-click widget for adoption.
+- Paid setup sprints for teams that want it installed in staging/beta.
+- Paid developer handoff packs for turning tester exports into repair queues.
+- Optional private/white-label integrations later.
+
+See [Monetization Plan](docs/MONETIZATION.md).
+
 ## Workflow
 
 1. Pick a role in the sidebar.

@@ -1,0 +1,82 @@
+# Monetization Plan
+
+Panda Notes should grow with an open-core motion: keep the local-first console and alpha widget free, then charge for setup help, private workflows, and managed tester handoffs.
+
+## Positioning
+
+Panda Notes helps small teams turn alpha/beta feedback into developer-ready repair work. The value is not "notes"; the value is a cleaner bug handoff with target context, code hints, and exportable issue drafts.
+
+## Free Exposure Layer
+
+- MIT licensed GitHub repo.
+- Hosted demo console and widget demo.
+- Copy-paste right-click widget.
+- Public docs for teams to add `data-panda-target` and `data-component`.
+- GitHub issues tracking the roadmap.
+
+This creates trust and shareability.
+
+## Paid Offers
+
+### Setup Sprint
+
+For teams that want Panda Notes wired into an app quickly.
+
+- Add the widget to their staging or beta environment.
+- Add target/component hints to key flows.
+- Teach testers the alpha/beta workflow.
+- Deliver import/export handoff docs.
+
+Suggested starting price: `$250-$750` per project depending on scope.
+
+### Developer Handoff Pack
+
+For teams running a beta and drowning in vague bug reports.
+
+- Review exported notes.
+- Turn top issues into GitHub issue drafts.
+- Add target snippets or suggested code paths.
+- Provide a prioritized repair queue.
+
+Suggested starting price: `$150-$500` per beta pass.
+
+### Private/White-Label Build
+
+For teams that need branding, private docs, or deeper integrations.
+
+- Custom theme.
+- Private widget config.
+- GitHub/Jira/Linear export formatting.
+- Optional screenshot/DOM snapshot hooks.
+
+Suggested starting price: `$1,000+`.
+
+## Sponsor/Donation Layer
+
+Use GitHub Sponsors, Ko-fi, or another funding link once an account is ready. Add the funding URL to `.github/FUNDING.yml` so GitHub shows a Sponsor button.
+
+Suggested tiers:
+
+- `$5/month`: Support the open-source widget.
+- `$25/month`: Sponsor roadmap work and get priority issue voting.
+- `$99/month`: Small-team support tier with setup Q&A.
+
+## Exposure Checklist
+
+- Create GitHub release for each usable alpha.
+- Add repository topics: `beta-testing`, `bug-reporting`, `developer-tools`, `feedback-widget`, `open-source`, `qa-tools`.
+- Post the live widget demo with a short GIF or screenshot.
+- Share in developer communities as a local-first alpha/beta feedback widget, not a generic notes app.
+- Ask early users for one concrete quote about cleaner bug reports.
+
+## Next Money Features
+
+- Hosted landing page with "Hire setup help" call to action.
+- Optional issue template for paid integration requests.
+- Screenshot/DOM capture hooks.
+- Export formats for GitHub, Linear, and Jira.
+- npm package for installable versioned widget.
+
+## Boundary
+
+No hidden telemetry by default. Monetization should come from support, setup, managed handoffs, and optional hosted/private features, not from quietly collecting tester data.
