@@ -45,51 +45,56 @@ if (!secretKey || !secretKey.startsWith('sk_')) {
 
 const links = {};
 
-for (const offer of offers) {
-  const product = await stripeRequest('products', {
-    name: offer.productName,
-    description: offer.description,
-    'metadata[panda_notes_offer]': offer.key
-  });
+try {
+  for (const offer of offers) {
+    const product = await stripeRequest('products', {
+      name: offer.productName,
+      description: offer.description,
+      'metadata[panda_notes_offer]': offer.key
+    });
 
-  const price = await stripeRequest('prices', {
-    product: product.id,
+    const price = await stripeRequest('prices', {
+      product: product.id,
+      currency: 'usd',
+      unit_amount: String(offer.unitAmount),
+      'metadata[panda_notes_offer]': offer.key
+    });
+
+    const paymentLink = await stripeRequest('payment_links', {
+      'line_items[0][price]': price.id,
+      'line_items[0][quantity]': '1',
+      'after_completion[type]': 'redirect',
+      'after_completion[redirect][url]': buildReturnUrl(offer.key),
+      'metadata[panda_notes_offer]': offer.key
+    });
+
+    links[offer.key] = {
+      label: offer.label,
+      amount: offer.amount,
+      url: paymentLink.url,
+      fallbackUrl: offer.fallbackUrl,
+      paymentLinkId: paymentLink.id,
+      productId: product.id,
+      priceId: price.id
+    };
+  }
+
+  const config = {
+    mode: 'stripe-payment-links',
     currency: 'usd',
-    unit_amount: String(offer.unitAmount),
-    'metadata[panda_notes_offer]': offer.key
-  });
-
-  const paymentLink = await stripeRequest('payment_links', {
-    'line_items[0][price]': price.id,
-    'line_items[0][quantity]': '1',
-    'after_completion[type]': 'redirect',
-    'after_completion[redirect][url]': buildReturnUrl(offer.key),
-    'metadata[panda_notes_offer]': offer.key
-  });
-
-  links[offer.key] = {
-    label: offer.label,
-    amount: offer.amount,
-    url: paymentLink.url,
-    fallbackUrl: offer.fallbackUrl,
-    paymentLinkId: paymentLink.id,
-    productId: product.id,
-    priceId: price.id
+    links,
+    updatedAt: new Date().toISOString()
   };
-}
 
-const config = {
-  mode: 'stripe-payment-links',
-  currency: 'usd',
-  links,
-  updatedAt: new Date().toISOString()
-};
+  await writeFile(outputPath, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
 
-await writeFile(outputPath, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
-
-console.log(`Wrote Stripe Payment Links to ${outputPath}`);
-for (const [key, value] of Object.entries(links)) {
-  console.log(`${key}: ${value.url}`);
+  console.log(`Wrote Stripe Payment Links to ${outputPath}`);
+  for (const [key, value] of Object.entries(links)) {
+    console.log(`${key}: ${value.url}`);
+  }
+} catch (error) {
+  console.error(redactSecrets(error.message || 'Stripe link creation failed.'));
+  process.exitCode = 1;
 }
 
 async function stripeRequest(path, params) {
@@ -106,7 +111,7 @@ async function stripeRequest(path, params) {
   const body = await response.json();
   if (!response.ok) {
     const message = body?.error?.message || `Stripe request failed with ${response.status}`;
-    throw new Error(message);
+    throw new Error(redactSecrets(message));
   }
   return body;
 }
@@ -119,4 +124,8 @@ function buildReturnUrl(offerKey) {
 
 function withTrailingSlash(value) {
   return value.endsWith('/') ? value : `${value}/`;
+}
+
+function redactSecrets(value) {
+  return String(value).replace(/sk_(test|live)_[^\s'"`]+/g, '[redacted-stripe-key]');
 }

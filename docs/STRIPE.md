@@ -29,6 +29,16 @@ npm.cmd run build
 
 This repo also includes a script that creates Products, Prices, and Payment Links for you.
 
+For Windows, use the secure prompt so the key is not posted in chat, printed in the terminal, or saved to disk:
+
+```powershell
+npm.cmd run stripe:links:secure
+```
+
+The prompt hides your pasted key, passes it only to the child process, then clears `STRIPE_SECRET_KEY` when the script exits.
+
+You can also set the environment variable yourself:
+
 ```powershell
 $env:STRIPE_SECRET_KEY="sk_test_your_key_here"
 $env:PANDA_NOTES_BASE_URL="https://p4nd4907.github.io/panda-notes/"

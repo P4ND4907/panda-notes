@@ -59,7 +59,18 @@ describe('Panda Notes services conversion path', () => {
     expect(stripeScript).toContain('STRIPE_SECRET_KEY');
     expect(stripeScript).toContain('payment_links');
     expect(stripeScript).toContain('2026-02-25.clover');
+    expect(stripeScript).toContain('redactSecrets');
+    expect(stripeScript).toContain('[redacted-stripe-key]');
     expect(JSON.stringify(stripeConfig)).not.toContain('sk_test_');
     expect(JSON.stringify(stripeConfig)).not.toContain('sk_live_');
+  });
+
+  it('includes a hidden local secret-key runner for Windows', () => {
+    const secureRunner = readProjectFile('scripts/create-stripe-links-secure.ps1');
+
+    expect(secureRunner).toContain('Read-Host "Stripe secret key" -AsSecureString');
+    expect(secureRunner).toContain('Remove-Item Env:\\STRIPE_SECRET_KEY');
+    expect(secureRunner).toContain('ZeroFreeBSTR');
+    expect(secureRunner).not.toContain('Write-Host $plainSecret');
   });
 });

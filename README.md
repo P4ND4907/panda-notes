@@ -98,9 +98,10 @@ npm.cmd run build
 ## Stripe Links
 
 ```powershell
-$env:STRIPE_SECRET_KEY="sk_test_your_key_here"
-npm.cmd run stripe:links
+npm.cmd run stripe:links:secure
 ```
+
+That command uses a hidden PowerShell prompt so the Stripe secret key is not posted, printed, or committed. It writes only public Stripe Payment Link URLs into `public/stripe-links.json`.
 
 ## Privacy Boundary
 
