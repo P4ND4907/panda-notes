@@ -10,6 +10,7 @@
     />
     <meta name="theme-color" content="#193429" />
     <link rel="canonical" href="https://p4nd4907.github.io/panda-notes/services.html" />
+    <link rel="preconnect" href="https://buy.stripe.com" crossorigin />
     <meta property="og:title" content="Panda Notes Services" />
     <meta property="og:description" content="Turn messy tester feedback into developer-ready work." />
     <meta property="og:type" content="website" />
@@ -116,12 +117,16 @@
 
       body::before {
         content: "";
-        position: fixed;
-        inset: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 1400px;
         pointer-events: none;
         background:
-          repeating-linear-gradient(90deg, transparent 0 104px, rgba(35, 89, 64, 0.045) 104px 108px, transparent 108px 176px),
-          repeating-linear-gradient(0deg, transparent 0 156px, rgba(212, 163, 63, 0.075) 156px 158px, transparent 158px 312px);
+          linear-gradient(90deg, transparent 0 110px, rgba(35, 89, 64, 0.045) 110px 112px, transparent 112px 176px),
+          linear-gradient(0deg, transparent 0 156px, rgba(212, 163, 63, 0.07) 156px 158px, transparent 158px 312px);
+        background-size: 176px 312px;
       }
 
       a {
@@ -430,8 +435,38 @@
         font-weight: 850;
       }
 
+      .intake-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        max-width: 860px;
+        margin-top: 14px;
+      }
+
+      .intake-row span {
+        border: 1px solid rgba(35, 89, 64, 0.18);
+        border-radius: 8px;
+        background: rgba(255, 253, 245, 0.7);
+        color: var(--ink-soft);
+        padding: 10px 12px;
+        font-size: 13px;
+        font-weight: 760;
+        line-height: 1.42;
+      }
+
+      .intake-row strong {
+        display: block;
+        color: var(--forest);
+        font-weight: 900;
+      }
+
       .content {
         padding: 22px clamp(16px, 6vw, 76px) 54px;
+      }
+
+      .section-lazy {
+        content-visibility: auto;
+        contain-intrinsic-size: 800px;
       }
 
       .section-heading {
@@ -851,6 +886,10 @@
           flex: 1 1 100%;
         }
 
+        .intake-row {
+          grid-template-columns: 1fr;
+        }
+
         .guide-form {
           grid-template-columns: 1fr;
         }
@@ -900,21 +939,27 @@
             <div class="button-row">
               <a
                 class="button-link primary"
+                aria-label="Open public-safe GitHub setup sprint request"
                 data-analytics-event="cta_primary_click"
                 data-analytics-offer="setup-sprint"
                 href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
               >Get a scoped setup plan</a>
               <a
                 class="button-link light"
+                aria-label="Open public-safe GitHub handoff request; private files are shared after scope confirmation"
                 data-analytics-event="cta_secondary_click"
                 data-analytics-offer="developer-handoff"
                 href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
-              >Upload exports privately</a>
+              >Request private handoff scope</a>
             </div>
             <div class="trust-row" aria-label="Service promises">
               <span>Local-first workflow</span>
-              <span>Private-first intake available</span>
+              <span>Private handoff after scope</span>
               <span>GitHub/Jira/Linear-ready outputs</span>
+            </div>
+            <div class="intake-row" aria-label="Public and private intake paths">
+              <span><strong>Public-safe request</strong> GitHub forms collect scope only. Do not post secrets, credentials, or customer data.</span>
+              <span><strong>Private handoff</strong> private files move to an agreed private channel after scope confirmation.</span>
             </div>
             <p class="stripe-status" data-stripe-status>Stripe Payment Links are ready to connect; GitHub intake is live now.</p>
           </div>
@@ -955,6 +1000,7 @@
               <div class="cta-stack">
                 <a
                   class="button-link light stripe-link"
+                  aria-label="Open public-safe GitHub setup sprint request"
                   data-stripe-offer="setup-sprint"
                   data-stripe-label="Pay $250 setup deposit"
                   data-fallback-label="Get a scoped setup plan"
@@ -980,14 +1026,15 @@
               <div class="cta-stack">
                 <a
                   class="button-link light stripe-link"
+                  aria-label="Open public-safe GitHub handoff request; private files are shared after scope confirmation"
                   data-stripe-offer="developer-handoff"
                   data-stripe-label="Pay $150 handoff deposit"
-                  data-fallback-label="Upload exports privately"
+                  data-fallback-label="Request handoff scope"
                   data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
                   data-analytics-event="plan_card_click_handoff"
                   data-analytics-offer="developer-handoff"
                   href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
-                >Upload exports privately</a>
+                >Request handoff scope</a>
                 <span class="payment-note">Stripe checkout uses a $150 deposit once the payment link is connected.</span>
               </div>
             </article>
@@ -1005,6 +1052,7 @@
               <div class="cta-stack">
                 <a
                   class="button-link light stripe-link"
+                  aria-label="Open public-safe GitHub private integration request"
                   data-stripe-offer="private-integration"
                   data-stripe-label="Pay $1,000 private build deposit"
                   data-fallback-label="Request a private integration proposal"
@@ -1018,7 +1066,7 @@
             </article>
           </div>
 
-          <div class="step-grid" aria-label="Service process">
+          <div class="step-grid section-lazy" aria-label="Service process">
             <article class="step-card">
               <span>1</span>
               <h3>Open Request</h3>
@@ -1041,7 +1089,7 @@
             </article>
           </div>
 
-          <div class="proof-grid">
+          <div class="proof-grid section-lazy">
             <article class="proof-card">
               <h3>What People Are Buying</h3>
               <p>Not a notes app. They are buying a tighter repair loop: tester context, target components, code hints, and developer-ready issue drafts.</p>
@@ -1062,7 +1110,7 @@
             </article>
           </div>
 
-          <div class="proof-grid" aria-label="Competitive positioning">
+          <div class="proof-grid section-lazy" aria-label="Competitive positioning">
             <article class="proof-card">
               <h3>Built For The Handoff Gap</h3>
               <p>Full feedback platforms collect rich screenshots, recordings, analytics, and integrations. Issue trackers organize engineering work. Panda Notes focuses on the missing middle: turning messy alpha and beta notes into developer-ready repair work.</p>
@@ -1083,7 +1131,7 @@
             </article>
           </div>
 
-          <section class="service-guide" aria-labelledby="service-guide-title" data-service-guide>
+          <section class="service-guide section-lazy" aria-labelledby="service-guide-title" data-service-guide>
             <div>
               <h2 id="service-guide-title">Panda Service Guide</h2>
               <p>Use these quick answers to choose the right service before opening a request. The guide keeps the first step simple: pick a service, share public-safe scope, and get a clear next reply.</p>
@@ -1112,11 +1160,11 @@
                 <input id="service-guide-question" data-guide-input type="text" autocomplete="off" placeholder="Ask about setup, handoff, refunds, GitHub, timelines..." />
                 <button type="submit">Ask</button>
               </form>
-              <p class="guide-note">For custom scope, open the matching GitHub request and include your app URL, deadline, and public-safe project context.</p>
+              <p class="guide-note">For custom scope, open the matching GitHub request and include your app URL, deadline, and public-safe project context. Private files move to an agreed private channel after scope confirmation.</p>
             </div>
           </section>
 
-          <section class="free-band" aria-labelledby="free-title">
+          <section class="free-band section-lazy" aria-labelledby="free-title">
             <h2 id="free-title">The Free Product Stays Useful</h2>
             <p>The standalone console, widget demo, script install, local JSON exports, and GitHub-ready drafts remain free so developers and alpha/beta testers can adopt Panda Notes without a sales gate.</p>
             <div class="button-row">
@@ -1129,7 +1177,7 @@
       </main>
 
       <footer>
-        Need privacy? Use the private intake path instead of public GitHub issues. Do not post credentials, private customer data, or confidential code in public requests.
+        Need privacy? Start with public-safe scope only; private files move to an agreed private channel after scope confirmation. Do not post credentials, private customer data, or confidential code in public requests.
       </footer>
     </div>
     <script>
@@ -1149,7 +1197,7 @@
         {
           category: 'privacy',
           keywords: ['secret', 'private code', 'credential', 'token', 'password', 'confidential', 'customer data'],
-          answer: 'Do not post secrets, credentials, private customer data, or confidential source code in public GitHub issues. Use the issue only for public-safe scope. If private details are needed, ask for a private channel during scope confirmation.'
+          answer: 'Do not post secrets, credentials, private customer data, or confidential source code in public GitHub issues. Use the issue only for public-safe scope. If private details are needed, private files move to an agreed private channel after scope confirmation.'
         },
         {
           category: 'choose_service',
@@ -1198,11 +1246,29 @@
         }
       ];
 
-      hydrateStripeLinks();
       initServiceGuide();
       initServiceAnalytics();
       initServiceViewTracking();
       initSkipLinkFocus();
+      scheduleStripeHydration();
+
+      function scheduleStripeHydration() {
+        const run = () => hydrateStripeLinks();
+        const schedule = () => {
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(run, { timeout: 1200 });
+            return;
+          }
+          window.setTimeout(run, 0);
+        };
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', schedule, { once: true });
+          return;
+        }
+
+        schedule();
+      }
 
       async function hydrateStripeLinks() {
         try {

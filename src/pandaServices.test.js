@@ -22,7 +22,7 @@ describe('Panda Notes services conversion path', () => {
   it('keeps the free product and privacy boundary visible', () => {
     expect(servicesHtml).toContain('The Free Product Stays Useful');
     expect(servicesHtml).toContain('Local-first workflow');
-    expect(servicesHtml).toContain('Private-first intake available');
+    expect(servicesHtml).toContain('Private handoff after scope');
     expect(servicesHtml).toContain('GitHub/Jira/Linear-ready outputs');
     expect(servicesHtml).toContain('Do not post credentials');
   });
@@ -83,9 +83,9 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('Turn messy tester feedback into developer-ready work');
     expect(servicesHtml).toContain('Setup Panda Notes fast, clean up noisy exports');
     expect(servicesHtml).toContain('Get a scoped setup plan');
-    expect(servicesHtml).toContain('Upload exports privately');
+    expect(servicesHtml).toContain('Request private handoff scope');
     expect(servicesHtml).toContain('Request a private integration proposal');
-    expect(servicesHtml).toContain('Need privacy? Use the private intake path');
+    expect(servicesHtml).toContain('Need privacy? Start with public-safe scope only');
     expect(servicesHtml).toContain('The tool is free');
     expect(servicesHtml).toContain('The service is paid');
     expect(servicesHtml).toContain('Built For The Handoff Gap');
@@ -146,6 +146,28 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('outline-offset: 3px');
     expect(servicesHtml).toContain('initSkipLinkFocus()');
     expect(servicesHtml).toContain('document.getElementById(\'main-content\')');
+  });
+
+  it('makes public-safe intake and private handoff boundaries explicit', () => {
+    expect(servicesHtml).toContain('Public-safe request');
+    expect(servicesHtml).toContain('Private handoff');
+    expect(servicesHtml).toContain('aria-label="Open public-safe GitHub setup sprint request"');
+    expect(servicesHtml).toContain('aria-label="Open public-safe GitHub handoff request; private files are shared after scope confirmation"');
+    expect(servicesHtml).toContain('private files move to an agreed private channel after scope confirmation');
+    expect(servicesHtml).not.toContain('Need privacy? Use the private intake path instead of public GitHub issues');
+  });
+
+  it('keeps the services page light with idle Stripe hydration and lazy below-fold rendering', () => {
+    expect(servicesHtml).toContain('<link rel="preconnect" href="https://buy.stripe.com" crossorigin />');
+    expect(servicesHtml).toContain('.section-lazy');
+    expect(servicesHtml).toContain('content-visibility: auto;');
+    expect(servicesHtml).toContain('contain-intrinsic-size: 800px;');
+    expect(servicesHtml).toContain('class="step-grid section-lazy"');
+    expect(servicesHtml).toContain('class="proof-grid section-lazy"');
+    expect(servicesHtml).toContain('scheduleStripeHydration()');
+    expect(servicesHtml).toContain('requestIdleCallback');
+    expect(servicesHtml).toContain('DOMContentLoaded');
+    expect(servicesHtml).not.toContain('body::before {\n        content: "";\n        position: fixed;');
   });
 
   it('ships Stripe Payment Link wiring with safe GitHub fallbacks', () => {

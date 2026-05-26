@@ -39,9 +39,11 @@ const baseUrl = `http://127.0.0.1:${server.address().port}`;
 const pageUrl = `${baseUrl}/services.html`;
 const screenshotPath = resolve(tmpdir(), 'panda-notes-services-accessibility.png');
 const skipScreenshotPath = resolve(tmpdir(), 'panda-notes-services-skip-link.png');
+const mobileScreenshotPath = resolve(tmpdir(), 'panda-notes-services-mobile.png');
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 const pageIssues = [];
+const mobileIssues = [];
 
 page.on('pageerror', (error) => pageIssues.push(`pageerror: ${error.message}`));
 page.on('console', (message) => {
@@ -54,6 +56,25 @@ page.on('console', (message) => {
 
 try {
   await page.goto(pageUrl, { waitUntil: 'domcontentloaded' });
+  const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true });
+  mobilePage.on('pageerror', (error) => mobileIssues.push(`pageerror: ${error.message}`));
+  mobilePage.on('console', (message) => {
+    const text = message.text();
+    const isLocalAnalyticsWarning = text.includes('Ignoring Event: localhost');
+    if (['error', 'warning'].includes(message.type()) && !text.includes('plausible') && !isLocalAnalyticsWarning) {
+      mobileIssues.push(`${message.type()}: ${text}`);
+    }
+  });
+  await mobilePage.goto(pageUrl, { waitUntil: 'domcontentloaded' });
+  const mobileState = await mobilePage.evaluate(() => ({
+    hasHeroCopy: document.body.innerText.includes('Turn messy tester feedback into developer-ready work'),
+    hasPublicPrivateLabels: document.body.innerText.includes('Public-safe request')
+      && document.body.innerText.includes('Private handoff'),
+    horizontalOverflow: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
+    viewportWidth: document.documentElement.clientWidth
+  }));
+  await mobilePage.screenshot({ path: mobileScreenshotPath, fullPage: false });
+  await mobilePage.close();
 
   const bodyText = await page.locator('body').innerText();
   const title = await page.title();
@@ -62,6 +83,13 @@ try {
   const schemaText = await page.locator('script[type="application/ld+json"]').textContent();
   const schema = JSON.parse(schemaText || '{}');
   const serviceOffers = schema?.makesOffer?.itemListElement || [];
+  const performanceFlags = await page.evaluate(() => ({
+    bodyOverlayPosition: getComputedStyle(document.body, '::before').position,
+    hasStripePreconnect: Boolean(document.querySelector('link[rel="preconnect"][href="https://buy.stripe.com"]')),
+    lazySectionCount: document.querySelectorAll('.section-lazy').length,
+    publicPrivateLabelsVisible: document.body.innerText.includes('Public-safe request')
+      && document.body.innerText.includes('Private handoff')
+  }));
 
   await page.keyboard.press('Tab');
   const skipFocus = await page.evaluate(() => {
@@ -197,6 +225,7 @@ try {
     descriptionLength: metaDescription?.length || 0,
     schemaType: schema['@type'],
     offerCount: serviceOffers.length,
+    performanceFlags,
     skipFocus,
     skipTarget,
     primaryCtaFocus,
@@ -209,6 +238,9 @@ try {
     sitemapHasServices: sitemap.includes('/services.html'),
     screenshotPath,
     skipScreenshotPath,
+    mobileScreenshotPath,
+    mobileState,
+    mobileIssues,
     pageIssues
   };
 
@@ -221,6 +253,10 @@ try {
     !metaDescription?.includes('developer-ready handoff packs') && 'meta description missing service promise',
     schema['@type'] !== 'Organization' && 'Organization schema missing',
     serviceOffers.length !== 3 && 'OfferCatalog should include three offers',
+    !performanceFlags.hasStripePreconnect && 'Stripe preconnect missing',
+    performanceFlags.lazySectionCount < 4 && 'expected lazy below-fold sections',
+    performanceFlags.bodyOverlayPosition === 'fixed' && 'decorative body overlay should not be fixed',
+    !performanceFlags.publicPrivateLabelsVisible && 'public/private intake labels should be visible',
     skipFocus.text !== 'Skip to main content' && 'first keyboard focus should reveal the skip link',
     (!skipFocus.rect || skipFocus.rect.top < 0 || skipFocus.rect.width < 24 || skipFocus.rect.height < 24) && 'skip link should be visible and target-sized when focused',
     skipTarget.activeId !== 'main-content' && 'skip link should move focus to main content',
@@ -237,6 +273,10 @@ try {
     !analyticsEvents.some((event) => event.eventName === 'comparison_section_view') && 'comparison view event did not dispatch',
     !analyticsEvents.some((event) => event.eventName === 'faq_expand_comparison') && 'FAQ comparison event did not dispatch',
     !sitemap.includes('https://p4nd4907.github.io/panda-notes/services.html') && 'sitemap missing services URL',
+    !mobileState.hasHeroCopy && 'mobile page should render hero copy',
+    !mobileState.hasPublicPrivateLabels && 'mobile page should render public/private intake labels',
+    mobileState.horizontalOverflow > 1 && `mobile page has horizontal overflow: ${mobileState.horizontalOverflow}px`,
+    mobileIssues.length > 0 && 'mobile page emitted console or runtime errors',
     pageIssues.length > 0 && 'page emitted console or runtime errors'
   ].filter(Boolean);
 
