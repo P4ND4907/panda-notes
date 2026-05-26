@@ -1,21 +1,21 @@
-# Panda Notes Service Operations
+# Panda Notes Service Workflows
 
-This is the practical service desk for turning Panda Notes into income without needing a full SaaS backend on day one.
+This document explains how paid Panda Notes requests move from checkout to delivery while keeping the public issue tracker free of secrets and private customer data.
 
-## Free Stack
+## Service Stack
 
-- Stripe Payment Links: collects deposits before work starts.
-- GitHub issue forms: captures service intake in a structured format.
-- GitHub Actions: posts the repeatable checklist as soon as a paid service issue opens.
-- GitHub Mobile: lets you label, comment, assign, and close service issues from your phone.
-- Panda Notes Services page: explains offers and answers common questions before people contact you.
+- Stripe Payment Links collect deposits before work starts.
+- GitHub issue forms capture public-safe service scope in a structured format.
+- GitHub Actions post the repeatable checklist as soon as a paid service issue opens.
+- GitHub labels show request state: scope needed, payment confirmed, waiting on customer, in progress, or delivered.
+- The Panda Notes Services page explains offers and answers common questions before a customer opens a request.
 
-This makes the business phone-manageable, not fully passive. You still confirm scope, protect private data, do the paid work, handle refunds or disputes, and deliver on the timeline you promise.
+The free repo helps people evaluate and adopt Panda Notes. The paid service sells saved time, setup help, clean developer handoffs, and private integration work.
 
-## Daily Phone Workflow
+## Request Workflow
 
 1. Check Stripe for new deposits.
-2. Open GitHub Mobile and review new `paid-service` issues.
+2. Review new `paid-service` issues.
 3. Confirm the customer picked the right service and did not post secrets.
 4. Reply with the next action: scope confirmation, private channel, export request, or delivery date.
 5. Move the issue through labels such as `scope-needed`, `in-progress`, `waiting-on-customer`, and `delivered`.
@@ -33,7 +33,7 @@ flowchart TD
   F --> G["Owner posts delivery summary and next steps"]
 ```
 
-Owner checklist:
+Delivery checklist:
 
 - Confirm payment before starting work.
 - Confirm whether the app URL is public, staging, or private.
@@ -52,7 +52,7 @@ flowchart TD
   F --> G["Owner delivers repair queue and closes with summary"]
 ```
 
-Owner checklist:
+Delivery checklist:
 
 - Confirm note volume before promising turnaround.
 - Redact private user data before creating issue drafts.
@@ -71,7 +71,7 @@ flowchart TD
   F --> G["Owner ships review notes and delivery summary"]
 ```
 
-Owner checklist:
+Delivery checklist:
 
 - Confirm deposit, budget range, and whether the work needs a private repo.
 - Keep customer secrets out of public GitHub issues.
@@ -89,7 +89,7 @@ Owner checklist:
 
 ## Customer Message Template
 
-Thanks for opening a Panda Notes service request. I will keep public GitHub issues free of secrets and private customer data.
+Thanks for opening a Panda Notes service request. Panda Notes keeps public GitHub issues free of secrets and private customer data.
 
 Next, please confirm:
 
@@ -99,4 +99,4 @@ Next, please confirm:
 - Target deadline.
 - Whether any private details need to move to a private channel.
 
-Once scope and deposit are confirmed, I will reply with the delivery date and the exact handoff you will receive.
+Once scope and deposit are confirmed, the request gets a delivery date and the exact handoff you will receive.

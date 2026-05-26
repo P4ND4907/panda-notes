@@ -486,12 +486,37 @@
         font-weight: 900;
       }
 
-      .proof-grid {
+      .proof-grid,
+      .money-grid {
         grid-template-columns: minmax(0, 1.1fr) minmax(290px, 0.8fr);
         margin-top: 28px;
       }
 
-      .service-bot {
+      .money-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .money-card {
+        border: 1px solid var(--border-soft);
+        border-radius: 8px;
+        background: rgba(251, 246, 232, 0.82);
+        box-shadow: 0 14px 34px rgba(39, 61, 48, 0.11);
+        padding: 16px;
+      }
+
+      .money-card h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        line-height: 1.15;
+      }
+
+      .money-card p {
+        margin-bottom: 0;
+        color: var(--ink-soft);
+        line-height: 1.45;
+      }
+
+      .service-guide {
         display: grid;
         grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
         gap: 18px;
@@ -506,19 +531,19 @@
         padding: 20px;
       }
 
-      .service-bot h2 {
+      .service-guide h2 {
         margin-bottom: 8px;
         font-size: clamp(28px, 4vw, 42px);
         line-height: 1;
         letter-spacing: 0;
       }
 
-      .service-bot p {
+      .service-guide p {
         color: #d9e9d8;
         line-height: 1.5;
       }
 
-      .service-bot-list {
+      .service-guide-list {
         display: grid;
         gap: 9px;
         margin: 16px 0 0;
@@ -526,7 +551,7 @@
         list-style: none;
       }
 
-      .service-bot-list li {
+      .service-guide-list li {
         border-left: 3px solid var(--bamboo-light);
         border-radius: 0 8px 8px 0;
         background: rgba(251, 246, 232, 0.08);
@@ -535,7 +560,7 @@
         line-height: 1.4;
       }
 
-      .service-bot-panel {
+      .service-guide-panel {
         display: grid;
         gap: 12px;
         align-content: start;
@@ -546,7 +571,7 @@
         padding: 14px;
       }
 
-      .bot-log {
+      .guide-log {
         display: grid;
         gap: 10px;
         min-height: 172px;
@@ -555,7 +580,7 @@
         padding-right: 4px;
       }
 
-      .bot-message {
+      .guide-message {
         width: fit-content;
         max-width: min(100%, 680px);
         border-radius: 8px;
@@ -565,20 +590,20 @@
         line-height: 1.45;
       }
 
-      .bot-message.user {
+      .guide-message.user {
         justify-self: end;
         background: #f4d37c;
         color: #2d2112;
         font-weight: 800;
       }
 
-      .bot-question-grid {
+      .guide-question-grid {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
       }
 
-      .bot-chip {
+      .guide-chip {
         min-height: 36px;
         border: 1px solid rgba(35, 89, 64, 0.22);
         border-radius: 8px;
@@ -591,13 +616,13 @@
         padding: 0 10px;
       }
 
-      .bot-form {
+      .guide-form {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
         gap: 8px;
       }
 
-      .bot-form input {
+      .guide-form input {
         min-width: 0;
         min-height: 42px;
         border: 1px solid rgba(35, 89, 64, 0.22);
@@ -608,7 +633,7 @@
         padding: 0 12px;
       }
 
-      .bot-form button {
+      .guide-form button {
         min-height: 42px;
         border: 1px solid rgba(31, 101, 64, 0.32);
         border-radius: 8px;
@@ -620,14 +645,14 @@
         padding: 0 14px;
       }
 
-      .bot-chip:focus-visible,
-      .bot-form input:focus-visible,
-      .bot-form button:focus-visible {
+      .guide-chip:focus-visible,
+      .guide-form input:focus-visible,
+      .guide-form button:focus-visible {
         outline: 3px solid rgba(79, 179, 106, 0.34);
         outline-offset: 2px;
       }
 
-      .service-bot .bot-note {
+      .service-guide .guide-note {
         margin-bottom: 0;
         color: var(--ink-soft);
         font-size: 13px;
@@ -700,7 +725,8 @@
         .offer-grid,
         .step-grid,
         .proof-grid,
-        .service-bot {
+        .money-grid,
+        .service-guide {
           grid-template-columns: 1fr;
         }
       }
@@ -729,11 +755,11 @@
 
         .button-row > *,
         .nav-links > *,
-        .bot-form button {
+        .guide-form button {
           flex: 1 1 100%;
         }
 
-        .bot-form {
+        .guide-form {
           grid-template-columns: 1fr;
         }
       }
@@ -796,6 +822,21 @@
           <div class="section-heading">
             <h2 id="offers-title">Paid Help That Fits The Free Tool</h2>
             <p>These offers are designed for small teams, indie builders, and beta programs that need cleaner bug reports without buying a whole feedback platform.</p>
+          </div>
+
+          <div class="money-grid" aria-label="How Panda Notes makes money">
+            <article class="money-card">
+              <h3>The tool is free</h3>
+              <p>The public console and widget build trust, make adoption easy, and let teams try the workflow before paying for help.</p>
+            </article>
+            <article class="money-card">
+              <h3>The service is paid</h3>
+              <p>Customers pay to save time: setup, tester-note cleanup, GitHub-ready repair queues, private exports, and launch support.</p>
+            </article>
+            <article class="money-card">
+              <h3>Private work costs more</h3>
+              <p>Custom branding, private workflows, and deeper integrations are scoped separately because they need focused implementation.</p>
+            </article>
           </div>
 
           <div class="offer-grid">
@@ -913,34 +954,35 @@
             </article>
           </div>
 
-          <section class="service-bot" aria-labelledby="service-bot-title" data-service-bot>
+          <section class="service-guide" aria-labelledby="service-guide-title" data-service-guide>
             <div>
-              <h2 id="service-bot-title">Panda Service Bot</h2>
-              <p>Use this built-in helper to answer common service questions before opening a request. It runs from a curated local answer book, so there is no API key, no monthly AI bill, and no chat data leaving this page.</p>
-              <ul class="service-bot-list">
-                <li>Helps buyers pick setup, handoff, or private integration.</li>
+              <h2 id="service-guide-title">Panda Service Guide</h2>
+              <p>Use these quick answers to choose the right service before opening a request. The guide keeps the first step simple: pick a service, share public-safe scope, and get a clear next reply.</p>
+              <ul class="service-guide-list">
+                <li>Helps buyers pick setup, handoff, or a private integration.</li>
                 <li>Explains what happens after Stripe checkout.</li>
                 <li>Repeats the privacy rule: never post secrets in public issues.</li>
               </ul>
             </div>
-            <div class="service-bot-panel" role="region" aria-label="Panda Service Bot chat">
-              <div class="bot-log" data-bot-log aria-live="polite">
-                <div class="bot-message">Ask about pricing, timelines, refunds, GitHub intake, private code, or which Panda Notes service fits your project.</div>
+            <div class="service-guide-panel" role="region" aria-label="Panda Service Guide questions">
+              <div class="guide-log" data-guide-log aria-live="polite">
+                <div class="guide-message">Ask about pricing, timelines, refunds, GitHub intake, private code, or which Panda Notes service fits your project.</div>
               </div>
-              <div class="bot-question-grid" aria-label="Common service questions">
-                <button class="bot-chip" type="button" data-bot-question="What happens after I pay?">After payment</button>
-                <button class="bot-chip" type="button" data-bot-question="Which service should I choose?">Choose service</button>
-                <button class="bot-chip" type="button" data-bot-question="Should I share secrets or private code?">Secrets</button>
-                <button class="bot-chip" type="button" data-bot-question="How long does delivery take?">Timeline</button>
-                <button class="bot-chip" type="button" data-bot-question="Can I manage this from my phone?">Phone workflow</button>
-                <button class="bot-chip" type="button" data-bot-question="Do you support GitHub, Jira, or Linear?">Export tools</button>
+              <div class="guide-question-grid" aria-label="Common service questions">
+                <button class="guide-chip" type="button" data-guide-question="What happens after I pay?">After payment</button>
+                <button class="guide-chip" type="button" data-guide-question="How does Panda Notes make money if GitHub is free?">Why pay?</button>
+                <button class="guide-chip" type="button" data-guide-question="Which service should I choose?">Choose service</button>
+                <button class="guide-chip" type="button" data-guide-question="Should I share secrets or private code?">Secrets</button>
+                <button class="guide-chip" type="button" data-guide-question="How long does delivery take?">Timeline</button>
+                <button class="guide-chip" type="button" data-guide-question="Can I manage this from my phone?">Phone workflow</button>
+                <button class="guide-chip" type="button" data-guide-question="Do you support GitHub, Jira, or Linear?">Export tools</button>
               </div>
-              <form class="bot-form" data-bot-form>
-                <label class="sr-only" for="service-bot-question">Ask a service question</label>
-                <input id="service-bot-question" data-bot-input type="text" autocomplete="off" placeholder="Ask about setup, handoff, refunds, GitHub, timelines..." />
+              <form class="guide-form" data-guide-form>
+                <label class="sr-only" for="service-guide-question">Ask a service question</label>
+                <input id="service-guide-question" data-guide-input type="text" autocomplete="off" placeholder="Ask about setup, handoff, refunds, GitHub, timelines..." />
                 <button type="submit">Ask</button>
               </form>
-              <p class="bot-note">For custom scope, open the matching GitHub request and include your app URL, deadline, and public-safe project context.</p>
+              <p class="guide-note">For custom scope, open the matching GitHub request and include your app URL, deadline, and public-safe project context.</p>
             </div>
           </section>
 
@@ -963,10 +1005,14 @@
     <script>
       const stripeStatus = document.querySelector('[data-stripe-status]');
       const allowTestCheckout = new URLSearchParams(window.location.search).get('checkout') === 'test';
-      const serviceBotAnswers = [
+      const serviceGuideAnswers = [
         {
           keywords: ['after payment', 'after i pay', 'pay', 'paid', 'deposit', 'stripe', 'checkout'],
-          answer: 'After payment, open the matching GitHub request form from this page. I confirm the deposit in Stripe, confirm scope in the issue, set a delivery date, and then deliver the setup notes, repair queue, or private integration handoff.'
+          answer: 'After payment, open the matching GitHub request form from this page. Panda Notes confirms the deposit, reviews scope, sets a delivery date, and sends the setup notes, repair queue, or private integration handoff.'
+        },
+        {
+          keywords: ['money', 'make money', 'github free', 'free on github', 'why pay', 'paid service'],
+          answer: 'The GitHub repo is free so teams can try Panda Notes and trust the workflow. The paid service sells saved time: setup, tester-note cleanup, developer-ready repair queues, private exports, and custom integration work.'
         },
         {
           keywords: ['secret', 'private code', 'credential', 'token', 'password', 'confidential', 'customer data'],
@@ -982,7 +1028,7 @@
         },
         {
           keywords: ['phone', 'mobile', 'manage', 'github mobile', 'passive'],
-          answer: 'The lightweight operating stack is phone-friendly: Stripe collects deposits, GitHub issue forms collect intake, GitHub Actions posts the checklist, and GitHub Mobile lets you reply, label, and close work. It is semi-passive, not fully passive, because service delivery still needs human judgment.'
+          answer: 'The workflow is phone-friendly: Stripe collects deposits, GitHub issue forms collect intake, and GitHub Mobile makes it easy to reply, label, and close requests. The goal is clean intake and clear delivery, not a confusing back-and-forth.'
         },
         {
           keywords: ['github', 'jira', 'linear', 'export', 'issue', 'repo'],
@@ -1002,12 +1048,12 @@
         },
         {
           keywords: ['automated', 'automatic', 'handled for me', 'service delivery', 'fully'],
-          answer: 'Payment collection and intake can be automated with Stripe, GitHub forms, and GitHub Actions. The actual service work is not fully automated yet: scope confirmation, private communication, implementation, delivery, and refunds still need a human owner.'
+          answer: 'Payment collection and intake are streamlined with Stripe and GitHub forms. Scope, private communication, delivery, and refunds are reviewed before final handoff so the work stays clear and accountable.'
         }
       ];
 
       hydrateStripeLinks();
-      initServiceBot();
+      initServiceGuide();
 
       async function hydrateStripeLinks() {
         try {
@@ -1086,37 +1132,37 @@
         }
       }
 
-      function initServiceBot() {
-        const form = document.querySelector('[data-bot-form]');
-        const input = document.querySelector('[data-bot-input]');
-        const log = document.querySelector('[data-bot-log]');
-        const quickQuestions = document.querySelectorAll('[data-bot-question]');
+      function initServiceGuide() {
+        const form = document.querySelector('[data-guide-form]');
+        const input = document.querySelector('[data-guide-input]');
+        const log = document.querySelector('[data-guide-log]');
+        const quickQuestions = document.querySelectorAll('[data-guide-question]');
         if (!form || !input || !log) return;
 
         quickQuestions.forEach((button) => {
           button.addEventListener('click', () => {
-            askServiceBot(button.dataset.botQuestion || button.textContent || '');
+            askServiceGuide(button.dataset.guideQuestion || button.textContent || '');
           });
         });
 
         form.addEventListener('submit', (event) => {
           event.preventDefault();
-          askServiceBot(input.value);
+          askServiceGuide(input.value);
           input.value = '';
           input.focus();
         });
 
-        function askServiceBot(question) {
+        function askServiceGuide(question) {
           const cleanQuestion = question.trim();
           if (!cleanQuestion) return;
-          appendBotMessage(cleanQuestion, 'user');
-          appendBotMessage(answerServiceQuestion(cleanQuestion));
+          appendGuideMessage(cleanQuestion, 'user');
+          appendGuideMessage(answerServiceQuestion(cleanQuestion));
           log.scrollTop = log.scrollHeight;
         }
 
-        function appendBotMessage(message, tone = 'bot') {
+        function appendGuideMessage(message, tone = 'guide') {
           const bubble = document.createElement('div');
-          bubble.className = tone === 'user' ? 'bot-message user' : 'bot-message';
+          bubble.className = tone === 'user' ? 'guide-message user' : 'guide-message';
           bubble.textContent = message;
           log.appendChild(bubble);
         }
@@ -1124,11 +1170,11 @@
 
       function answerServiceQuestion(question) {
         const normalized = question.toLowerCase();
-        const match = serviceBotAnswers.find((entry) =>
+        const match = serviceGuideAnswers.find((entry) =>
           entry.keywords.some((keyword) => normalized.includes(keyword))
         );
 
-        return match?.answer || 'Best next step: open the matching GitHub service request and include your app URL, tester role, requested deadline, and public-safe project context. I will confirm the right service and the handoff before work starts.';
+        return match?.answer || 'Best next step: open the matching GitHub service request and include your app URL, tester role, requested deadline, and public-safe project context. Panda Notes will confirm the right service and handoff before work starts.';
       }
     </script>
   </body>

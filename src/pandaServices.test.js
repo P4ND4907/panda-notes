@@ -42,18 +42,19 @@ describe('Panda Notes services conversion path', () => {
     expect(config).toContain('Panda Notes paid services');
   });
 
-  it('documents phone-manageable service operations and service flowcharts', () => {
+  it('documents service workflows and free-to-paid positioning', () => {
     const readme = readProjectFile('README.md');
     const serviceOps = readProjectFile('docs/SERVICE_OPERATIONS.md');
 
+    expect(readme).toContain('How the money works even though GitHub is free');
     expect(readme).toContain('## Service Flows');
     expect(readme).toContain('```mermaid');
     expect(readme).toContain('Setup Sprint');
     expect(readme).toContain('Developer Handoff Pack');
     expect(readme).toContain('Private Integration');
-    expect(serviceOps).toContain('GitHub Mobile');
-    expect(serviceOps).toContain('Daily Phone Workflow');
-    expect(serviceOps).toContain('not fully passive');
+    expect(serviceOps).toContain('The free repo helps people evaluate and adopt Panda Notes');
+    expect(serviceOps).toContain('## Request Workflow');
+    expect(serviceOps).toContain('Delivery checklist');
   });
 
   it('auto-triages paid service issues with a reusable checklist', () => {
@@ -67,14 +68,18 @@ describe('Panda Notes services conversion path', () => {
     expect(paidServiceTriage).toContain('SERVICE_OPERATIONS.md');
   });
 
-  it('ships a no-key service bot for common buyer questions', () => {
-    expect(servicesHtml).toContain('Panda Service Bot');
-    expect(servicesHtml).toContain('data-service-bot');
-    expect(servicesHtml).toContain('serviceBotAnswers');
+  it('ships a human-sounding service guide for common buyer questions', () => {
+    expect(servicesHtml).toContain('Panda Service Guide');
+    expect(servicesHtml).toContain('data-service-guide');
+    expect(servicesHtml).toContain('serviceGuideAnswers');
+    expect(servicesHtml).toContain('How Panda Notes makes money');
+    expect(servicesHtml).toContain('The tool is free');
+    expect(servicesHtml).toContain('The service is paid');
+    expect(servicesHtml).toContain('Why pay?');
+    expect(servicesHtml).toContain('The GitHub repo is free so teams can try Panda Notes');
     expect(servicesHtml).toContain('After payment');
     expect(servicesHtml).toContain('Do not post secrets');
     expect(servicesHtml).toContain('phone-friendly');
-    expect(servicesHtml).toContain('no API key');
   });
 
   it('ships Stripe Payment Link wiring with safe GitHub fallbacks', () => {

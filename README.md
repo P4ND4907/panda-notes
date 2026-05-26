@@ -63,6 +63,12 @@ Panda Notes is free and MIT licensed, with a practical path to paid setup/suppor
 - Paid developer handoff packs for turning tester exports into repair queues.
 - Optional private/white-label integrations later.
 
+How the money works even though GitHub is free:
+
+- The public repo is the trust builder and adoption path.
+- The paid service sells time saved, setup support, cleaner repair queues, and private custom work.
+- Teams can do it themselves for free, or pay when they want it handled faster and cleaner.
+
 Live intake is set up through GitHub issue forms:
 
 - [Setup sprint](https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml)
@@ -75,7 +81,7 @@ Stripe Payment Links are wired through `public/stripe-links.json`. Create or pas
 
 ## Service Flows
 
-Panda Notes is set up to be managed from a phone-friendly stack: Stripe Payment Links collect deposits, GitHub issue forms collect public-safe intake, GitHub Actions add the owner checklist, and GitHub Mobile can be used as the daily service desk.
+Panda Notes uses a lightweight public intake path: Stripe Payment Links collect deposits, GitHub issue forms collect public-safe scope, and GitHub Actions add the repeatable request checklist.
 
 More detail: [Service Operations](docs/SERVICE_OPERATIONS.md).
 
