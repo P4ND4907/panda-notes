@@ -109,12 +109,18 @@ describe('Panda Notes services conversion path', () => {
   it('adds privacy-aligned analytics hooks for the service funnel', () => {
     expect(servicesHtml).toContain('https://plausible.io/js/script.js');
     expect(servicesHtml).toContain('data-domain="p4nd4907.github.io"');
-    expect(servicesHtml).toContain('data-analytics-event="Hero Setup Sprint CTA"');
-    expect(servicesHtml).toContain('data-analytics-event="Hero Handoff Pack CTA"');
-    expect(servicesHtml).toContain('data-analytics-event="Service Offer CTA"');
+    expect(servicesHtml).toContain('data-analytics-event="cta_primary_click"');
+    expect(servicesHtml).toContain('data-analytics-event="cta_secondary_click"');
+    expect(servicesHtml).toContain('data-analytics-event="plan_card_click_setup"');
+    expect(servicesHtml).toContain('data-analytics-event="plan_card_click_handoff"');
+    expect(servicesHtml).toContain('data-analytics-event="plan_card_click_private"');
+    expect(servicesHtml).toContain('data-analytics-view-event="comparison_section_view"');
     expect(servicesHtml).toContain('trackServiceEvent');
     expect(servicesHtml).toContain('panda-service-event');
-    expect(servicesHtml).toContain('Service Guide Question');
+    expect(servicesHtml).toContain('github_issue_start');
+    expect(servicesHtml).toContain('deposit_click');
+    expect(servicesHtml).toContain('faq_expand_');
+    expect(servicesHtml).toContain("window.gtag('event', eventName, props)");
     expect(servicesHtml).toContain("category: 'comparison'");
   });
 

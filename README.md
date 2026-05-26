@@ -76,7 +76,7 @@ Live intake is set up through GitHub issue forms:
 - [Developer handoff pack](https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml)
 - [Private integration](https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml)
 
-See [Panda Notes Services](https://p4nd4907.github.io/panda-notes/services.html), [Monetization Plan](docs/MONETIZATION.md), and [Competitive Comparison](docs/COMPETITIVE_COMPARISON.md).
+See [Panda Notes Services](https://p4nd4907.github.io/panda-notes/services.html), [Monetization Plan](docs/MONETIZATION.md), [Competitive Comparison](docs/COMPETITIVE_COMPARISON.md), and [Analytics Taxonomy](docs/ANALYTICS.md).
 
 Stripe Payment Links are wired through `public/stripe-links.json`. Create or paste the three deposit links, then the Services page will send buyers to Stripe-hosted checkout. See [Stripe Setup](docs/STRIPE.md).
 

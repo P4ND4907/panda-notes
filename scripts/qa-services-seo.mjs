@@ -65,10 +65,27 @@ try {
       window.__pandaEvents.push(event.detail);
     });
   });
-  await page.locator('[data-analytics-event="Hero Setup Sprint CTA"]').evaluate((element) => {
+  await page.locator('[data-analytics-event="cta_primary_click"]').evaluate((element) => {
     element.addEventListener('click', (event) => event.preventDefault(), { once: true });
     element.click();
   });
+
+  await page.locator('[data-analytics-event="plan_card_click_setup"]').waitFor({ state: 'visible' });
+  await page.waitForFunction(() => {
+    const element = document.querySelector('[data-analytics-event="plan_card_click_setup"]');
+    return element?.dataset.checkoutState === 'stripe';
+  });
+  await page.locator('[data-analytics-event="plan_card_click_setup"]').evaluate((element) => {
+    element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+    element.click();
+  });
+
+  await page.locator('[data-analytics-view-event="comparison_section_view"]').scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => {
+    return (window.__pandaEvents || []).some((event) => event.eventName === 'comparison_section_view');
+  });
+
+  await page.getByRole('button', { name: 'Comparison' }).click();
   const analyticsEvents = await page.evaluate(() => window.__pandaEvents || []);
 
   const sitemapResponse = await page.goto(`${baseUrl}/sitemap.xml`);
@@ -82,6 +99,7 @@ try {
     schemaType: schema['@type'],
     offerCount: serviceOffers.length,
     analyticsEventCount: analyticsEvents.length,
+    analyticsEvents: analyticsEvents.map((event) => event.eventName),
     firstAnalyticsEvent: analyticsEvents[0],
     sitemapHasServices: sitemap.includes('/services.html'),
     pageIssues
@@ -95,7 +113,12 @@ try {
     !metaDescription?.includes('developer-ready handoff packs') && 'meta description missing service promise',
     schema['@type'] !== 'Organization' && 'Organization schema missing',
     serviceOffers.length !== 3 && 'OfferCatalog should include three offers',
-    analyticsEvents.length < 1 && 'analytics CTA event did not dispatch',
+    !analyticsEvents.some((event) => event.eventName === 'cta_primary_click') && 'primary CTA event did not dispatch',
+    !analyticsEvents.some((event) => event.eventName === 'github_issue_start') && 'GitHub issue event did not dispatch',
+    !analyticsEvents.some((event) => event.eventName === 'plan_card_click_setup') && 'setup plan event did not dispatch',
+    !analyticsEvents.some((event) => event.eventName === 'deposit_click') && 'Stripe deposit event did not dispatch',
+    !analyticsEvents.some((event) => event.eventName === 'comparison_section_view') && 'comparison view event did not dispatch',
+    !analyticsEvents.some((event) => event.eventName === 'faq_expand_comparison') && 'FAQ comparison event did not dispatch',
     !sitemap.includes('https://p4nd4907.github.io/panda-notes/services.html') && 'sitemap missing services URL',
     pageIssues.length > 0 && 'page emitted console or runtime errors'
   ].filter(Boolean);

@@ -878,13 +878,13 @@
             <div class="button-row">
               <a
                 class="button-link primary"
-                data-analytics-event="Hero Setup Sprint CTA"
+                data-analytics-event="cta_primary_click"
                 data-analytics-offer="setup-sprint"
                 href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
               >Book setup sprint</a>
               <a
                 class="button-link light"
-                data-analytics-event="Hero Handoff Pack CTA"
+                data-analytics-event="cta_secondary_click"
                 data-analytics-offer="developer-handoff"
                 href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
               >Request handoff pack</a>
@@ -920,7 +920,7 @@
             </article>
           </div>
 
-          <div class="offer-grid">
+          <div class="offer-grid" aria-label="Panda Notes pricing options" data-analytics-view-event="comparison_section_view" data-analytics-section="pricing-options">
             <article class="offer-card">
               <h3>Setup Sprint</h3>
               <div class="price">$250-$750</div>
@@ -938,7 +938,7 @@
                   data-stripe-label="Pay $250 setup deposit"
                   data-fallback-label="Start setup request"
                   data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
-                  data-analytics-event="Service Offer CTA"
+                  data-analytics-event="plan_card_click_setup"
                   data-analytics-offer="setup-sprint"
                   href="https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml"
                 >Start setup request</a>
@@ -963,7 +963,7 @@
                   data-stripe-label="Pay $150 handoff deposit"
                   data-fallback-label="Send handoff request"
                   data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
-                  data-analytics-event="Service Offer CTA"
+                  data-analytics-event="plan_card_click_handoff"
                   data-analytics-offer="developer-handoff"
                   href="https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml"
                 >Send handoff request</a>
@@ -988,7 +988,7 @@
                   data-stripe-label="Pay $1,000 private build deposit"
                   data-fallback-label="Discuss private build"
                   data-fallback-url="https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml"
-                  data-analytics-event="Service Offer CTA"
+                  data-analytics-event="plan_card_click_private"
                   data-analytics-offer="private-integration"
                   href="https://github.com/P4ND4907/panda-notes/issues/new?template=private-integration.yml"
                 >Discuss private build</a>
@@ -1099,9 +1099,9 @@
             <h2 id="free-title">The Free Product Stays Useful</h2>
             <p>The standalone console, widget demo, script install, local JSON exports, and GitHub-ready drafts remain free so developers and alpha/beta testers can adopt Panda Notes without a sales gate.</p>
             <div class="button-row">
-              <a class="button-link primary" data-analytics-event="Open Console CTA" href="./">Open console</a>
-              <a class="button-link" data-analytics-event="Widget Demo CTA" href="./widget-demo.html">Try widget demo</a>
-              <a class="button-link" data-analytics-event="Read Plan CTA" href="https://github.com/P4ND4907/panda-notes/blob/main/docs/MONETIZATION.md">Read plan</a>
+              <a class="button-link primary" href="./">Open console</a>
+              <a class="button-link" href="./widget-demo.html">Try widget demo</a>
+              <a class="button-link" href="https://github.com/P4ND4907/panda-notes/blob/main/docs/MONETIZATION.md">Read plan</a>
             </div>
           </section>
         </section>
@@ -1116,12 +1116,12 @@
       const allowTestCheckout = new URLSearchParams(window.location.search).get('checkout') === 'test';
       const serviceGuideAnswers = [
         {
-          category: 'after-payment',
+          category: 'after_payment',
           keywords: ['after payment', 'after i pay', 'pay', 'paid', 'deposit', 'stripe', 'checkout'],
           answer: 'After payment, open the matching GitHub request form from this page. Panda Notes confirms the deposit, reviews scope, sets a delivery date, and sends the setup notes, repair queue, or private integration handoff.'
         },
         {
-          category: 'why-pay',
+          category: 'why_pay',
           keywords: ['money', 'make money', 'github free', 'free on github', 'why pay', 'paid service'],
           answer: 'The GitHub repo is free so teams can try Panda Notes and trust the workflow. The paid service sells saved time: setup, tester-note cleanup, developer-ready repair queues, private exports, and custom integration work.'
         },
@@ -1131,7 +1131,7 @@
           answer: 'Do not post secrets, credentials, private customer data, or confidential source code in public GitHub issues. Use the issue only for public-safe scope. If private details are needed, ask for a private channel during scope confirmation.'
         },
         {
-          category: 'choose-service',
+          category: 'choose_service',
           keywords: ['which service', 'choose', 'setup', 'handoff', 'private integration', 'white label', 'integration'],
           answer: 'Choose Setup Sprint if you want Panda Notes installed in a staging or beta app. Choose Developer Handoff Pack if you already have tester notes and need them turned into prioritized issues. Choose Private Integration if you need custom branding, private exports, or deeper workflow support.'
         },
@@ -1141,7 +1141,7 @@
           answer: 'Typical turnaround depends on scope. A small handoff pack can often fit a short beta window, setup sprints usually need clear access to the target app, and private integrations need discovery first. Add your preferred delivery window in the GitHub form.'
         },
         {
-          category: 'phone-workflow',
+          category: 'phone_workflow',
           keywords: ['phone', 'mobile', 'manage', 'github mobile', 'passive'],
           answer: 'The workflow is phone-friendly: Stripe collects deposits, GitHub issue forms collect intake, and GitHub Mobile makes it easy to reply, label, and close requests. The goal is clean intake and clear delivery, not a confusing back-and-forth.'
         },
@@ -1161,12 +1161,12 @@
           answer: 'Refunds and cancellations are handled case by case based on scope and work already delivered. Open or update the GitHub request with the concern, but keep private payment details out of the public issue.'
         },
         {
-          category: 'open-source',
+          category: 'open_source',
           keywords: ['free', 'mit', 'license', 'open source', 'cost'],
           answer: 'The Panda Notes console, widget demo, script install, JSON exports, and GitHub-ready drafts stay free under the MIT license. Paid services are for installation help, handoff cleanup, and private custom work.'
         },
         {
-          category: 'tester-notes',
+          category: 'tester_notes',
           keywords: ['tester notes', 'json', 'export', 'alpha', 'beta', 'notes'],
           answer: 'For tester notes, export Panda Notes JSON or paste a public-safe summary. The handoff pack groups duplicates, ranks target issues, and turns the notes into repair work developers can act on.'
         },
@@ -1180,6 +1180,7 @@
       hydrateStripeLinks();
       initServiceGuide();
       initServiceAnalytics();
+      initServiceViewTracking();
 
       async function hydrateStripeLinks() {
         try {
@@ -1267,24 +1268,25 @@
 
         quickQuestions.forEach((button) => {
           button.addEventListener('click', () => {
-            askServiceGuide(button.dataset.guideQuestion || button.textContent || '');
+            askServiceGuide(button.dataset.guideQuestion || button.textContent || '', 'quick');
           });
         });
 
         form.addEventListener('submit', (event) => {
           event.preventDefault();
-          askServiceGuide(input.value);
+          askServiceGuide(input.value, 'typed');
           input.value = '';
           input.focus();
         });
 
-        function askServiceGuide(question) {
+        function askServiceGuide(question, source = 'typed') {
           const cleanQuestion = question.trim();
           if (!cleanQuestion) return;
+          const category = getServiceQuestionCategory(cleanQuestion);
           appendGuideMessage(cleanQuestion, 'user');
           appendGuideMessage(answerServiceQuestion(cleanQuestion));
-          trackServiceEvent('Service Guide Question', {
-            answerType: getServiceQuestionCategory(cleanQuestion)
+          trackServiceEvent(`faq_expand_${category}`, {
+            source
           });
           log.scrollTop = log.scrollHeight;
         }
@@ -1315,13 +1317,52 @@
       function initServiceAnalytics() {
         document.querySelectorAll('[data-analytics-event]').forEach((element) => {
           element.addEventListener('click', () => {
-            trackServiceEvent(element.dataset.analyticsEvent, {
+            const props = {
               offer: element.dataset.analyticsOffer || element.dataset.stripeOffer || 'general',
               checkoutState: element.dataset.checkoutState || 'link',
               destination: getSafeDestination(element)
-            });
+            };
+
+            trackServiceEvent(element.dataset.analyticsEvent, props);
+
+            if (props.destination === 'github.com' && element.href.includes('/issues/new')) {
+              trackServiceEvent('github_issue_start', props);
+            }
+
+            if ((element.dataset.checkoutState || '').startsWith('stripe')) {
+              trackServiceEvent('deposit_click', props);
+            }
           });
         });
+      }
+
+      function initServiceViewTracking() {
+        const targets = document.querySelectorAll('[data-analytics-view-event]');
+        const seen = new WeakSet();
+
+        function fire(target) {
+          if (seen.has(target)) return;
+          seen.add(target);
+          trackServiceEvent(target.dataset.analyticsViewEvent, {
+            section: target.dataset.analyticsSection || target.getAttribute('aria-label') || 'unknown'
+          });
+        }
+
+        if (!('IntersectionObserver' in window)) {
+          targets.forEach(fire);
+          return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+              fire(entry.target);
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: [0.5] });
+
+        targets.forEach((target) => observer.observe(target));
       }
 
       function trackServiceEvent(eventName, props = {}) {
@@ -1330,6 +1371,9 @@
         window.dispatchEvent(new CustomEvent('panda-service-event', { detail }));
         if (typeof window.plausible === 'function') {
           window.plausible(eventName, { props });
+        }
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', eventName, props);
         }
       }
 
