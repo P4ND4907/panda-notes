@@ -9,17 +9,33 @@ This document explains how paid Panda Notes requests move from checkout to deliv
 - GitHub Actions post the repeatable checklist as soon as a paid service issue opens.
 - GitHub labels show request state: scope needed, payment confirmed, waiting on customer, in progress, or delivered.
 - The Panda Notes Services page explains offers and answers common questions before a customer opens a request.
+- The Private Intake page lets paid customers prepare scope locally, then copy/download the private intake packet without posting private data to public GitHub issues.
 
 The free repo helps people evaluate and adopt Panda Notes. The paid service sells saved time, setup help, clean developer handoffs, and private integration work.
 
 ## Request Workflow
 
 1. Check Stripe for new deposits.
-2. Review new `paid-service` issues.
-3. Confirm the customer picked the right service and did not post secrets.
+2. Review new `paid-service` issues or private intake packets sent through the agreed private channel.
+3. Confirm the customer picked the right service and did not post secrets publicly.
 4. Reply with the next action: scope confirmation, private channel, export request, or delivery date.
-5. Move the issue through labels such as `scope-needed`, `in-progress`, `waiting-on-customer`, and `delivered`.
-6. Close the issue with a short delivery summary and links to public-safe deliverables.
+5. Move the work through labels or private status notes such as `scope-needed`, `in-progress`, `waiting-on-customer`, and `delivered`.
+6. Close the issue or private thread with a short delivery summary and links to public-safe deliverables.
+
+## Private Intake Page Flow
+
+The private intake page is a GitHub Pages-safe bridge between public marketing and private paid work:
+
+1. Customer pays a Stripe deposit or asks for scope.
+2. Customer opens <https://p4nd4907.github.io/panda-notes/private-intake.html>.
+3. Customer fills service, payment reference, contact email, project URL, deadline, scope, and private-material notes.
+4. Customer can copy/download the private intake packet.
+5. Customer sends the packet through the agreed private channel.
+6. Owner confirms scope, deposit, and delivery window before asking for credentials, private exports, or confidential code.
+
+The page stores drafts only in the customer's browser using local storage. It does not upload files, submit to GitHub, or send private data automatically.
+
+Email handoff is intentionally explicit. Until a receiving address or form endpoint is connected, the page tells customers to copy/download the packet and send it through the agreed private channel. To enable the email-draft button, set `data-intake-email` on `#main-content` in `public/private-intake.html`.
 
 ## Setup Sprint Flow
 

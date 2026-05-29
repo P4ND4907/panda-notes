@@ -14,6 +14,7 @@
     "stripe:links:secure": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/create-stripe-links-secure.ps1",
     "test:services": "node scripts/qa-services-seo.mjs",
     "test:widget": "node scripts/qa-widget-flow.mjs",
+    "lighthouse:services": "node scripts/lighthouse-services.mjs",
     "test": "vitest run"
   },
   "dependencies": {

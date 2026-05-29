@@ -9,6 +9,7 @@ function readProjectFile(path) {
 
 describe('Panda Notes services conversion path', () => {
   const servicesHtml = readProjectFile('public/services.html');
+  const privateIntakeHtml = readProjectFile('public/private-intake.html');
   const stripeConfig = JSON.parse(readProjectFile('public/stripe-links.json'));
   const robotsTxt = readProjectFile('public/robots.txt');
   const sitemapXml = readProjectFile('public/sitemap.xml');
@@ -59,6 +60,8 @@ describe('Panda Notes services conversion path', () => {
     expect(serviceOps).toContain('The free repo helps people evaluate and adopt Panda Notes');
     expect(serviceOps).toContain('## Request Workflow');
     expect(serviceOps).toContain('Delivery checklist');
+    expect(serviceOps).toContain('Private Intake Page Flow');
+    expect(serviceOps).toContain('copy/download the private intake packet');
     expect(abTests).toContain('Hero framing');
     expect(abTests).toContain('Turn messy tester feedback into developer-ready work');
     expect(abTests).toContain('CTA verb');
@@ -125,6 +128,7 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('data-analytics-event="plan_card_click_setup"');
     expect(servicesHtml).toContain('data-analytics-event="plan_card_click_handoff"');
     expect(servicesHtml).toContain('data-analytics-event="plan_card_click_private"');
+    expect(servicesHtml).toContain('data-analytics-event="private_request_start"');
     expect(servicesHtml).toContain('data-analytics-view-event="comparison_section_view"');
     expect(servicesHtml).toContain('trackServiceEvent');
     expect(servicesHtml).toContain('panda-service-event');
@@ -151,6 +155,8 @@ describe('Panda Notes services conversion path', () => {
   it('makes public-safe intake and private handoff boundaries explicit', () => {
     expect(servicesHtml).toContain('Public-safe request');
     expect(servicesHtml).toContain('Private handoff');
+    expect(servicesHtml).toContain('./private-intake.html');
+    expect(servicesHtml).toContain('Open private intake');
     expect(servicesHtml).toContain('aria-label="Open public-safe GitHub setup sprint request"');
     expect(servicesHtml).toContain('aria-label="Open public-safe GitHub handoff request; private files are shared after scope confirmation"');
     expect(servicesHtml).toContain('private files move to an agreed private channel after scope confirmation');
@@ -168,6 +174,24 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('requestIdleCallback');
     expect(servicesHtml).toContain('DOMContentLoaded');
     expect(servicesHtml).not.toContain('body::before {\n        content: "";\n        position: fixed;');
+  });
+
+  it('ships a local-only private intake page for paid customers', () => {
+    expect(privateIntakeHtml).toContain('<title>Panda Notes Private Intake | Secure Project Scope Packet</title>');
+    expect(privateIntakeHtml).toContain('rel="canonical" href="https://p4nd4907.github.io/panda-notes/private-intake.html"');
+    expect(privateIntakeHtml).toContain('data-private-intake-form');
+    expect(privateIntakeHtml).toContain('data-intake-output');
+    expect(privateIntakeHtml).toContain('Copy packet');
+    expect(privateIntakeHtml).toContain('Download JSON');
+    expect(privateIntakeHtml).toContain('Open email draft');
+    expect(privateIntakeHtml).toContain('Clear local draft');
+    expect(privateIntakeHtml).toContain('localStorage');
+    expect(privateIntakeHtml).toContain('navigator.clipboard.writeText');
+    expect(privateIntakeHtml).toContain('URL.createObjectURL');
+    expect(privateIntakeHtml).toContain('mailto:');
+    expect(privateIntakeHtml).toContain('This page does not upload files or submit private data to GitHub.');
+    expect(privateIntakeHtml).toContain('data-intake-email');
+    expect(sitemapXml).toContain('<loc>https://p4nd4907.github.io/panda-notes/private-intake.html</loc>');
   });
 
   it('ships Stripe Payment Link wiring with safe GitHub fallbacks', () => {

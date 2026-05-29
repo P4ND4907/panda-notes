@@ -10,6 +10,8 @@ Widget demo: <https://p4nd4907.github.io/panda-notes/widget-demo.html>
 
 Paid services: <https://p4nd4907.github.io/panda-notes/services.html>
 
+Private intake: <https://p4nd4907.github.io/panda-notes/private-intake.html>
+
 ## Focus
 
 - Developers select target issues, inspect tester evidence, review mapped code snippets, and export a repair packet.
@@ -70,7 +72,10 @@ How the money works even though GitHub is free:
 - The paid service sells time saved, setup support, cleaner repair queues, and private custom work.
 - Teams can do it themselves for free, or pay when they want it handled faster and cleaner.
 
-Live intake is set up through GitHub issue forms:
+Live intake has two paths:
+
+- Private intake page for paid customers who need to prepare project scope without public GitHub details.
+- GitHub issue forms for public-safe setup, handoff, and private integration scope.
 
 - [Setup sprint](https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml)
 - [Developer handoff pack](https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml)
@@ -141,8 +146,12 @@ npm.cmd run dev
 
 ```powershell
 npm.cmd test
+npm.cmd run test:services
 npm.cmd run build
+npm.cmd run lighthouse:services
 ```
+
+`test:services` runs the rendered services and private-intake QA flow with Playwright. `lighthouse:services` runs Lighthouse against a local static copy of the Services page and fails if performance, accessibility, best-practices, or SEO scores fall below the configured thresholds.
 
 ## Stripe Links
 

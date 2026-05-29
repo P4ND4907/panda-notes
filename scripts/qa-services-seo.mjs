@@ -40,10 +40,12 @@ const pageUrl = `${baseUrl}/services.html`;
 const screenshotPath = resolve(tmpdir(), 'panda-notes-services-accessibility.png');
 const skipScreenshotPath = resolve(tmpdir(), 'panda-notes-services-skip-link.png');
 const mobileScreenshotPath = resolve(tmpdir(), 'panda-notes-services-mobile.png');
+const privateIntakeScreenshotPath = resolve(tmpdir(), 'panda-notes-private-intake.png');
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 const pageIssues = [];
 const mobileIssues = [];
+const privateIntakeIssues = [];
 
 page.on('pageerror', (error) => pageIssues.push(`pageerror: ${error.message}`));
 page.on('console', (message) => {
@@ -75,6 +77,45 @@ try {
   }));
   await mobilePage.screenshot({ path: mobileScreenshotPath, fullPage: false });
   await mobilePage.close();
+
+  const privatePage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  privatePage.on('pageerror', (error) => privateIntakeIssues.push(`pageerror: ${error.message}`));
+  privatePage.on('console', (message) => {
+    if (['error', 'warning'].includes(message.type())) {
+      privateIntakeIssues.push(`${message.type()}: ${message.text()}`);
+    }
+  });
+  await privatePage.goto(`${baseUrl}/private-intake.html`, { waitUntil: 'domcontentloaded' });
+  await privatePage.selectOption('select[name="service"]', 'Developer Handoff Pack');
+  await privatePage.fill('input[name="customerName"]', 'QA Customer');
+  await privatePage.fill('input[name="replyEmail"]', 'qa@example.com');
+  await privatePage.fill('input[name="paymentReference"]', 'stripe-test-ref');
+  await privatePage.fill('input[name="projectUrl"]', 'https://example.com/app');
+  await privatePage.fill('input[name="deadline"]', 'Next Friday');
+  await privatePage.fill('textarea[name="scope"]', 'Clean up 12 beta notes into a ranked repair queue.');
+  await privatePage.fill('textarea[name="privateMaterials"]', 'Panda Notes JSON and screenshots after scope confirmation.');
+  await privatePage.fill('textarea[name="outputTarget"]', 'GitHub issues and Codex repair prompt.');
+  await privatePage.check('input[name="privacyConfirm"]');
+  const privatePacketText = await privatePage.locator('[data-intake-output]').innerText();
+  const download = await Promise.all([
+    privatePage.waitForEvent('download'),
+    privatePage.getByRole('button', { name: 'Download JSON' }).click()
+  ]);
+  await download[0].cancel();
+  await privatePage.getByRole('button', { name: 'Open email draft' }).click();
+  const emailDraftStatus = await privatePage.locator('[data-intake-status]').innerText();
+  await privatePage.getByRole('button', { name: 'Clear local draft' }).click();
+  const clearStatus = await privatePage.locator('[data-intake-status]').innerText();
+  const privateIntakeState = {
+    title: await privatePage.title(),
+    packetHasScope: privatePacketText.includes('Clean up 12 beta notes'),
+    packetHasPrivacyConfirmation: privatePacketText.includes('Privacy confirmation: Confirmed'),
+    emailDraftStatus,
+    clearStatus,
+    horizontalOverflow: await privatePage.evaluate(() => Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth))
+  };
+  await privatePage.screenshot({ path: privateIntakeScreenshotPath, fullPage: false });
+  await privatePage.close();
 
   const bodyText = await page.locator('body').innerText();
   const title = await page.title();
@@ -195,6 +236,10 @@ try {
     element.addEventListener('click', (event) => event.preventDefault(), { once: true });
     element.click();
   });
+  await page.locator('[data-analytics-event="private_request_start"]').evaluate((element) => {
+    element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+    element.click();
+  });
 
   await page.locator('[data-analytics-event="plan_card_click_setup"]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => {
@@ -236,11 +281,15 @@ try {
     analyticsEvents: analyticsEvents.map((event) => event.eventName),
     firstAnalyticsEvent: analyticsEvents[0],
     sitemapHasServices: sitemap.includes('/services.html'),
+    sitemapHasPrivateIntake: sitemap.includes('/private-intake.html'),
     screenshotPath,
     skipScreenshotPath,
     mobileScreenshotPath,
+    privateIntakeScreenshotPath,
     mobileState,
     mobileIssues,
+    privateIntakeState,
+    privateIntakeIssues,
     pageIssues
   };
 
@@ -267,16 +316,25 @@ try {
     targetSizeIssues.length > 0 && `interactive targets below 24px: ${targetSizeIssues.map((target) => `${target.label} ${target.width}x${target.height}`).join(', ')}`,
     contrastChecks.some((check) => check.ratio < check.minimum) && `contrast check failed: ${contrastChecks.filter((check) => check.ratio < check.minimum).map((check) => `${check.name} ${check.ratio}:1`).join(', ')}`,
     !analyticsEvents.some((event) => event.eventName === 'cta_primary_click') && 'primary CTA event did not dispatch',
+    !analyticsEvents.some((event) => event.eventName === 'private_request_start') && 'private intake event did not dispatch',
     !analyticsEvents.some((event) => event.eventName === 'github_issue_start') && 'GitHub issue event did not dispatch',
     !analyticsEvents.some((event) => event.eventName === 'plan_card_click_setup') && 'setup plan event did not dispatch',
     !analyticsEvents.some((event) => event.eventName === 'deposit_click') && 'Stripe deposit event did not dispatch',
     !analyticsEvents.some((event) => event.eventName === 'comparison_section_view') && 'comparison view event did not dispatch',
     !analyticsEvents.some((event) => event.eventName === 'faq_expand_comparison') && 'FAQ comparison event did not dispatch',
     !sitemap.includes('https://p4nd4907.github.io/panda-notes/services.html') && 'sitemap missing services URL',
+    !sitemap.includes('https://p4nd4907.github.io/panda-notes/private-intake.html') && 'sitemap missing private intake URL',
     !mobileState.hasHeroCopy && 'mobile page should render hero copy',
     !mobileState.hasPublicPrivateLabels && 'mobile page should render public/private intake labels',
     mobileState.horizontalOverflow > 1 && `mobile page has horizontal overflow: ${mobileState.horizontalOverflow}px`,
     mobileIssues.length > 0 && 'mobile page emitted console or runtime errors',
+    privateIntakeState.title !== 'Panda Notes Private Intake | Secure Project Scope Packet' && 'private intake title mismatch',
+    !privateIntakeState.packetHasScope && 'private intake packet did not include scope',
+    !privateIntakeState.packetHasPrivacyConfirmation && 'private intake packet did not include privacy confirmation',
+    !privateIntakeState.emailDraftStatus.includes('Receiving email is not configured yet') && 'private intake should explain unconfigured email fallback',
+    !privateIntakeState.clearStatus.includes('draft cleared') && 'private intake clear draft did not update status',
+    privateIntakeState.horizontalOverflow > 1 && `private intake has horizontal overflow: ${privateIntakeState.horizontalOverflow}px`,
+    privateIntakeIssues.length > 0 && 'private intake page emitted console or runtime errors',
     pageIssues.length > 0 && 'page emitted console or runtime errors'
   ].filter(Boolean);
 

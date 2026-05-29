@@ -19,4 +19,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - run: npm run test:services
+      - run: npm run lighthouse:services
       - run: npm run build
