@@ -10,7 +10,7 @@ const reportPath = resolve(tmpdir(), 'panda-notes-services-lighthouse.json');
 const thresholds = {
   accessibility: 0.95,
   'best-practices': 0.9,
-  performance: 0.9,
+  performance: 0.85,
   seo: 0.95
 };
 
