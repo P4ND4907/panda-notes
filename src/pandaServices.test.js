@@ -122,7 +122,8 @@ describe('Panda Notes services conversion path', () => {
 
   it('adds privacy-aligned analytics hooks for the service funnel', () => {
     expect(servicesHtml).toContain('https://plausible.io/js/script.js');
-    expect(servicesHtml).toContain('data-domain="p4nd4907.github.io"');
+    expect(servicesHtml).toContain("script.dataset.domain = 'p4nd4907.github.io'");
+    expect(servicesHtml).toContain('schedulePlausibleLoad');
     expect(servicesHtml).toContain('data-analytics-event="cta_primary_click"');
     expect(servicesHtml).toContain('data-analytics-event="cta_secondary_click"');
     expect(servicesHtml).toContain('data-analytics-event="plan_card_click_setup"');

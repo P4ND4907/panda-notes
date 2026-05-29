@@ -19,7 +19,6 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Panda Notes Services" />
     <meta name="twitter:description" content="Turn messy tester feedback into developer-ready work." />
-    <script defer data-domain="p4nd4907.github.io" src="https://plausible.io/js/script.js"></script>
     <script>
       window.plausible = window.plausible || function () {
         (window.plausible.q = window.plausible.q || []).push(arguments);
@@ -1257,7 +1256,27 @@
       initServiceAnalytics();
       initServiceViewTracking();
       initSkipLinkFocus();
+      schedulePlausibleLoad();
       scheduleStripeHydration();
+
+      function schedulePlausibleLoad() {
+        let loaded = false;
+        const load = () => {
+          if (loaded) return;
+          loaded = true;
+          const script = document.createElement('script');
+          script.defer = true;
+          script.dataset.domain = 'p4nd4907.github.io';
+          script.src = 'https://plausible.io/js/script.js';
+          document.head.appendChild(script);
+        };
+        const loadOnAction = () => load();
+
+        ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+          window.addEventListener(eventName, loadOnAction, { once: true, passive: true });
+        });
+        window.setTimeout(load, 15000);
+      }
 
       function scheduleStripeHydration() {
         const run = () => hydrateStripeLinks();
