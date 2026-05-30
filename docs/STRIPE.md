@@ -74,6 +74,18 @@ Panda Notes includes a serverless webhook at `/api/stripe-webhook`. It verifies 
 
 Do not expose the webhook signing secret in GitHub Pages, public issues, or committed files.
 
+For Windows, create the webhook and store the signing secret in Vercel with:
+
+```powershell
+npm.cmd run stripe:webhook:secure
+```
+
+Then redeploy Vercel production:
+
+```powershell
+npx.cmd vercel --prod --yes
+```
+
 References:
 
 - Stripe Payment Links: <https://docs.stripe.com/payment-links/create>

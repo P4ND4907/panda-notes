@@ -238,10 +238,17 @@ describe('Panda Notes services conversion path', () => {
 
   it('includes a hidden local secret-key runner for Windows', () => {
     const secureRunner = readProjectFile('scripts/create-stripe-links-secure.ps1');
+    const webhookRunner = readProjectFile('scripts/create-stripe-webhook-secure.ps1');
+    const webhookScript = readProjectFile('scripts/create-stripe-webhook.mjs');
 
     expect(secureRunner).toContain('Read-Host "Stripe secret key" -AsSecureString');
     expect(secureRunner).toContain('Remove-Item Env:\\STRIPE_SECRET_KEY');
     expect(secureRunner).toContain('ZeroFreeBSTR');
     expect(secureRunner).not.toContain('Write-Host $plainSecret');
+    expect(webhookRunner).toContain('Read-Host "Stripe secret key" -AsSecureString');
+    expect(webhookRunner).toContain('Remove-Item Env:\\STRIPE_SECRET_KEY');
+    expect(webhookScript).toContain('STRIPE_WEBHOOK_SECRET');
+    expect(webhookScript).toContain('https://panda-notes-smoky.vercel.app/api/stripe-webhook');
+    expect(webhookScript).toContain('[redacted-webhook-secret]');
   });
 });

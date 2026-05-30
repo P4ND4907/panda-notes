@@ -166,6 +166,8 @@ Required production secrets:
 - `STRIPE_WEBHOOK_SECRET`
 - `PANDA_ALLOWED_ORIGINS`
 
+Use `npm.cmd run stripe:webhook:secure` to create the Stripe webhook and store `STRIPE_WEBHOOK_SECRET` in Vercel without printing the secret.
+
 ## Stripe Links
 
 ```powershell
