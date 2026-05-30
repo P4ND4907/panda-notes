@@ -35,7 +35,7 @@ The private intake page is a GitHub Pages-safe bridge between public marketing a
 
 The page stores drafts only in the customer's browser using local storage. It does not upload files, submit to GitHub, or send private data automatically.
 
-Email handoff is intentionally explicit. Until a receiving address or form endpoint is connected, the page tells customers to copy/download the packet and send it through the agreed private channel. To enable the email-draft button, set `data-intake-email` on `#main-content` in `public/private-intake.html`.
+Email handoff is intentionally explicit. The email-draft button opens a customer-controlled draft to `khepri26@gmail.com`; customers should review the packet before sending it. The address is visible in the public GitHub Pages HTML. If a private form endpoint replaces email later, update `data-intake-email` on `#main-content` in `public/private-intake.html` and the related QA expectations.
 
 ## Setup Sprint Flow
 

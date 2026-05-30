@@ -495,7 +495,7 @@
       <p class="privacy-note">This page does not upload files or submit private data to GitHub. Drafts stay in this browser until you copy, download, email, or clear them.</p>
     </section>
 
-    <main id="main-content" tabindex="-1" data-intake-email="">
+    <main id="main-content" tabindex="-1" data-intake-email="khepri26@gmail.com">
       <section class="intake-layout" aria-label="Private intake workspace">
         <form data-private-intake-form>
           <fieldset>
@@ -700,6 +700,7 @@
         }
         const subject = encodeURIComponent('Panda Notes private intake');
         const body = encodeURIComponent(packet);
+        setStatus(`Email draft opened to ${intakeEmail}. Review the packet before sending.`);
         window.location.href = `mailto:${encodeURIComponent(intakeEmail)}?subject=${subject}&body=${body}`;
       }
 

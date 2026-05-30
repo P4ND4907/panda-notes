@@ -197,7 +197,8 @@ describe('Panda Notes services conversion path', () => {
     expect(privateIntakeHtml).toContain('URL.createObjectURL');
     expect(privateIntakeHtml).toContain('mailto:');
     expect(privateIntakeHtml).toContain('This page does not upload files or submit private data to GitHub.');
-    expect(privateIntakeHtml).toContain('data-intake-email');
+    expect(privateIntakeHtml).toContain('data-intake-email="khepri26@gmail.com"');
+    expect(privateIntakeHtml).toContain('Email draft opened to ${intakeEmail}. Review the packet before sending.');
     expect(sitemapXml).toContain('<loc>https://p4nd4907.github.io/panda-notes/private-intake.html</loc>');
   });
 

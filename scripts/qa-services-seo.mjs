@@ -102,15 +102,14 @@ try {
     privatePage.getByRole('button', { name: 'Download JSON' }).click()
   ]);
   await download[0].cancel();
-  await privatePage.getByRole('button', { name: 'Open email draft' }).click();
-  const emailDraftStatus = await privatePage.locator('[data-intake-status]').innerText();
+  const intakeEmail = await privatePage.locator('#main-content').getAttribute('data-intake-email');
   await privatePage.getByRole('button', { name: 'Clear local draft' }).click();
   const clearStatus = await privatePage.locator('[data-intake-status]').innerText();
   const privateIntakeState = {
     title: await privatePage.title(),
     packetHasScope: privatePacketText.includes('Clean up 12 beta notes'),
     packetHasPrivacyConfirmation: privatePacketText.includes('Privacy confirmation: Confirmed'),
-    emailDraftStatus,
+    intakeEmail,
     clearStatus,
     horizontalOverflow: await privatePage.evaluate(() => Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth))
   };
@@ -331,7 +330,7 @@ try {
     privateIntakeState.title !== 'Panda Notes Private Intake | Secure Project Scope Packet' && 'private intake title mismatch',
     !privateIntakeState.packetHasScope && 'private intake packet did not include scope',
     !privateIntakeState.packetHasPrivacyConfirmation && 'private intake packet did not include privacy confirmation',
-    !privateIntakeState.emailDraftStatus.includes('Receiving email is not configured yet') && 'private intake should explain unconfigured email fallback',
+    privateIntakeState.intakeEmail !== 'khepri26@gmail.com' && 'private intake email draft recipient is not configured',
     !privateIntakeState.clearStatus.includes('draft cleared') && 'private intake clear draft did not update status',
     privateIntakeState.horizontalOverflow > 1 && `private intake has horizontal overflow: ${privateIntakeState.horizontalOverflow}px`,
     privateIntakeIssues.length > 0 && 'private intake page emitted console or runtime errors',
