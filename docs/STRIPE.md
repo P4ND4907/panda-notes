@@ -64,6 +64,15 @@ Never commit `sk_test_...` or `sk_live_...` keys. `.env` and `.env.local` are ig
 - Add refund/cancellation language to checkout or scope docs.
 - Test each link with a Stripe test card before switching to live links.
 - Keep private contract details, credentials, and confidential source code out of public GitHub issues.
+- Add a Stripe webhook endpoint for `https://panda-notes-smoky.vercel.app/api/stripe-webhook`.
+- Store the webhook signing secret as `STRIPE_WEBHOOK_SECRET` in Vercel.
+- Enable at least `checkout.session.completed` and `checkout.session.async_payment_succeeded` events.
+
+## Webhook Confirmation
+
+Panda Notes includes a serverless webhook at `/api/stripe-webhook`. It verifies Stripe's `Stripe-Signature` header with `STRIPE_WEBHOOK_SECRET`, ignores unrelated event types, and creates a private `payment-confirmed` issue in the private intake repo for successful checkout events.
+
+Do not expose the webhook signing secret in GitHub Pages, public issues, or committed files.
 
 References:
 

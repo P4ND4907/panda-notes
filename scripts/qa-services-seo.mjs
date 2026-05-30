@@ -86,6 +86,7 @@ try {
     }
   });
   await privatePage.goto(`${baseUrl}/private-intake.html`, { waitUntil: 'domcontentloaded' });
+  await privatePage.getByRole('button', { name: 'Submit private intake' }).waitFor({ state: 'visible' });
   await privatePage.selectOption('select[name="service"]', 'Developer Handoff Pack');
   await privatePage.fill('input[name="customerName"]', 'QA Customer');
   await privatePage.fill('input[name="replyEmail"]', 'qa@example.com');
@@ -103,6 +104,7 @@ try {
   ]);
   await download[0].cancel();
   const intakeEmail = await privatePage.locator('#main-content').getAttribute('data-intake-email');
+  const intakeEndpoint = await privatePage.locator('#main-content').getAttribute('data-intake-endpoint');
   await privatePage.getByRole('button', { name: 'Clear local draft' }).click();
   const clearStatus = await privatePage.locator('[data-intake-status]').innerText();
   const privateIntakeState = {
@@ -110,6 +112,7 @@ try {
     packetHasScope: privatePacketText.includes('Clean up 12 beta notes'),
     packetHasPrivacyConfirmation: privatePacketText.includes('Privacy confirmation: Confirmed'),
     intakeEmail,
+    intakeEndpoint,
     clearStatus,
     horizontalOverflow: await privatePage.evaluate(() => Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth))
   };
@@ -331,6 +334,7 @@ try {
     !privateIntakeState.packetHasScope && 'private intake packet did not include scope',
     !privateIntakeState.packetHasPrivacyConfirmation && 'private intake packet did not include privacy confirmation',
     privateIntakeState.intakeEmail !== 'khepri26@gmail.com' && 'private intake email draft recipient is not configured',
+    privateIntakeState.intakeEndpoint !== 'https://panda-notes-smoky.vercel.app/api/private-intake' && 'private intake submission endpoint is not configured',
     !privateIntakeState.clearStatus.includes('draft cleared') && 'private intake clear draft did not update status',
     privateIntakeState.horizontalOverflow > 1 && `private intake has horizontal overflow: ${privateIntakeState.horizontalOverflow}px`,
     privateIntakeIssues.length > 0 && 'private intake page emitted console or runtime errors',

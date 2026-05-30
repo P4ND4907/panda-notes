@@ -76,6 +76,8 @@ Live intake has two paths:
 
 - Private intake page for paid customers who need to prepare project scope without public GitHub details.
 - GitHub issue forms for public-safe setup, handoff, and private integration scope.
+- Serverless private intake submission for paid packets when the Vercel API is configured.
+- Stripe webhook confirmation for checkout events when `STRIPE_WEBHOOK_SECRET` is configured.
 
 - [Setup sprint](https://github.com/P4ND4907/panda-notes/issues/new?template=setup-sprint.yml)
 - [Developer handoff pack](https://github.com/P4ND4907/panda-notes/issues/new?template=developer-handoff-pack.yml)
@@ -152,6 +154,17 @@ npm.cmd run lighthouse:services
 ```
 
 `test:services` runs the rendered services and private-intake QA flow with Playwright. `lighthouse:services` runs Lighthouse against a local static copy of the Services page and fails if performance, accessibility, best-practices, or SEO scores fall below the configured thresholds.
+
+## Backend Automation
+
+The `/api/private-intake` and `/api/stripe-webhook` functions are deployable on Vercel. They keep private customer packets and payment confirmations out of the public repository by writing to the private `P4ND4907/panda-notes-private-intake` repo.
+
+Required production secrets:
+
+- `PRIVATE_INTAKE_GITHUB_TOKEN`
+- `PRIVATE_INTAKE_REPO`
+- `STRIPE_WEBHOOK_SECRET`
+- `PANDA_ALLOWED_ORIGINS`
 
 ## Stripe Links
 

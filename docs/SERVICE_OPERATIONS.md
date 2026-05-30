@@ -10,6 +10,8 @@ This document explains how paid Panda Notes requests move from checkout to deliv
 - GitHub labels show request state: scope needed, payment confirmed, waiting on customer, in progress, or delivered.
 - The Panda Notes Services page explains offers and answers common questions before a customer opens a request.
 - The Private Intake page lets paid customers prepare scope locally, then copy/download the private intake packet without posting private data to public GitHub issues.
+- The private intake API can submit packets to a private GitHub inbox repo when Vercel secrets are configured.
+- The Stripe webhook API can create private `payment-confirmed` records after verified checkout events.
 
 The free repo helps people evaluate and adopt Panda Notes. The paid service sells saved time, setup help, clean developer handoffs, and private integration work.
 
@@ -30,12 +32,28 @@ The private intake page is a GitHub Pages-safe bridge between public marketing a
 2. Customer opens <https://p4nd4907.github.io/panda-notes/private-intake.html>.
 3. Customer fills service, payment reference, contact email, project URL, deadline, scope, and private-material notes.
 4. Customer can copy/download the private intake packet.
-5. Customer sends the packet through the agreed private channel.
+5. Customer can submit the packet to the private intake API, or send it through the agreed private channel if the API is unavailable.
 6. Owner confirms scope, deposit, and delivery window before asking for credentials, private exports, or confidential code.
 
 The page stores drafts only in the customer's browser using local storage. It does not upload files, submit to GitHub, or send private data automatically.
 
 Email handoff is intentionally explicit. The email-draft button opens a customer-controlled draft to `khepri26@gmail.com`; customers should review the packet before sending it. The address is visible in the public GitHub Pages HTML. If a private form endpoint replaces email later, update `data-intake-email` on `#main-content` in `public/private-intake.html` and the related QA expectations.
+
+## Backend Automation
+
+The serverless backend is designed for Vercel:
+
+- `POST /api/private-intake`: validates a private intake packet and creates an issue in `P4ND4907/panda-notes-private-intake`.
+- `POST /api/stripe-webhook`: verifies Stripe's webhook signature and creates a private payment-confirmation issue.
+
+Required Vercel environment variables:
+
+- `PRIVATE_INTAKE_GITHUB_TOKEN`: GitHub token with access to the private intake repo.
+- `PRIVATE_INTAKE_REPO`: private repo name, usually `P4ND4907/panda-notes-private-intake`.
+- `STRIPE_WEBHOOK_SECRET`: Stripe webhook signing secret for the deployed `/api/stripe-webhook` endpoint.
+- `PANDA_ALLOWED_ORIGINS`: comma-separated origins allowed to submit intake, usually `https://p4nd4907.github.io,https://panda-notes-smoky.vercel.app`.
+
+Never put `PRIVATE_INTAKE_GITHUB_TOKEN`, `STRIPE_SECRET_KEY`, or `STRIPE_WEBHOOK_SECRET` in browser code, GitHub Pages HTML, screenshots, public issues, or committed files.
 
 ## Setup Sprint Flow
 

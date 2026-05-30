@@ -495,7 +495,12 @@
       <p class="privacy-note">This page does not upload files or submit private data to GitHub. Drafts stay in this browser until you copy, download, email, or clear them.</p>
     </section>
 
-    <main id="main-content" tabindex="-1" data-intake-email="khepri26@gmail.com">
+    <main
+      id="main-content"
+      tabindex="-1"
+      data-intake-email="khepri26@gmail.com"
+      data-intake-endpoint="https://panda-notes-smoky.vercel.app/api/private-intake"
+    >
       <section class="intake-layout" aria-label="Private intake workspace">
         <form data-private-intake-form>
           <fieldset>
@@ -551,8 +556,13 @@
               <input name="privacyConfirm" type="checkbox" />
               <span>I will not paste credentials, tokens, private customer data, or confidential source code into public GitHub issues.</span>
             </label>
+            <label class="sr-only">
+              Leave this field empty
+              <input name="website" tabindex="-1" autocomplete="off" />
+            </label>
           </fieldset>
           <div class="button-row">
+            <button class="primary" type="button" data-submit-packet>Submit private intake</button>
             <button class="primary" type="button" data-copy-packet>Copy packet</button>
             <button type="button" data-download-packet>Download JSON</button>
             <button type="button" data-email-packet>Open email draft</button>
@@ -579,6 +589,7 @@
       const statusLine = document.querySelector('[data-intake-status]');
       const mainContent = document.getElementById('main-content');
       const intakeEmail = mainContent?.dataset.intakeEmail || '';
+      const intakeEndpoint = mainContent?.dataset.intakeEndpoint || '';
 
       initSkipLinkFocus();
       initPrivateIntake();
@@ -605,6 +616,7 @@
         form.querySelector('[data-copy-packet]')?.addEventListener('click', copyPacket);
         form.querySelector('[data-download-packet]')?.addEventListener('click', downloadPacket);
         form.querySelector('[data-email-packet]')?.addEventListener('click', openEmailDraft);
+        form.querySelector('[data-submit-packet]')?.addEventListener('click', submitPrivateIntake);
         form.querySelector('[data-clear-draft]')?.addEventListener('click', clearDraft);
       }
 
@@ -690,6 +702,38 @@
         anchor.remove();
         URL.revokeObjectURL(url);
         setStatus('Private intake JSON downloaded.');
+      }
+
+      async function submitPrivateIntake() {
+        const data = readForm();
+        if (!intakeEndpoint) {
+          setStatus('Private submission is not connected yet. Copy, download, or email the packet instead.');
+          return;
+        }
+        if (!data.privacyConfirm) {
+          setStatus('Confirm the privacy boundary before submitting private intake.');
+          return;
+        }
+        if (!data.replyEmail || !data.scope || data.scope.trim().length < 12) {
+          setStatus('Add a reply email and enough scope detail before submitting.');
+          return;
+        }
+
+        setStatus('Submitting private intake to Panda Notes...');
+        try {
+          const response = await fetch(intakeEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok || !result.ok) {
+            throw new Error(result.error || 'private_intake_failed');
+          }
+          setStatus(`Private intake submitted. Reference: ${result.intakeId || 'received'}.`);
+        } catch {
+          setStatus('Private submission failed. Copy, download, or email the packet and try again later.');
+        }
       }
 
       function openEmailDraft() {

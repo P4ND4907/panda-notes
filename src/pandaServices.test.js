@@ -191,6 +191,9 @@ describe('Panda Notes services conversion path', () => {
     expect(privateIntakeHtml).toContain('Copy packet');
     expect(privateIntakeHtml).toContain('Download JSON');
     expect(privateIntakeHtml).toContain('Open email draft');
+    expect(privateIntakeHtml).toContain('Submit private intake');
+    expect(privateIntakeHtml).toContain('data-intake-endpoint="https://panda-notes-smoky.vercel.app/api/private-intake"');
+    expect(privateIntakeHtml).toContain('fetch(intakeEndpoint');
     expect(privateIntakeHtml).toContain('Clear local draft');
     expect(privateIntakeHtml).toContain('localStorage');
     expect(privateIntakeHtml).toContain('navigator.clipboard.writeText');
