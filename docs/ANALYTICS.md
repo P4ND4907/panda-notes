@@ -13,6 +13,7 @@ No analytics secret keys are stored in this repo. GA4 measurement IDs are public
 | `plan_card_click_setup` | Setup Sprint card CTA click | Measures setup-sprint demand. |
 | `plan_card_click_handoff` | Developer Handoff Pack card CTA click | Measures handoff-pack demand. |
 | `plan_card_click_private` | Private Integration card CTA click | Measures premium/private integration demand. |
+| `private_request_start` | Private intake page CTA click | Measures privacy-sensitive buyer appetite. |
 | `github_issue_start` | Any GitHub issue-template CTA click | Measures the current default public lead path. |
 | `deposit_click` | Stripe-hosted deposit link click | Measures commercial intent. |
 | `comparison_section_view` | Pricing/options grid reaches 50% viewport visibility | Measures buyer evaluation beyond the hero. |
@@ -22,7 +23,6 @@ No analytics secret keys are stored in this repo. GA4 measurement IDs are public
 
 | Event name | Trigger | Why it matters |
 | --- | --- | --- |
-| `private_request_start` | Private intake form or secure upload path opens | Measures privacy-sensitive buyer appetite. |
 | `sample_output_view` | Redacted sample deliverable opens | Measures proof and trust-building engagement. |
 | `contact_submit` | Private/contact form submission succeeds | Primary lead conversion. |
 | `thank_you` | Buyer reaches a thank-you/confirmation page | Primary conversion and attribution endpoint. |
@@ -67,6 +67,7 @@ The QA script checks title/canonical/schema/sitemap and verifies these live funn
 
 - `cta_primary_click`
 - `github_issue_start`
+- `private_request_start`
 - `plan_card_click_setup`
 - `deposit_click`
 - `comparison_section_view`

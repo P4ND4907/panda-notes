@@ -44,6 +44,7 @@ describe('Panda Notes services conversion path', () => {
     expect(handoffForm).toContain('Preferred delivery window');
     expect(privateForm).toContain('Preferred delivery window');
     expect(config).toContain('Panda Notes paid services');
+    expect(config).toContain('Panda Notes private intake');
   });
 
   it('documents service workflows and free-to-paid positioning', () => {
@@ -97,6 +98,7 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('How is Panda Notes different from Marker');
     expect(servicesHtml).toContain('Panda Notes is narrower than full feedback platforms');
     expect(servicesHtml).toContain('After payment');
+    expect(servicesHtml).toContain('use the private intake page if your project details should stay out of public issues');
     expect(servicesHtml).toContain('Do not post secrets');
     expect(servicesHtml).toContain('phone-friendly');
   });
@@ -138,6 +140,10 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('faq_expand_');
     expect(servicesHtml).toContain("window.gtag('event', eventName, props)");
     expect(servicesHtml).toContain("category: 'comparison'");
+
+    const analyticsDocs = readProjectFile('docs/ANALYTICS.md');
+    expect(analyticsDocs).toContain('| `private_request_start` | Private intake page CTA click |');
+    expect(analyticsDocs).toContain('- `private_request_start`');
   });
 
   it('keeps keyboard navigation and focus states accessible on the services page', () => {

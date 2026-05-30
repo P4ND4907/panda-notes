@@ -9,3 +9,6 @@ contact_links:
   - name: Panda Notes paid services
     url: https://p4nd4907.github.io/panda-notes/services.html
     about: Review setup sprints, developer handoff packs, and private integrations.
+  - name: Panda Notes private intake
+    url: https://p4nd4907.github.io/panda-notes/private-intake.html
+    about: Prepare paid project scope locally without posting private details to public issues.
