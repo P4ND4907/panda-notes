@@ -157,7 +157,7 @@ npm.cmd run lighthouse:services
 
 ## Backend Automation
 
-The `/api/private-intake` and `/api/stripe-webhook` functions are deployable on Vercel. They keep private customer packets and payment confirmations out of the public repository by writing to the private `P4ND4907/panda-notes-private-intake` repo.
+The `/api/private-intake`, `/api/stripe-webhook`, and `/api/analytics-event` functions are deployable on Vercel. They keep private customer packets, payment confirmations, and privacy-safe funnel counts out of the public repository by writing to the private `P4ND4907/panda-notes-private-intake` repo.
 
 Required production secrets:
 
@@ -167,6 +167,8 @@ Required production secrets:
 - `PANDA_ALLOWED_ORIGINS`
 
 Use `npm.cmd run stripe:webhook:secure` to create the Stripe webhook and store `STRIPE_WEBHOOK_SECRET` in Vercel without printing the secret.
+
+Use `npm.cmd run analytics:summary` to read the private analytics rollup from GitHub and print page views, anonymous sessions, CTA clicks, Stripe clicks, and private-intake submits.
 
 ## Stripe Links
 
@@ -178,7 +180,7 @@ That command uses a hidden PowerShell prompt so the Stripe secret key is not pos
 
 ## Privacy Boundary
 
-No hidden telemetry. Notes stay in local browser storage until someone explicitly exports JSON or copies/downloads a developer packet.
+The public service funnel records privacy-safe analytics events so the owner can see page views and conversion clicks. It does not send private note content, private intake form bodies, IP addresses, raw user-agent strings, customer secrets, or uploaded files. Notes stay in local browser storage until someone explicitly exports JSON or copies/downloads a developer packet.
 
 ## License
 

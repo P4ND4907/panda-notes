@@ -1,19 +1,29 @@
 # Panda Notes Analytics Taxonomy
 
-Panda Notes uses privacy-aligned, stable snake_case event names on the Services page. The page sends events to Plausible when the Plausible script is active, emits a local `panda-service-event` for QA, and also calls `gtag('event', ...)` when a GA4 tag is present.
+Panda Notes uses privacy-aligned, stable snake_case event names on the Services and Private Intake pages. The Services page sends events to the Panda Notes collector at `/api/analytics-event`, sends events to Plausible when the Plausible script is active, emits a local `panda-service-event` for QA, and also calls `gtag('event', ...)` when a GA4 tag is present.
 
-No analytics secret keys are stored in this repo. GA4 measurement IDs are public identifiers, but they should still be configured intentionally rather than hard-coded by accident.
+No analytics secret keys are stored in this repo. The Panda Notes collector uses the existing private GitHub intake repo token in Vercel and stores append-only daily rollup comments in the private intake repo. It does not store IP addresses, raw user-agent strings, private intake form bodies, customer secrets, or uploaded files.
+
+To view the current private rollup from a machine with `gh` logged in:
+
+```powershell
+npm.cmd run analytics:summary
+```
 
 ## Live Events
 
 | Event name | Trigger | Why it matters |
 | --- | --- | --- |
+| `page_view` | Services or Private Intake page loaded | Counts anonymous sessions reaching the funnel. |
 | `cta_primary_click` | Hero primary CTA click | Measures above-the-fold setup intent. |
 | `cta_secondary_click` | Hero secondary CTA click | Measures above-the-fold handoff intent. |
 | `plan_card_click_setup` | Setup Sprint card CTA click | Measures setup-sprint demand. |
 | `plan_card_click_handoff` | Developer Handoff Pack card CTA click | Measures handoff-pack demand. |
 | `plan_card_click_private` | Private Integration card CTA click | Measures premium/private integration demand. |
 | `private_request_start` | Private intake page CTA click | Measures privacy-sensitive buyer appetite. |
+| `private_intake_submit` | Private intake submit button clicked after local validation | Measures serious private lead intent. |
+| `private_intake_submit_success` | Private intake API submission succeeds | Primary private-lead conversion. |
+| `private_intake_submit_error` | Private intake API submission fails | Shows broken lead capture or temporary backend issues. |
 | `github_issue_start` | Any GitHub issue-template CTA click | Measures the current default public lead path. |
 | `deposit_click` | Stripe-hosted deposit link click | Measures commercial intent. |
 | `comparison_section_view` | Pricing/options grid reaches 50% viewport visibility | Measures buyer evaluation beyond the hero. |
@@ -31,7 +41,7 @@ No analytics secret keys are stored in this repo. GA4 measurement IDs are public
 
 If GA4 is added later, mark these as key events:
 
-- `contact_submit`
+- `private_intake_submit_success`
 - `thank_you`
 - `deposit_click`
 
@@ -42,6 +52,8 @@ If GA4 is added later, mark these as key events:
 Create goals for:
 
 - `deposit_click`
+- `page_view`
+- `private_intake_submit_success`
 - `github_issue_start`
 - `cta_primary_click`
 - `cta_secondary_click`

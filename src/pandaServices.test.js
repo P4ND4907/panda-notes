@@ -135,6 +135,9 @@ describe('Panda Notes services conversion path', () => {
     expect(servicesHtml).toContain('data-analytics-view-event="comparison_section_view"');
     expect(servicesHtml).toContain('trackServiceEvent');
     expect(servicesHtml).toContain('panda-service-event');
+    expect(servicesHtml).toContain('data-analytics-endpoint="https://panda-notes-smoky.vercel.app/api/analytics-event"');
+    expect(servicesHtml).toContain("trackServiceEvent('page_view'");
+    expect(servicesHtml).toContain('sendPandaAnalyticsEvent');
     expect(servicesHtml).toContain('github_issue_start');
     expect(servicesHtml).toContain('deposit_click');
     expect(servicesHtml).toContain('faq_expand_');
@@ -193,6 +196,10 @@ describe('Panda Notes services conversion path', () => {
     expect(privateIntakeHtml).toContain('Open email draft');
     expect(privateIntakeHtml).toContain('Submit private intake');
     expect(privateIntakeHtml).toContain('data-intake-endpoint="https://panda-notes-smoky.vercel.app/api/private-intake"');
+    expect(privateIntakeHtml).toContain('data-analytics-endpoint="https://panda-notes-smoky.vercel.app/api/analytics-event"');
+    expect(privateIntakeHtml).toContain("trackPrivateIntakeEvent('page_view'");
+    expect(privateIntakeHtml).toContain("trackPrivateIntakeEvent('private_intake_submit'");
+    expect(privateIntakeHtml).toContain("trackPrivateIntakeEvent('private_intake_submit_success'");
     expect(privateIntakeHtml).toContain('fetch(intakeEndpoint');
     expect(privateIntakeHtml).toContain('Clear local draft');
     expect(privateIntakeHtml).toContain('localStorage');

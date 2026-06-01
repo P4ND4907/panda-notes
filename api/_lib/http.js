@@ -69,3 +69,7 @@ function getAllowedOrigins() {
   if (!configured) return defaultAllowedOrigins;
   return configured.split(',').map((origin) => origin.trim()).filter(Boolean);
 }
+
+export function isAllowedOrigin(origin = '') {
+  return getAllowedOrigins().includes(origin);
+}

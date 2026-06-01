@@ -26,6 +26,29 @@ export async function createPrivateIssue({ title, body, labels = [] }, fetchImpl
   return response;
 }
 
+export async function createIssueComment(issueNumber, body, fetchImpl = fetch) {
+  const token = process.env.PRIVATE_INTAKE_GITHUB_TOKEN;
+  if (!token) throw new Error('missing_private_intake_github_token');
+  const repo = parseRepo();
+  const response = await githubRequest(
+    `/repos/${repo.owner}/${repo.repo}/issues/${issueNumber}/comments`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ body })
+    },
+    token,
+    fetchImpl
+  );
+  return response;
+}
+
+export async function listIssueComments(issueNumber, fetchImpl = fetch) {
+  const token = process.env.PRIVATE_INTAKE_GITHUB_TOKEN;
+  if (!token) throw new Error('missing_private_intake_github_token');
+  const repo = parseRepo();
+  return githubRequest(`/repos/${repo.owner}/${repo.repo}/issues/${issueNumber}/comments?per_page=100`, {}, token, fetchImpl);
+}
+
 export async function findIssueByMarker(marker, fetchImpl = fetch) {
   const token = process.env.PRIVATE_INTAKE_GITHUB_TOKEN;
   if (!token) throw new Error('missing_private_intake_github_token');

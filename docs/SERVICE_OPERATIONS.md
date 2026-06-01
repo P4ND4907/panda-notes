@@ -45,6 +45,7 @@ The serverless backend is designed for Vercel:
 
 - `POST /api/private-intake`: validates a private intake packet and creates an issue in `P4ND4907/panda-notes-private-intake`.
 - `POST /api/stripe-webhook`: verifies Stripe's webhook signature and creates a private payment-confirmation issue.
+- `POST /api/analytics-event`: records privacy-safe service funnel events as comments on daily private analytics issues.
 
 Required Vercel environment variables:
 
@@ -54,6 +55,12 @@ Required Vercel environment variables:
 - `PANDA_ALLOWED_ORIGINS`: comma-separated origins allowed to submit intake, usually `https://p4nd4907.github.io,https://panda-notes-smoky.vercel.app`.
 
 Never put `PRIVATE_INTAKE_GITHUB_TOKEN`, `STRIPE_SECRET_KEY`, or `STRIPE_WEBHOOK_SECRET` in browser code, GitHub Pages HTML, screenshots, public issues, or committed files.
+
+To check interest from your phone or laptop, open the private repo issues labeled `analytics`, or run:
+
+```powershell
+npm.cmd run analytics:summary
+```
 
 ## Setup Sprint Flow
 

@@ -895,7 +895,10 @@
       }
     </style>
   </head>
-  <body>
+  <body
+    data-analytics-page="services"
+    data-analytics-endpoint="https://panda-notes-smoky.vercel.app/api/analytics-event"
+  >
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <div class="page-shell">
       <header class="topbar">
@@ -1256,6 +1259,9 @@
       initServiceAnalytics();
       initServiceViewTracking();
       initSkipLinkFocus();
+      trackServiceEvent('page_view', {
+        page: 'services'
+      });
       schedulePlausibleLoad();
       scheduleStripeHydration();
 
@@ -1493,11 +1499,52 @@
         if (!eventName) return;
         const detail = { eventName, props };
         window.dispatchEvent(new CustomEvent('panda-service-event', { detail }));
+        sendPandaAnalyticsEvent(eventName, props);
         if (typeof window.plausible === 'function') {
           window.plausible(eventName, { props });
         }
         if (typeof window.gtag === 'function') {
           window.gtag('event', eventName, props);
+        }
+      }
+
+      function sendPandaAnalyticsEvent(eventName, props = {}) {
+        const endpoint = document.body?.dataset.analyticsEndpoint || '';
+        if (!endpoint || ['localhost', '127.0.0.1'].includes(window.location.hostname)) return;
+
+        const payload = {
+          eventName,
+          page: document.body?.dataset.analyticsPage || 'services',
+          path: window.location.pathname,
+          title: document.title,
+          referrer: document.referrer,
+          sessionId: getPandaAnalyticsSessionId(),
+          props
+        };
+
+        try {
+          fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true
+          }).catch(() => {});
+        } catch {
+          // Analytics should never block the buyer path.
+        }
+      }
+
+      function getPandaAnalyticsSessionId() {
+        const key = 'panda-notes-analytics-session-v1';
+        try {
+          let sessionId = sessionStorage.getItem(key);
+          if (!sessionId) {
+            sessionId = crypto.randomUUID ? crypto.randomUUID() : `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+            sessionStorage.setItem(key, sessionId);
+          }
+          return sessionId;
+        } catch {
+          return `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
         }
       }
 
