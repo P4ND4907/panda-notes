@@ -41,11 +41,13 @@ const screenshotPath = resolve(tmpdir(), 'panda-notes-services-accessibility.png
 const skipScreenshotPath = resolve(tmpdir(), 'panda-notes-services-skip-link.png');
 const mobileScreenshotPath = resolve(tmpdir(), 'panda-notes-services-mobile.png');
 const privateIntakeScreenshotPath = resolve(tmpdir(), 'panda-notes-private-intake.png');
+const launchScreenshotPath = resolve(tmpdir(), 'panda-notes-launch-kit.png');
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 const pageIssues = [];
 const mobileIssues = [];
 const privateIntakeIssues = [];
+const launchIssues = [];
 
 page.on('pageerror', (error) => pageIssues.push(`pageerror: ${error.message}`));
 page.on('console', (message) => {
@@ -118,6 +120,37 @@ try {
   };
   await privatePage.screenshot({ path: privateIntakeScreenshotPath, fullPage: false });
   await privatePage.close();
+
+  const launchPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  launchPage.on('pageerror', (error) => launchIssues.push(`pageerror: ${error.message}`));
+  launchPage.on('console', (message) => {
+    if (['error', 'warning'].includes(message.type())) {
+      launchIssues.push(`${message.type()}: ${message.text()}`);
+    }
+  });
+  await launchPage.goto(`${baseUrl}/launch.html`, { waitUntil: 'domcontentloaded' });
+  await launchPage.waitForLoadState('networkidle');
+  await launchPage.evaluate(() => {
+    window.__pandaLaunchEvents = [];
+    window.addEventListener('panda-launch-event', (event) => {
+      window.__pandaLaunchEvents.push(event.detail);
+    });
+  });
+  await launchPage.getByRole('button', { name: 'Copy short post' }).click();
+  await launchPage.waitForFunction(() => /Copied short launch copy|Copy was blocked/.test(document.querySelector('[data-copy-status]')?.textContent || ''));
+  const launchState = await launchPage.evaluate(() => {
+    const image = document.querySelector('img[src="./assets/panda-notes-console-preview.png"]');
+    return {
+      title: document.title,
+      hasHeroCopy: document.body.innerText.includes('Turn messy tester feedback into developer-ready repair work'),
+      hasCopyStatus: /Copied short launch copy|Copy was blocked/.test(document.querySelector('[data-copy-status]')?.textContent || ''),
+      imageLoaded: Boolean(image && image.naturalWidth > 100 && image.naturalHeight > 100),
+      launchEvents: window.__pandaLaunchEvents?.map((event) => event.eventName) || [],
+      horizontalOverflow: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth)
+    };
+  });
+  await launchPage.screenshot({ path: launchScreenshotPath, fullPage: false });
+  await launchPage.close();
 
   const bodyText = await page.locator('body').innerText();
   const title = await page.title();
@@ -288,10 +321,13 @@ try {
     skipScreenshotPath,
     mobileScreenshotPath,
     privateIntakeScreenshotPath,
+    launchScreenshotPath,
     mobileState,
     mobileIssues,
     privateIntakeState,
     privateIntakeIssues,
+    launchState,
+    launchIssues,
     pageIssues
   };
 
@@ -338,6 +374,13 @@ try {
     !privateIntakeState.clearStatus.includes('draft cleared') && 'private intake clear draft did not update status',
     privateIntakeState.horizontalOverflow > 1 && `private intake has horizontal overflow: ${privateIntakeState.horizontalOverflow}px`,
     privateIntakeIssues.length > 0 && 'private intake page emitted console or runtime errors',
+    launchState.title !== 'Panda Notes Launch Kit | Share the Beta Feedback Workflow' && 'launch page title mismatch',
+    !launchState.hasHeroCopy && 'launch page should render hero copy',
+    !launchState.hasCopyStatus && 'launch copy button did not update status',
+    !launchState.imageLoaded && 'launch page preview image did not load',
+    !launchState.launchEvents.includes('launch_copy_post') && 'launch copy event did not dispatch',
+    launchState.horizontalOverflow > 1 && `launch page has horizontal overflow: ${launchState.horizontalOverflow}px`,
+    launchIssues.length > 0 && 'launch page emitted console or runtime errors',
     pageIssues.length > 0 && 'page emitted console or runtime errors'
   ].filter(Boolean);
 

@@ -29,6 +29,23 @@ describe('Panda Notes analytics collector helpers', () => {
     expect(validation.data.props.nested).toBeUndefined();
   });
 
+  it('accepts launch promotion events for measuring distribution work', () => {
+    const validation = validateAnalyticsPayload({
+      eventName: 'launch_copy_post',
+      page: 'launch',
+      path: '/panda-notes/launch.html',
+      title: 'Panda Notes Launch Kit',
+      sessionId: 'launch-session-123',
+      props: {
+        post: 'show-hn'
+      }
+    });
+
+    expect(validation.ok).toBe(true);
+    expect(validation.data.page).toBe('launch');
+    expect(validation.data.props.post).toBe('show-hn');
+  });
+
   it('rejects unknown analytics events and invalid pages', () => {
     const validation = validateAnalyticsPayload({
       eventName: 'steal_everything',

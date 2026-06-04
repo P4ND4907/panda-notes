@@ -10,6 +10,7 @@ function readProjectFile(path) {
 describe('Panda Notes services conversion path', () => {
   const servicesHtml = readProjectFile('public/services.html');
   const privateIntakeHtml = readProjectFile('public/private-intake.html');
+  const launchHtml = readProjectFile('public/launch.html');
   const stripeConfig = JSON.parse(readProjectFile('public/stripe-links.json'));
   const robotsTxt = readProjectFile('public/robots.txt');
   const sitemapXml = readProjectFile('public/sitemap.xml');
@@ -21,6 +22,7 @@ describe('Panda Notes services conversion path', () => {
   });
 
   it('keeps the free product and privacy boundary visible', () => {
+    expect(servicesHtml).toContain('launch.html');
     expect(servicesHtml).toContain('The Free Product Stays Useful');
     expect(servicesHtml).toContain('Local-first workflow');
     expect(servicesHtml).toContain('Private handoff after scope');
@@ -210,6 +212,34 @@ describe('Panda Notes services conversion path', () => {
     expect(privateIntakeHtml).toContain('data-intake-email="khepri26@gmail.com"');
     expect(privateIntakeHtml).toContain('Email draft opened to ${intakeEmail}. Review the packet before sending.');
     expect(sitemapXml).toContain('<loc>https://p4nd4907.github.io/panda-notes/private-intake.html</loc>');
+  });
+
+  it('ships a public launch kit for distribution and repo promotion', () => {
+    const readme = readProjectFile('README.md');
+    const launchKit = readProjectFile('docs/LAUNCH_KIT.md');
+    const funding = readProjectFile('.github/FUNDING.yml');
+
+    expect(readme).toContain('Turn messy alpha and beta tester feedback into developer-ready repair work.');
+    expect(readme).toContain('Launch kit: <https://p4nd4907.github.io/panda-notes/launch.html>');
+    expect(readme).toContain('Need it installed or cleaned up for you?');
+
+    expect(launchHtml).toContain('<title>Panda Notes Launch Kit | Share the Beta Feedback Workflow</title>');
+    expect(launchHtml).toContain('Turn messy tester feedback into developer-ready repair work.');
+    expect(launchHtml).toContain('data-copy-post');
+    expect(launchHtml).toContain('Panda Notes gives testers a right-click note layer');
+    expect(launchHtml).toContain('https://p4nd4907.github.io/panda-notes/services.html');
+    expect(launchHtml).toContain('panda-notes-console-preview.png');
+    expect(launchHtml).toContain('data-analytics-event="launch_copy_post"');
+    expect(launchHtml).toContain('trackLaunchEvent');
+
+    expect(launchKit).toContain('# Panda Notes Launch Kit');
+    expect(launchKit).toContain('7-Day Distribution Sprint');
+    expect(launchKit).toContain('Show HN');
+    expect(launchKit).toContain('Reddit / Discord');
+    expect(launchKit).toContain('Demo Script');
+
+    expect(funding).toContain('https://p4nd4907.github.io/panda-notes/services.html');
+    expect(sitemapXml).toContain('<loc>https://p4nd4907.github.io/panda-notes/launch.html</loc>');
   });
 
   it('ships Stripe Payment Link wiring with safe GitHub fallbacks', () => {

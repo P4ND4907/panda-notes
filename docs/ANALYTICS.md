@@ -1,6 +1,6 @@
 # Panda Notes Analytics Taxonomy
 
-Panda Notes uses privacy-aligned, stable snake_case event names on the Services and Private Intake pages. The Services page sends events to the Panda Notes collector at `/api/analytics-event`, sends events to Plausible when the Plausible script is active, emits a local `panda-service-event` for QA, and also calls `gtag('event', ...)` when a GA4 tag is present.
+Panda Notes uses privacy-aligned, stable snake_case event names on the Services, Private Intake, and Launch pages. The Services page sends events to the Panda Notes collector at `/api/analytics-event`, sends events to Plausible when the Plausible script is active, emits a local `panda-service-event` for QA, and also calls `gtag('event', ...)` when a GA4 tag is present.
 
 No analytics secret keys are stored in this repo. The Panda Notes collector uses the existing private GitHub intake repo token in Vercel and stores append-only daily rollup comments in the private intake repo. It does not store IP addresses, raw user-agent strings, private intake form bodies, customer secrets, or uploaded files.
 
@@ -34,6 +34,8 @@ npm.cmd run analytics:summary
 | Event name | Trigger | Why it matters |
 | --- | --- | --- |
 | `sample_output_view` | Redacted sample deliverable opens | Measures proof and trust-building engagement. |
+| `launch_copy_post` | Launch page post copy button clicked | Measures which promotion copy the owner is using. |
+| `launch_outbound_click` | Launch page link clicked | Measures whether visitors move from the launch kit to the app, services, widget demo, or GitHub. |
 | `contact_submit` | Private/contact form submission succeeds | Primary lead conversion. |
 | `thank_you` | Buyer reaches a thank-you/confirmation page | Primary conversion and attribution endpoint. |
 

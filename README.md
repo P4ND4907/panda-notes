@@ -1,6 +1,8 @@
 # Panda Notes
 
-Standalone local-first feedback console for developers, alpha testers, and beta testers.
+Turn messy alpha and beta tester feedback into developer-ready repair work.
+
+Panda Notes is a standalone local-first feedback console for developers, alpha testers, and beta testers. It captures rough tester notes with target context, groups repeated issues, and creates GitHub-ready repair drafts developers can actually use.
 
 Panda Notes started as the CueForge right-click note loop. This repo splits it into its own app so it can be used by any project that needs tester feedback tied to developer repair work.
 
@@ -11,6 +13,16 @@ Widget demo: <https://p4nd4907.github.io/panda-notes/widget-demo.html>
 Paid services: <https://p4nd4907.github.io/panda-notes/services.html>
 
 Private intake: <https://p4nd4907.github.io/panda-notes/private-intake.html>
+
+Launch kit: <https://p4nd4907.github.io/panda-notes/launch.html>
+
+Need it installed or cleaned up for you? Start with the [Panda Notes services page](https://p4nd4907.github.io/panda-notes/services.html).
+
+## Fast Pitch
+
+- Testers capture the broken, confusing, missing, cramped, or slow part of a product while the target context is fresh.
+- Developers review a grouped repair queue with note evidence, role/tag filters, code hints, JSON exports, and issue drafts.
+- Teams keep the public tool free and local-first, then pay for setup sprints, feedback cleanup, or private integration when they want help.
 
 ## Focus
 
