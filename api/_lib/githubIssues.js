@@ -49,6 +49,18 @@ export async function listIssueComments(issueNumber, fetchImpl = fetch) {
   return githubRequest(`/repos/${repo.owner}/${repo.repo}/issues/${issueNumber}/comments?per_page=100`, {}, token, fetchImpl);
 }
 
+export async function listPrivateIssuesByLabels(labels = [], fetchImpl = fetch) {
+  const token = process.env.PRIVATE_INTAKE_GITHUB_TOKEN;
+  if (!token) throw new Error('missing_private_intake_github_token');
+  const repo = parseRepo();
+  const query = new URLSearchParams({
+    state: 'open',
+    per_page: '100'
+  });
+  if (labels.length) query.set('labels', labels.join(','));
+  return githubRequest(`/repos/${repo.owner}/${repo.repo}/issues?${query.toString()}`, {}, token, fetchImpl);
+}
+
 export async function findIssueByMarker(marker, fetchImpl = fetch) {
   const token = process.env.PRIVATE_INTAKE_GITHUB_TOKEN;
   if (!token) throw new Error('missing_private_intake_github_token');

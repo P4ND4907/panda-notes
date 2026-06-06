@@ -1,4 +1,4 @@
-import { createIssueComment, createPrivateIssue, findIssueByMarker } from './githubIssues.js';
+import { createIssueComment, createPrivateIssue, findIssueByMarker, listPrivateIssuesByLabels } from './githubIssues.js';
 
 const allowedPages = new Set(['services', 'private-intake', 'launch']);
 const exactEvents = new Set([
@@ -109,7 +109,10 @@ export async function recordAnalyticsEvent(payload, { fetchImpl = fetch, now = n
 
   const event = validation.data;
   const dailyIssue = buildAnalyticsDailyIssue(event, now);
-  let issue = await findIssueByMarker(dailyIssue.marker, fetchImpl);
+  let issue = chooseExistingAnalyticsIssue(dailyIssue, await listPrivateIssuesByLabels(['analytics'], fetchImpl));
+  if (!issue) {
+    issue = await findIssueByMarker(dailyIssue.marker, fetchImpl);
+  }
   if (!issue) {
     issue = await createPrivateIssue(dailyIssue, fetchImpl);
   }
@@ -120,6 +123,12 @@ export async function recordAnalyticsEvent(payload, { fetchImpl = fetch, now = n
     issueNumber: issue.number,
     commentUrl: comment.html_url || null
   };
+}
+
+export function chooseExistingAnalyticsIssue(dailyIssue, issues = []) {
+  return issues.find((issue) =>
+    issue.title === dailyIssue.title || String(issue.body || '').includes(dailyIssue.marker)
+  ) || null;
 }
 
 function isKnownEvent(eventName) {

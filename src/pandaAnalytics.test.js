@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildAnalyticsComment,
   buildAnalyticsDailyIssue,
+  chooseExistingAnalyticsIssue,
   validateAnalyticsPayload
 } from '../api/_lib/analytics.js';
 
@@ -84,5 +85,22 @@ describe('Panda Notes analytics collector helpers', () => {
     expect(comment).toContain('panda-analytics-event');
     expect(comment).toContain('"eventName": "deposit_click"');
     expect(comment).toContain('"destination": "buy.stripe.com"');
+  });
+
+  it('chooses an existing daily analytics issue from listed GitHub issues before creating another one', () => {
+    const dailyIssue = {
+      marker: 'panda-analytics-2026-06-04',
+      title: '[Analytics] Panda Notes funnel 2026-06-04'
+    };
+
+    const existing = chooseExistingAnalyticsIssue(dailyIssue, [
+      {
+        number: 5,
+        title: '[Analytics] Panda Notes funnel 2026-06-04',
+        body: '<!-- panda-analytics-2026-06-04 -->'
+      }
+    ]);
+
+    expect(existing.number).toBe(5);
   });
 });
