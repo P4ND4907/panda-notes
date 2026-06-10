@@ -613,6 +613,7 @@
       function initPrivateIntake() {
         if (!form || !output) return;
         restoreDraft();
+        applyQueryPrefill();
         renderPacket();
 
         form.addEventListener('input', () => {
@@ -684,6 +685,31 @@
           });
         } catch {
           localStorage.removeItem(draftKey);
+        }
+      }
+
+      function applyQueryPrefill() {
+        const params = new URLSearchParams(window.location.search);
+        const prefill = {
+          service: params.get('service') || '',
+          paymentReference: params.get('paymentReference') || '',
+          replyEmail: params.get('replyEmail') || ''
+        };
+
+        if (params.get('stripePayment') && prefill.paymentReference) {
+          prefill.paymentReference = `${prefill.paymentReference} / ${params.get('stripePayment')}`;
+        }
+
+        Object.entries(prefill).forEach(([name, value]) => {
+          if (!value) return;
+          const field = form.elements[name];
+          if (!field) return;
+          field.value = value;
+        });
+
+        if (Object.values(prefill).some(Boolean)) {
+          saveDraft();
+          setStatus('Stripe payment details loaded. Add scope and submit the private intake packet.');
         }
       }
 

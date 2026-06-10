@@ -1,13 +1,18 @@
 (function () {
-  const VERSION = '0.2.0-alpha';
+  const VERSION = '0.3.0-alpha';
   const NOTE_TAGS = ['broken', 'layout issue', 'missing feedback', 'text issue', 'confusing', 'slow', 'idea'];
   const AUDIENCES = ['alpha', 'beta', 'developer'];
   const DEFAULTS = {
     project: 'Panda Notes Project',
     role: 'alpha',
     mode: 'local',
-    contextMenu: true
+    contextMenu: true,
+    launcher: false,
+    hotkey: '',
+    privateIntakeUrl: '',
+    installPlan: 'self-install'
   };
+  const INSTALL_PLANS = ['setup-sprint', 'developer-handoff', 'private-integration', 'self-install'];
 
   let settings = normalizeOptions({});
   let activeTarget = null;
@@ -15,7 +20,9 @@
   let root = null;
   let form = null;
   let statusNode = null;
+  let launcherButton = null;
   let contextHandler = null;
+  let hotkeyHandler = null;
 
   function init(options = {}) {
     destroy();
@@ -40,6 +47,22 @@
       document.addEventListener('contextmenu', contextHandler);
     }
 
+    if (settings.launcher) {
+      buildLauncher();
+    }
+
+    if (settings.hotkey) {
+      hotkeyHandler = (event) => {
+        if (!matchesHotkey(event, settings.hotkey)) return;
+        event.preventDefault();
+        openForTarget(document.activeElement || document.body, {
+          x: Math.round((window.innerWidth || 640) / 2),
+          y: Math.round((window.innerHeight || 480) / 2)
+        });
+      };
+      document.addEventListener('keydown', hotkeyHandler);
+    }
+
     return api;
   }
 
@@ -48,10 +71,31 @@
       document.removeEventListener('contextmenu', contextHandler);
       contextHandler = null;
     }
+    if (hotkeyHandler) {
+      document.removeEventListener('keydown', hotkeyHandler);
+      hotkeyHandler = null;
+    }
     root?.remove();
+    launcherButton?.remove();
     root = null;
     form = null;
     statusNode = null;
+    launcherButton = null;
+  }
+
+  function buildLauncher() {
+    launcherButton = document.createElement('button');
+    launcherButton.type = 'button';
+    launcherButton.className = 'panda-notes-widget__launcher';
+    launcherButton.textContent = 'Panda Notes';
+    launcherButton.setAttribute('aria-label', 'Open Panda Notes feedback widget');
+    launcherButton.addEventListener('click', () => {
+      openForTarget(document.body, {
+        x: Math.max(24, window.innerWidth - 360),
+        y: Math.max(24, window.innerHeight - 520)
+      });
+    });
+    document.body.append(launcherButton);
   }
 
   function buildPopup() {
@@ -96,7 +140,9 @@
         </label>
         <div class="panda-notes-widget__actions">
           <button class="panda-notes-widget__primary" type="submit">Save note</button>
+          <button type="button" data-panda-copy-draft>Copy issue draft</button>
           <button type="button" data-panda-export>Export JSON</button>
+          ${settings.privateIntakeUrl ? '<a class="panda-notes-widget__link" data-panda-private-intake target="_blank" rel="noopener">Private intake</a>' : ''}
         </div>
         <p class="panda-notes-widget__status" aria-live="polite"></p>
       </form>
@@ -108,7 +154,25 @@
     form.elements.role.value = settings.role;
     form.addEventListener('submit', saveFromForm);
     root.querySelector('[data-panda-close]').addEventListener('click', closePopup);
+    root.querySelector('[data-panda-copy-draft]').addEventListener('click', copyIssueDraft);
     root.querySelector('[data-panda-export]').addEventListener('click', exportNotes);
+    const privateLink = root.querySelector('[data-panda-private-intake]');
+    if (privateLink) privateLink.href = settings.privateIntakeUrl;
+  }
+
+  function openForTarget(element = document.body, position = {}) {
+    const x = clamp(position.x ?? Math.round((window.innerWidth || 640) / 2), 0, window.innerWidth || 10000);
+    const y = clamp(position.y ?? Math.round((window.innerHeight || 480) / 2), 0, window.innerHeight || 10000);
+    activeTarget = describeTarget(element);
+    activeViewport = {
+      width: window.innerWidth || 0,
+      height: window.innerHeight || 0,
+      x,
+      y,
+      xPercent: percent(x, window.innerWidth || 1),
+      yPercent: percent(y, window.innerHeight || 1)
+    };
+    openPopup(x, y);
   }
 
   function openPopup(clientX, clientY) {
@@ -150,7 +214,10 @@
       target: {
         label: String(data.get('targetLabel') || activeTarget?.label || 'Unknown target'),
         component: String(data.get('component') || activeTarget?.component || ''),
-        path: activeTarget?.path || ''
+        path: activeTarget?.path || '',
+        selector: activeTarget?.selector || activeTarget?.path || '',
+        selectedText: activeTarget?.selectedText || '',
+        code: activeTarget?.code || {}
       },
       viewport: activeViewport || {
         width: window.innerWidth || 0,
@@ -167,6 +234,79 @@
     localStorage.setItem(settings.storageKey, JSON.stringify(notes.slice(0, 120)));
     setStatus(`Saved locally. ${notes.length} note${notes.length === 1 ? '' : 's'} ready to export.`);
     form.elements.note.value = '';
+  }
+
+  async function copyIssueDraft() {
+    const notes = getNotes();
+    const note = notes[0] || buildDraftNoteFromForm();
+    if (!note?.note) {
+      setStatus('Save or write a tester note before copying a draft.');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(buildIssueDraft(note));
+      setStatus('GitHub-ready issue draft copied.');
+    } catch {
+      setStatus('Clipboard was blocked. Export JSON instead.');
+    }
+  }
+
+  function buildDraftNoteFromForm() {
+    if (!form) return null;
+    const data = new FormData(form);
+    const noteText = String(data.get('note') || '').trim();
+    if (!noteText) return null;
+    return buildNote({
+      project: settings.project,
+      role: String(data.get('role') || settings.role),
+      tag: String(data.get('tag') || 'confusing'),
+      note: noteText,
+      target: {
+        label: String(data.get('targetLabel') || activeTarget?.label || 'Unknown target'),
+        component: String(data.get('component') || activeTarget?.component || ''),
+        path: activeTarget?.path || '',
+        selector: activeTarget?.selector || activeTarget?.path || '',
+        selectedText: activeTarget?.selectedText || '',
+        code: activeTarget?.code || {}
+      },
+      viewport: activeViewport || {
+        width: window.innerWidth || 0,
+        height: window.innerHeight || 0,
+        x: 0,
+        y: 0,
+        xPercent: 0,
+        yPercent: 0
+      }
+    });
+  }
+
+  function buildIssueDraft(note) {
+    const target = note.target || {};
+    const codeHint = target.code?.file || target.code?.symbol
+      ? `${target.code?.file || '[file not provided]'}${target.code?.symbol ? ` :: ${target.code.symbol}` : ''}`
+      : 'Not provided';
+    return [
+      `# [Panda Notes] ${note.tag}: ${target.component || target.label || 'Unknown target'}`,
+      '',
+      '## Tester evidence',
+      `- Role: ${note.audience}`,
+      `- Page: ${note.page}`,
+      `- Target: ${target.label || 'Unknown target'}`,
+      `- Component: ${target.component || 'Not provided'}`,
+      `- Selector: ${target.selector || target.path || 'Not provided'}`,
+      `- Selected text: ${target.selectedText || 'Not provided'}`,
+      `- Click point: ${formatViewport(note.viewport)}`,
+      '',
+      '## Note',
+      note.note || '[empty]',
+      '',
+      '## Code hint',
+      codeHint,
+      '',
+      '## Privacy boundary',
+      'This draft came from local Panda Notes data. Do not paste secrets, credentials, customer data, or confidential source code into public issues.'
+    ].join('\n');
   }
 
   function exportNotes() {
@@ -206,7 +346,13 @@
       target: {
         label: clean(target.label || 'Unknown target', 140),
         component: clean(target.component || '', 80),
-        path: clean(target.path || '', 140)
+        path: clean(target.path || '', 140),
+        selector: clean(target.selector || target.path || '', 160),
+        selectedText: clean(target.selectedText || '', 220),
+        code: {
+          file: clean(target.code?.file || target.file || '', 180),
+          symbol: clean(target.code?.symbol || target.symbol || '', 140)
+        }
       },
       viewport: {
         width: clamp(viewport.width, 0, 10000),
@@ -236,7 +382,23 @@
         dataset.pandaComponent,
         element?.getAttribute?.('data-panda-component')
       ], 80),
-      path: describePath(element)
+      path: describePath(element),
+      selector: describePath(element),
+      selectedText: clean(element?.ownerDocument?.getSelection?.().toString?.(), 220),
+      code: {
+        file: first([
+          dataset.pandaFile,
+          element?.getAttribute?.('data-panda-file'),
+          dataset.pandaSource,
+          element?.getAttribute?.('data-panda-source')
+        ], 180),
+        symbol: first([
+          dataset.pandaSymbol,
+          element?.getAttribute?.('data-panda-symbol'),
+          dataset.pandaHandler,
+          element?.getAttribute?.('data-panda-handler')
+        ], 140)
+      }
     };
   }
 
@@ -254,13 +416,18 @@
     const project = clean(options.project || DEFAULTS.project, 80) || DEFAULTS.project;
     const role = AUDIENCES.includes(options.role) ? options.role : DEFAULTS.role;
     const storageKey = clean(options.storageKey, 120) || `panda-notes-widget:${slug(project)}`;
+    const privateIntakeUrl = safeUrl(options.privateIntakeUrl);
 
     return {
       project,
       role,
       mode: options.mode || DEFAULTS.mode,
       storageKey,
-      contextMenu: options.contextMenu !== false
+      contextMenu: options.contextMenu !== false,
+      launcher: Boolean(options.launcher),
+      hotkey: clean(options.hotkey, 32),
+      privateIntakeUrl,
+      installPlan: INSTALL_PLANS.includes(options.installPlan) ? options.installPlan : DEFAULTS.installPlan
     };
   }
 
@@ -364,9 +531,37 @@
         gap: 8px;
         flex-wrap: wrap;
       }
+      .panda-notes-widget__link {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(43, 68, 54, 0.16);
+        border-radius: 8px;
+        background: rgba(251, 246, 232, 0.86);
+        color: #18221d;
+        font-weight: 850;
+        padding: 0 12px;
+        text-decoration: none;
+      }
       .panda-notes-widget__status {
         min-height: 18px;
         margin: 0;
+      }
+      .panda-notes-widget__launcher {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 2147483646;
+        min-height: 42px;
+        border: 1px solid rgba(31, 101, 64, 0.32);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #4fb36a, #b8e26b);
+        color: #102017;
+        box-shadow: 0 14px 42px rgba(24, 34, 29, 0.24);
+        cursor: pointer;
+        font: 850 14px/1 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        padding: 0 14px;
       }
     `;
     document.head.append(style);
@@ -399,6 +594,17 @@
     return String(value || '').trim().replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 48);
   }
 
+  function safeUrl(value) {
+    const text = clean(value, 260);
+    if (!text) return '';
+    try {
+      const url = new URL(text);
+      return url.protocol === 'https:' ? url.toString() : '';
+    } catch {
+      return '';
+    }
+  }
+
   function slug(value) {
     return String(value || 'project').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 64) || 'project';
   }
@@ -411,9 +617,31 @@
     return clamp((Number(value) / Number(size || 1)) * 100, 0, 100);
   }
 
+  function formatViewport(viewport = {}) {
+    const width = clamp(viewport.width, 0, 10000);
+    const height = clamp(viewport.height, 0, 10000);
+    const x = clamp(viewport.x, 0, 10000);
+    const y = clamp(viewport.y, 0, 10000);
+    const xPercent = clamp(viewport.xPercent, 0, 100);
+    const yPercent = clamp(viewport.yPercent, 0, 100);
+    return `${width}x${height}, click ${x},${y} (${xPercent}%,${yPercent}%)`;
+  }
+
+  function matchesHotkey(event, hotkey) {
+    const parts = String(hotkey || '').toLowerCase().split('+').map((part) => part.trim()).filter(Boolean);
+    if (!parts.length) return false;
+    const key = parts.at(-1);
+    return event.key?.toLowerCase() === key
+      && event.ctrlKey === parts.includes('ctrl')
+      && event.shiftKey === parts.includes('shift')
+      && event.altKey === parts.includes('alt')
+      && event.metaKey === parts.includes('meta');
+  }
+
   const api = {
     init,
     destroy,
+    openForTarget,
     exportNotes,
     getNotes,
     version: VERSION

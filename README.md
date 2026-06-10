@@ -10,6 +10,8 @@ Live app: <https://p4nd4907.github.io/panda-notes/>
 
 Widget demo: <https://p4nd4907.github.io/panda-notes/widget-demo.html>
 
+Install widget: <https://p4nd4907.github.io/panda-notes/install.html>
+
 Paid services: <https://p4nd4907.github.io/panda-notes/services.html>
 
 Private intake: <https://p4nd4907.github.io/panda-notes/private-intake.html>
@@ -22,7 +24,7 @@ Need it installed or cleaned up for you? Start with the [Panda Notes services pa
 
 - Testers capture the broken, confusing, missing, cramped, or slow part of a product while the target context is fresh.
 - Developers review a grouped repair queue with note evidence, role/tag filters, code hints, JSON exports, and issue drafts.
-- Teams keep the public tool free and local-first, then pay for setup sprints, feedback cleanup, or private integration when they want help.
+- Teams can self-host the MIT code, then pay for setup sprints, feedback cleanup, or private integration when they want it handled cleanly.
 
 ## Focus
 
@@ -40,7 +42,7 @@ Need it installed or cleaned up for you? Start with the [Panda Notes services pa
 - GitHub-ready issue draft copy/export with tester evidence, labels, target code, and test plan.
 - Repair prompt copy/export for handing a selected issue to Codex, ChatGPT, or another code assistant without adding secrets to the widget.
 - Developer packet copy/export and JSON import/export for moving notes between browsers or projects.
-- Alpha embeddable right-click widget at `/panda-notes-widget.js`.
+- v0.3 installable right-click widget at `/panda-notes-widget.js`, with optional launcher, hotkey, private-intake link, copied issue drafts, and target code hints.
 
 ## Can I Use It In My Project?
 
@@ -52,6 +54,7 @@ Current integration:
 - Import/export Panda Notes JSON between projects or browsers.
 - Copy developer packets and GitHub-ready issue drafts.
 - Add the alpha right-click widget to a project with one script tag.
+- Generate a paid-install snippet at <https://p4nd4907.github.io/panda-notes/install.html>.
 
 Alpha widget install:
 
@@ -62,7 +65,11 @@ Alpha widget install:
     project: "my-app",
     role: "beta",
     mode: "local",
-    contextMenu: true
+    contextMenu: true,
+    launcher: true,
+    hotkey: "ctrl+shift+p",
+    privateIntakeUrl: "https://p4nd4907.github.io/panda-notes/private-intake.html",
+    installPlan: "setup-sprint"
   });
 </script>
 ```

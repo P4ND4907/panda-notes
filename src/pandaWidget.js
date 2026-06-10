@@ -1,18 +1,53 @@
 import { createPandaNote, pandaAudiences } from './pandaNotes.js';
 
 const DEFAULT_PROJECT = 'Panda Notes Project';
+const DEFAULT_WIDGET_BASE_URL = 'https://p4nd4907.github.io/panda-notes/';
+const installPlans = new Set(['setup-sprint', 'developer-handoff', 'private-integration', 'self-install']);
 
 export function normalizeWidgetOptions(options = {}) {
   const project = sanitizeWidgetText(options.project || DEFAULT_PROJECT, 80) || DEFAULT_PROJECT;
   const role = pandaAudiences.some((audience) => audience.key === options.role) ? options.role : 'alpha';
   const storageKey = sanitizeWidgetText(options.storageKey, 120) || createWidgetStorageKey(project);
+  const privateIntakeUrl = sanitizeWidgetUrl(options.privateIntakeUrl);
+  const installPlan = installPlans.has(options.installPlan) ? options.installPlan : 'self-install';
 
   return {
     project,
     role,
     storageKey,
-    contextMenu: options.contextMenu !== false
+    contextMenu: options.contextMenu !== false,
+    launcher: Boolean(options.launcher),
+    hotkey: sanitizeWidgetText(options.hotkey, 32),
+    privateIntakeUrl,
+    installPlan
   };
+}
+
+export function buildWidgetInstallSnippet(options = {}) {
+  const normalized = normalizeWidgetOptions(options);
+  const baseUrl = withTrailingSlash(sanitizeWidgetUrl(options.baseUrl) || DEFAULT_WIDGET_BASE_URL);
+  const widgetUrl = new URL('panda-notes-widget.js', baseUrl).toString();
+  const config = {
+    project: normalized.project,
+    role: normalized.role,
+    contextMenu: normalized.contextMenu,
+    launcher: normalized.launcher,
+    privateIntakeUrl: normalized.privateIntakeUrl,
+    installPlan: normalized.installPlan
+  };
+
+  if (normalized.hotkey) config.hotkey = normalized.hotkey;
+
+  return [
+    `<script src="${widgetUrl}" defer></script>`,
+    '<script>',
+    '  window.addEventListener("DOMContentLoaded", () => {',
+    '    window.PandaNotes.init(',
+    indentJson(config, 6),
+    '    );',
+    '  });',
+    '</script>'
+  ].join('\n');
 }
 
 export function createWidgetStorageKey(project = DEFAULT_PROJECT) {
@@ -56,7 +91,23 @@ export function describeWidgetTarget(element) {
   return {
     label: label || 'Unknown target',
     component,
-    path: describeElementPath(element)
+    path: describeElementPath(element),
+    selector: describeElementPath(element),
+    selectedText: sanitizeWidgetText(element.ownerDocument?.getSelection?.().toString?.(), 220),
+    code: {
+      file: firstText([
+        dataset.pandaFile,
+        element.getAttribute?.('data-panda-file'),
+        dataset.pandaSource,
+        element.getAttribute?.('data-panda-source')
+      ], 160),
+      symbol: firstText([
+        dataset.pandaSymbol,
+        element.getAttribute?.('data-panda-symbol'),
+        dataset.pandaHandler,
+        element.getAttribute?.('data-panda-handler')
+      ], 120)
+    }
   };
 }
 
@@ -130,4 +181,27 @@ function sanitizeWidgetText(value, limit = 140) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, limit);
+}
+
+function sanitizeWidgetUrl(value) {
+  const text = sanitizeWidgetText(value, 260);
+  if (!text) return '';
+
+  try {
+    const url = new URL(text);
+    return url.protocol === 'https:' ? url.toString() : '';
+  } catch {
+    return '';
+  }
+}
+
+function withTrailingSlash(value) {
+  return value.endsWith('/') ? value : `${value}/`;
+}
+
+function indentJson(value, spaces) {
+  return JSON.stringify(value, null, 2)
+    .split('\n')
+    .map((line) => `${' '.repeat(spaces)}${line}`)
+    .join('\n');
 }

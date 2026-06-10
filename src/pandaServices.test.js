@@ -10,6 +10,7 @@ function readProjectFile(path) {
 describe('Panda Notes services conversion path', () => {
   const servicesHtml = readProjectFile('public/services.html');
   const privateIntakeHtml = readProjectFile('public/private-intake.html');
+  const installHtml = readProjectFile('public/install.html');
   const launchHtml = readProjectFile('public/launch.html');
   const stripeConfig = JSON.parse(readProjectFile('public/stripe-links.json'));
   const robotsTxt = readProjectFile('public/robots.txt');
@@ -167,12 +168,30 @@ describe('Panda Notes services conversion path', () => {
   it('makes public-safe intake and private handoff boundaries explicit', () => {
     expect(servicesHtml).toContain('Public-safe request');
     expect(servicesHtml).toContain('Private handoff');
+    expect(servicesHtml).toContain('./install.html');
+    expect(servicesHtml).toContain('Install widget');
     expect(servicesHtml).toContain('./private-intake.html');
     expect(servicesHtml).toContain('Open private intake');
     expect(servicesHtml).toContain('aria-label="Open public-safe GitHub setup sprint request"');
     expect(servicesHtml).toContain('aria-label="Open public-safe GitHub handoff request; private files are shared after scope confirmation"');
     expect(servicesHtml).toContain('private files move to an agreed private channel after scope confirmation');
     expect(servicesHtml).not.toContain('Need privacy? Use the private intake path instead of public GitHub issues');
+  });
+
+  it('ships a paid install page with copy-paste widget setup', () => {
+    expect(installHtml).toContain('<title>Panda Notes Install | Right-Click Feedback Widget</title>');
+    expect(installHtml).toContain('data-install-form');
+    expect(installHtml).toContain('data-install-snippet');
+    expect(installHtml).toContain('data-copy-install');
+    expect(installHtml).toContain('PandaNotes.init');
+    expect(installHtml).toContain('panda-notes-widget.js');
+    expect(installHtml).toContain('data-panda-target');
+    expect(installHtml).toContain('data-panda-file');
+    expect(installHtml).toContain('Get a scoped setup plan');
+    expect(installHtml).toContain('https://buy.stripe.com');
+    expect(installHtml).toContain('./private-intake.html');
+    expect(installHtml).toContain('local-first');
+    expect(sitemapXml).toContain('<loc>https://p4nd4907.github.io/panda-notes/install.html</loc>');
   });
 
   it('keeps the services page light with idle Stripe hydration and lazy below-fold rendering', () => {
@@ -203,6 +222,9 @@ describe('Panda Notes services conversion path', () => {
     expect(privateIntakeHtml).toContain("trackPrivateIntakeEvent('private_intake_submit'");
     expect(privateIntakeHtml).toContain("trackPrivateIntakeEvent('private_intake_submit_success'");
     expect(privateIntakeHtml).toContain('fetch(intakeEndpoint');
+    expect(privateIntakeHtml).toContain('applyQueryPrefill()');
+    expect(privateIntakeHtml).toContain('paymentReference');
+    expect(privateIntakeHtml).toContain('replyEmail');
     expect(privateIntakeHtml).toContain('Clear local draft');
     expect(privateIntakeHtml).toContain('localStorage');
     expect(privateIntakeHtml).toContain('navigator.clipboard.writeText');

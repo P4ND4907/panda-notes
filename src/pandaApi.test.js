@@ -1,7 +1,7 @@
 import { createHmac } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { buildIntakeIssue, validateIntakePayload } from '../api/_lib/intake.js';
-import { buildStripeIssue, shouldRecordStripeEvent, verifyStripeSignature } from '../api/_lib/stripeWebhook.js';
+import { buildPaidIntakeUrl, buildStripeIssue, shouldRecordStripeEvent, verifyStripeSignature } from '../api/_lib/stripeWebhook.js';
 
 describe('Panda Notes private intake API helpers', () => {
   it('validates private intake packets before creating private issues', () => {
@@ -65,17 +65,35 @@ describe('Panda Notes Stripe webhook helpers', () => {
           customer_details: { email: 'buyer@example.com' },
           payment_link: 'plink_123',
           payment_intent: 'pi_123',
-          metadata: { service: 'setup-sprint' }
+          metadata: { panda_notes_offer: 'setup-sprint' }
         }
       }
     };
 
     expect(shouldRecordStripeEvent(event)).toBe(true);
-    const issue = buildStripeIssue(event);
+    const issue = buildStripeIssue(event, { baseUrl: 'https://p4nd4907.github.io/panda-notes/' });
     expect(issue.marker).toBe('stripe-event-evt_123');
     expect(issue.title).toContain('[Stripe Paid]');
+    expect(issue.title).toContain('Setup Sprint');
     expect(issue.body).toContain('$250.00 USD');
     expect(issue.body).toContain('buyer@example.com');
-    expect(issue.labels).toEqual(expect.arrayContaining(['paid-service', 'payment-confirmed', 'stripe-deposit']));
+    expect(issue.body).toContain('Private intake link: https://p4nd4907.github.io/panda-notes/private-intake.html');
+    expect(issue.body).toContain('service=Setup+Sprint');
+    expect(issue.body).toContain('paymentReference=evt_123');
+    expect(issue.body).toContain('replyEmail=buyer%40example.com');
+    expect(issue.labels).toEqual(expect.arrayContaining(['paid-service', 'payment-confirmed', 'stripe-deposit', 'setup-sprint']));
+  });
+
+  it('builds customer intake links from Stripe payment metadata', () => {
+    const link = buildPaidIntakeUrl({
+      offerKey: 'developer-handoff',
+      eventId: 'evt_handoff',
+      email: 'buyer@example.com',
+      paymentIntent: 'pi_123'
+    }, 'https://p4nd4907.github.io/panda-notes/');
+
+    expect(link).toBe(
+      'https://p4nd4907.github.io/panda-notes/private-intake.html?service=Developer+Handoff+Pack&paymentReference=evt_handoff&replyEmail=buyer%40example.com&stripePayment=pi_123'
+    );
   });
 });

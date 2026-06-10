@@ -12,6 +12,8 @@ Create three one-time deposit links:
 
 The public Services page reads `public/stripe-links.json`. If a Stripe URL is present for an offer, its button goes to Stripe checkout. If a Stripe URL is blank, the button falls back to the matching GitHub intake form.
 
+Generated Payment Links redirect buyers back to Panda Notes after checkout. The current automation routes buyers to the private intake path so the paid customer can submit service, payment reference, reply email, scope, deadline, project URL, and delivery context without posting private details to public GitHub issues.
+
 ## Dashboard Setup
 
 1. Open Stripe Dashboard Payment Links.
@@ -70,7 +72,7 @@ Never commit `sk_test_...` or `sk_live_...` keys. `.env` and `.env.local` are ig
 
 ## Webhook Confirmation
 
-Panda Notes includes a serverless webhook at `/api/stripe-webhook`. It verifies Stripe's `Stripe-Signature` header with `STRIPE_WEBHOOK_SECRET`, ignores unrelated event types, and creates a private `payment-confirmed` issue in the private intake repo for successful checkout events.
+Panda Notes includes a serverless webhook at `/api/stripe-webhook`. It verifies Stripe's `Stripe-Signature` header with `STRIPE_WEBHOOK_SECRET`, ignores unrelated event types, and creates a private `payment-confirmed` issue in the private intake repo for successful checkout events. The private issue includes the matched offer, amount, customer email when Stripe provides it, and a ready-to-send private intake link.
 
 Do not expose the webhook signing secret in GitHub Pages, public issues, or committed files.
 

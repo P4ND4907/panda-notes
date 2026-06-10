@@ -193,7 +193,13 @@ export function createPandaNote({
     target: {
       label: sanitizeShortText(target.label || 'Unknown target', 140),
       component: sanitizeShortText(target.component || '', 80),
-      path: sanitizeShortText(target.path || '', 140)
+      path: sanitizeShortText(target.path || '', 140),
+      selector: sanitizeShortText(target.selector || target.path || '', 160),
+      selectedText: sanitizeShortText(target.selectedText || '', 220),
+      code: {
+        file: sanitizeShortText(target.code?.file || target.file || '', 180),
+        symbol: sanitizeShortText(target.code?.symbol || target.symbol || '', 140)
+      }
     },
     viewport: {
       width: clampNumber(viewport.width, 0, 10000),
@@ -276,6 +282,9 @@ export function buildRepairQueue(notes = [], { now = new Date() } = {}) {
         note: note.note,
         page: note.page,
         target: note.target.label,
+        selector: note.target.selector,
+        selectedText: note.target.selectedText,
+        code: note.target.code,
         viewport: note.viewport,
         createdAt: note.createdAt
       }))
@@ -415,6 +424,11 @@ export function buildGithubIssueDraft(action) {
   (action.evidence || []).forEach((item) => {
     const viewport = formatViewport(item.viewport);
     lines.push(`- ${item.audience}: ${item.note || '[empty]'} (target: ${item.target || '[unknown]'}, viewport: ${viewport})`);
+    if (item.selector) lines.push(`  - Selector: ${item.selector}`);
+    if (item.selectedText) lines.push(`  - Selected text: ${item.selectedText}`);
+    if (item.code?.file || item.code?.symbol) {
+      lines.push(`  - Code hint: ${[item.code?.file, item.code?.symbol].filter(Boolean).join(' :: ')}`);
+    }
   });
 
   lines.push(
@@ -455,8 +469,11 @@ export function buildRepairPrompt(action) {
     `- Role: ${item.audience}`,
     `- Note: ${item.note || '[empty]'}`,
     `- Target: ${item.target || '[unknown]'}`,
+    item.selector ? `- Selector: ${item.selector}` : '',
+    item.selectedText ? `- Selected text: ${item.selectedText}` : '',
+    item.code?.file || item.code?.symbol ? `- Code hint: ${[item.code?.file, item.code?.symbol].filter(Boolean).join(' :: ')}` : '',
     `- Viewport: ${formatViewport(item.viewport)}`
-  ].join('\n')).join('\n\n');
+  ].filter(Boolean).join('\n')).join('\n\n');
 
   return [
     'You are helping repair a Panda Notes tester issue.',

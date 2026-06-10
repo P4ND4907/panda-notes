@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panda Notes Install | Right-Click Feedback Widget</title>
+    <meta
+      name="description"
+      content="Install the Panda Notes right-click feedback widget in an alpha, beta, staging, app, game, or website build."
+    />
+    <meta name="theme-color" content="#193429" />
+    <link rel="canonical" href="https://p4nd4907.github.io/panda-notes/install.html" />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --ink: #18221d;
+        --ink-soft: #32443a;
+        --forest: #193429;
+        --grove: #235940;
+        --bamboo: #4fb36a;
+        --bamboo-light: #b8e26b;
+        --paper: #fbf6e8;
+        --paper-warm: #f8edd7;
+        --gold: #d4a33f;
+        --border-soft: rgba(43, 68, 54, 0.18);
+        background: #e8f2df;
+        color: var(--ink);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background:
+          linear-gradient(90deg, rgba(35, 89, 64, 0.09) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(35, 89, 64, 0.07) 1px, transparent 1px),
+          linear-gradient(135deg, #edf6e7 0%, #dfeccc 45%, #f8ecd1 100%);
+        background-size: 42px 42px, 42px 42px, auto;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible {
+        outline: 3px solid var(--grove);
+        outline-offset: 3px;
+      }
+
+      .skip-link {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        transform: translateY(-200%);
+        border: 2px solid var(--grove);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--ink);
+        z-index: 1000;
+        padding: 10px 14px;
+        box-shadow: 0 10px 24px rgba(24, 34, 29, 0.16);
+        font-weight: 850;
+        text-decoration: none;
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      .topbar,
+      main,
+      footer {
+        padding-inline: clamp(14px, 5vw, 72px);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding-block: 18px;
+        background: rgba(25, 52, 41, 0.96);
+        color: var(--paper);
+      }
+
+      .brand,
+      .nav-links,
+      .button-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        min-width: 0;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        width: 46px;
+        height: 46px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #dff0c2, #f4d37c);
+        box-shadow: inset 0 -8px 0 rgba(31, 101, 64, 0.18), 0 12px 28px rgba(0, 0, 0, 0.22);
+      }
+
+      .panda-face {
+        position: relative;
+        display: block;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--paper);
+        box-shadow: inset 0 -4px 0 rgba(212, 163, 63, 0.22);
+      }
+
+      .panda-ear,
+      .panda-eye,
+      .panda-nose {
+        position: absolute;
+        display: block;
+        background: #1a211d;
+      }
+
+      .panda-ear {
+        width: 11px;
+        height: 11px;
+        top: -3px;
+        border-radius: 50%;
+      }
+
+      .panda-ear-left {
+        left: -2px;
+      }
+
+      .panda-ear-right {
+        right: -2px;
+      }
+
+      .panda-eye {
+        width: 7px;
+        height: 10px;
+        top: 9px;
+        border-radius: 50%;
+      }
+
+      .panda-eye-left {
+        left: 7px;
+        transform: rotate(12deg);
+      }
+
+      .panda-eye-right {
+        right: 7px;
+        transform: rotate(-12deg);
+      }
+
+      .panda-nose {
+        width: 7px;
+        height: 5px;
+        left: 50%;
+        bottom: 6px;
+        border-radius: 50% 50% 60% 60%;
+        transform: translateX(-50%);
+      }
+
+      .brand strong,
+      .brand span {
+        display: block;
+      }
+
+      .brand span span {
+        color: #c4d9c7;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .button-link,
+      button {
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid rgba(43, 68, 54, 0.18);
+        border-radius: 8px;
+        background: rgba(251, 246, 232, 0.86);
+        color: var(--ink);
+        cursor: pointer;
+        font: inherit;
+        font-weight: 850;
+        padding: 0 14px;
+        text-decoration: none;
+      }
+
+      .topbar .button-link {
+        border-color: rgba(251, 246, 232, 0.18);
+        background: rgba(251, 246, 232, 0.08);
+        color: var(--paper);
+      }
+
+      .primary {
+        border-color: rgba(31, 101, 64, 0.32);
+        background: linear-gradient(135deg, var(--bamboo), var(--bamboo-light));
+        color: #102017;
+      }
+
+      main {
+        display: grid;
+        gap: 22px;
+        padding-block: 42px 30px;
+      }
+
+      .hero {
+        max-width: 980px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(42px, 7vw, 82px);
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      h2,
+      h3,
+      p {
+        margin-block-start: 0;
+      }
+
+      p {
+        color: var(--ink-soft);
+        line-height: 1.55;
+      }
+
+      .install-grid {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.25fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .panel {
+        border: 1px solid var(--border-soft);
+        border-radius: 8px;
+        background: linear-gradient(180deg, rgba(255, 252, 241, 0.92), rgba(248, 237, 215, 0.86));
+        box-shadow: 0 18px 54px rgba(39, 61, 48, 0.14);
+        padding: 18px;
+      }
+
+      form {
+        display: grid;
+        gap: 13px;
+      }
+
+      label {
+        display: grid;
+        gap: 6px;
+        font-weight: 850;
+      }
+
+      label span {
+        color: #496153;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid rgba(43, 68, 54, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 252, 241, 0.95);
+        color: var(--ink);
+        font: inherit;
+        padding: 10px 11px;
+      }
+
+      textarea {
+        min-height: 84px;
+        resize: vertical;
+      }
+
+      pre {
+        min-height: 290px;
+        margin: 0;
+        overflow: auto;
+        border-radius: 8px;
+        background: #13241c;
+        color: #eef8df;
+        font-size: 13px;
+        line-height: 1.55;
+        padding: 16px;
+        white-space: pre-wrap;
+      }
+
+      .hint-list {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .hint-list li {
+        border-left: 3px solid var(--bamboo);
+        border-radius: 6px;
+        background: rgba(184, 226, 107, 0.2);
+        color: #32443a;
+        padding: 10px 12px;
+      }
+
+      .status {
+        min-height: 22px;
+        font-weight: 850;
+      }
+
+      footer {
+        padding-block: 22px;
+        color: #496153;
+        font-size: 13px;
+      }
+
+      @media (max-width: 860px) {
+        .topbar,
+        .install-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="topbar">
+      <a class="brand" href="./">
+        <span class="brand-mark" aria-hidden="true">
+          <span class="panda-face">
+            <span class="panda-ear panda-ear-left"></span>
+            <span class="panda-ear panda-ear-right"></span>
+            <span class="panda-eye panda-eye-left"></span>
+            <span class="panda-eye panda-eye-right"></span>
+            <span class="panda-nose"></span>
+          </span>
+        </span>
+        <span>
+          <strong>Panda Notes</strong>
+          <span>Installable tester feedback</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Panda Notes pages">
+        <a class="button-link" href="./">Console</a>
+        <a class="button-link" href="./widget-demo.html">Widget demo</a>
+        <a class="button-link" href="./services.html">Services</a>
+        <a class="button-link" href="https://github.com/P4ND4907/panda-notes">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main-content" tabindex="-1">
+      <section class="hero">
+        <h1>Install the right-click feedback widget</h1>
+        <p>
+          Add Panda Notes to a staging app, game, or website so alpha and beta testers can capture
+          target-specific notes without sending private data anywhere automatically.
+        </p>
+        <div class="button-row">
+          <a class="button-link primary" href="https://buy.stripe.com/eVq6oH4AJ4G90v4bt46AM03">Get a scoped setup plan</a>
+          <a class="button-link" href="./private-intake.html">Open private intake</a>
+          <a class="button-link" href="./widget-demo.html">Try widget demo</a>
+        </div>
+      </section>
+
+      <section class="install-grid" aria-label="Widget install builder">
+        <article class="panel">
+          <h2>Configure Snippet</h2>
+          <form data-install-form>
+            <label>
+              <span>Project name</span>
+              <input name="project" value="My Beta App" />
+            </label>
+            <label>
+              <span>Default tester role</span>
+              <select name="role">
+                <option value="alpha">Alpha tester</option>
+                <option value="beta" selected>Beta tester</option>
+                <option value="developer">Developer</option>
+              </select>
+            </label>
+            <label>
+              <span>Private intake URL</span>
+              <input name="privateIntakeUrl" value="https://p4nd4907.github.io/panda-notes/private-intake.html" />
+            </label>
+            <label>
+              <span>Optional hotkey</span>
+              <input name="hotkey" value="ctrl+shift+p" />
+            </label>
+            <label>
+              <span>Install notes</span>
+              <textarea readonly>Use data-panda-target for human labels, data-component for the owning component, data-panda-file for the file path, and data-panda-symbol for the handler or function.</textarea>
+            </label>
+            <div class="button-row">
+              <button class="primary" type="button" data-copy-install>Copy install snippet</button>
+              <button type="button" data-reset-install>Reset</button>
+            </div>
+            <p class="status" data-install-status>Snippet ready. Paste it before the closing body tag.</p>
+          </form>
+        </article>
+
+        <article class="panel">
+          <h2>Copy-Paste Install</h2>
+          <pre data-install-snippet></pre>
+        </article>
+      </section>
+
+      <section class="install-grid" aria-label="Developer markup hints">
+        <article class="panel">
+          <h2>Better Target Context</h2>
+          <ul class="hint-list">
+            <li><strong>data-panda-target</strong> names the exact UI target testers right-clicked.</li>
+            <li><strong>data-component</strong> maps feedback back to the owning component or module.</li>
+            <li><strong>data-panda-file</strong> and <strong>data-panda-symbol</strong> give developers a first code hint.</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h2>Example Markup</h2>
+          <pre>&lt;button
+  data-panda-target="Checkout submit"
+  data-component="CheckoutSubmitButton"
+  data-panda-file="src/checkout/CheckoutSubmitButton.jsx"
+  data-panda-symbol="handleCheckoutSubmit"
+&gt;
+  Place order
+&lt;/button&gt;</pre>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      Panda Notes is local-first. Paid setup is for teams that want the widget installed, configured, and handed off cleanly.
+    </footer>
+
+    <script>
+      const form = document.querySelector('[data-install-form]');
+      const output = document.querySelector('[data-install-snippet]');
+      const status = document.querySelector('[data-install-status]');
+      const baseUrl = 'https://p4nd4907.github.io/panda-notes/';
+
+      initInstallBuilder();
+
+      function initInstallBuilder() {
+        if (!form || !output) return;
+        form.addEventListener('input', renderInstallSnippet);
+        form.querySelector('[data-copy-install]')?.addEventListener('click', copyInstallSnippet);
+        form.querySelector('[data-reset-install]')?.addEventListener('click', () => {
+          form.reset();
+          renderInstallSnippet();
+          setStatus('Snippet reset.');
+        });
+        renderInstallSnippet();
+      }
+
+      function readInstallOptions() {
+        const data = Object.fromEntries(new FormData(form).entries());
+        return {
+          project: data.project || 'My Beta App',
+          role: ['alpha', 'beta', 'developer'].includes(data.role) ? data.role : 'beta',
+          contextMenu: true,
+          launcher: true,
+          hotkey: data.hotkey || '',
+          privateIntakeUrl: safeHttps(data.privateIntakeUrl) || 'https://p4nd4907.github.io/panda-notes/private-intake.html',
+          installPlan: 'setup-sprint'
+        };
+      }
+
+      function renderInstallSnippet() {
+        const options = readInstallOptions();
+        output.textContent = [
+          `<script src="${baseUrl}panda-notes-widget.js" defer><\/script>`,
+          '<script>',
+          '  window.addEventListener("DOMContentLoaded", () => {',
+          `    window.PandaNotes.init(${JSON.stringify(options, null, 2).replace(/\n/g, '\n    ')});`,
+          '  });',
+          '<\/script>'
+        ].join('\n');
+      }
+
+      async function copyInstallSnippet() {
+        try {
+          await navigator.clipboard.writeText(output.textContent || '');
+          setStatus('Install snippet copied.');
+        } catch {
+          setStatus('Copy was blocked. Select the snippet and copy it manually.');
+        }
+      }
+
+      function safeHttps(value) {
+        try {
+          const url = new URL(String(value || '').trim());
+          return url.protocol === 'https:' ? url.toString() : '';
+        } catch {
+          return '';
+        }
+      }
+
+      function setStatus(message) {
+        if (status) status.textContent = message;
+      }
+    </script>
+  </body>
+</html>

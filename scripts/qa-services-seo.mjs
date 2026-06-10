@@ -41,12 +41,14 @@ const screenshotPath = resolve(tmpdir(), 'panda-notes-services-accessibility.png
 const skipScreenshotPath = resolve(tmpdir(), 'panda-notes-services-skip-link.png');
 const mobileScreenshotPath = resolve(tmpdir(), 'panda-notes-services-mobile.png');
 const privateIntakeScreenshotPath = resolve(tmpdir(), 'panda-notes-private-intake.png');
+const installScreenshotPath = resolve(tmpdir(), 'panda-notes-install.png');
 const launchScreenshotPath = resolve(tmpdir(), 'panda-notes-launch-kit.png');
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 const pageIssues = [];
 const mobileIssues = [];
 const privateIntakeIssues = [];
+const installIssues = [];
 const launchIssues = [];
 
 page.on('pageerror', (error) => pageIssues.push(`pageerror: ${error.message}`));
@@ -120,6 +122,30 @@ try {
   };
   await privatePage.screenshot({ path: privateIntakeScreenshotPath, fullPage: false });
   await privatePage.close();
+
+  const installPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  installPage.on('pageerror', (error) => installIssues.push(`pageerror: ${error.message}`));
+  installPage.on('console', (message) => {
+    if (['error', 'warning'].includes(message.type())) {
+      installIssues.push(`${message.type()}: ${message.text()}`);
+    }
+  });
+  await installPage.goto(`${baseUrl}/install.html`, { waitUntil: 'domcontentloaded' });
+  await installPage.getByRole('button', { name: 'Copy install snippet' }).click();
+  await installPage.waitForFunction(() => /Install snippet copied|Copy was blocked/.test(document.querySelector('[data-install-status]')?.textContent || ''));
+  const installState = await installPage.evaluate(() => {
+    const snippet = document.querySelector('[data-install-snippet]')?.textContent || '';
+    return {
+      title: document.title,
+      snippetHasInit: snippet.includes('PandaNotes.init'),
+      snippetHasWidget: snippet.includes('panda-notes-widget.js'),
+      snippetHasLauncher: snippet.includes('"launcher": true'),
+      statusUpdated: /Install snippet copied|Copy was blocked/.test(document.querySelector('[data-install-status]')?.textContent || ''),
+      horizontalOverflow: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth)
+    };
+  });
+  await installPage.screenshot({ path: installScreenshotPath, fullPage: false });
+  await installPage.close();
 
   const launchPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   launchPage.on('pageerror', (error) => launchIssues.push(`pageerror: ${error.message}`));
@@ -321,11 +347,14 @@ try {
     skipScreenshotPath,
     mobileScreenshotPath,
     privateIntakeScreenshotPath,
+    installScreenshotPath,
     launchScreenshotPath,
     mobileState,
     mobileIssues,
     privateIntakeState,
     privateIntakeIssues,
+    installState,
+    installIssues,
     launchState,
     launchIssues,
     pageIssues
@@ -374,6 +403,13 @@ try {
     !privateIntakeState.clearStatus.includes('draft cleared') && 'private intake clear draft did not update status',
     privateIntakeState.horizontalOverflow > 1 && `private intake has horizontal overflow: ${privateIntakeState.horizontalOverflow}px`,
     privateIntakeIssues.length > 0 && 'private intake page emitted console or runtime errors',
+    installState.title !== 'Panda Notes Install | Right-Click Feedback Widget' && 'install page title mismatch',
+    !installState.snippetHasInit && 'install page snippet missing PandaNotes.init',
+    !installState.snippetHasWidget && 'install page snippet missing widget script',
+    !installState.snippetHasLauncher && 'install page snippet missing launcher option',
+    !installState.statusUpdated && 'install copy button did not update status',
+    installState.horizontalOverflow > 1 && `install page has horizontal overflow: ${installState.horizontalOverflow}px`,
+    installIssues.length > 0 && 'install page emitted console or runtime errors',
     launchState.title !== 'Panda Notes Launch Kit | Share the Beta Feedback Workflow' && 'launch page title mismatch',
     !launchState.hasHeroCopy && 'launch page should render hero copy',
     !launchState.hasCopyStatus && 'launch copy button did not update status',

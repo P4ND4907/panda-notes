@@ -38,6 +38,12 @@ const offers = [
   }
 ];
 
+const serviceLabels = {
+  'setup-sprint': 'Setup Sprint',
+  'developer-handoff': 'Developer Handoff Pack',
+  'private-integration': 'Private Integration'
+};
+
 if (!secretKey || !secretKey.startsWith('sk_')) {
   console.error('Missing STRIPE_SECRET_KEY. Set it to a Stripe test or live secret key before running this script.');
   process.exit(1);
@@ -117,8 +123,9 @@ async function stripeRequest(path, params) {
 }
 
 function buildReturnUrl(offerKey) {
-  const url = new URL('services.html', baseUrl);
-  url.searchParams.set('paid', offerKey);
+  const url = new URL('private-intake.html', baseUrl);
+  url.searchParams.set('service', serviceLabels[offerKey] || 'Not sure yet');
+  url.searchParams.set('paymentReference', 'Stripe checkout');
   return url.toString();
 }
 
