@@ -1,6 +1,6 @@
 # Panda Notes Analytics Taxonomy
 
-Panda Notes uses privacy-aligned, stable snake_case event names on the Services, Private Intake, and Launch pages. The Services page sends events to the Panda Notes collector at `/api/analytics-event`, sends events to Plausible when the Plausible script is active, emits a local `panda-service-event` for QA, and also calls `gtag('event', ...)` when a GA4 tag is present.
+Panda Notes uses privacy-aligned, stable snake_case event names on the Services, Install, Private Intake, and Launch pages. The Services page sends events to the Panda Notes collector at `/api/analytics-event`, sends events to Plausible when the Plausible script is active, emits a local `panda-service-event` for QA, and also calls `gtag('event', ...)` when a GA4 tag is present.
 
 No analytics secret keys are stored in this repo. The Panda Notes collector uses the existing private GitHub intake repo token in Vercel and stores append-only daily rollup comments in the private intake repo. It does not store IP addresses, raw user-agent strings, private intake form bodies, customer secrets, or uploaded files.
 
@@ -14,7 +14,7 @@ npm.cmd run analytics:summary
 
 | Event name | Trigger | Why it matters |
 | --- | --- | --- |
-| `page_view` | Services or Private Intake page loaded | Counts anonymous sessions reaching the funnel. |
+| `page_view` | Services, Install, Private Intake, or Launch page loaded | Counts anonymous sessions reaching the funnel. |
 | `cta_primary_click` | Hero primary CTA click | Measures above-the-fold setup intent. |
 | `cta_secondary_click` | Hero secondary CTA click | Measures above-the-fold handoff intent. |
 | `plan_card_click_setup` | Setup Sprint card CTA click | Measures setup-sprint demand. |
@@ -28,14 +28,15 @@ npm.cmd run analytics:summary
 | `deposit_click` | Stripe-hosted deposit link click | Measures commercial intent. |
 | `comparison_section_view` | Pricing/options grid reaches 50% viewport visibility | Measures buyer evaluation beyond the hero. |
 | `faq_expand_*` | Service Guide question answered, with suffix such as `comparison`, `privacy`, or `why_pay` | Measures buyer objections and uncertainty. |
+| `install_snippet_copy` | Install page copy-snippet button clicked | Measures widget adoption intent. |
+| `launch_copy_post` | Launch page post copy button clicked | Measures which promotion copy the owner is using. |
+| `launch_outbound_click` | Launch page link clicked | Measures whether visitors move from the launch kit to install, services, demo, or GitHub. |
 
 ## Planned Events
 
 | Event name | Trigger | Why it matters |
 | --- | --- | --- |
 | `sample_output_view` | Redacted sample deliverable opens | Measures proof and trust-building engagement. |
-| `launch_copy_post` | Launch page post copy button clicked | Measures which promotion copy the owner is using. |
-| `launch_outbound_click` | Launch page link clicked | Measures whether visitors move from the launch kit to the app, services, widget demo, or GitHub. |
 | `contact_submit` | Private/contact form submission succeeds | Primary lead conversion. |
 | `thank_you` | Buyer reaches a thank-you/confirmation page | Primary conversion and attribution endpoint. |
 
@@ -46,6 +47,7 @@ If GA4 is added later, mark these as key events:
 - `private_intake_submit_success`
 - `thank_you`
 - `deposit_click`
+- `install_snippet_copy`
 
 `github_issue_start` is useful as a lead-start event, but it is weaker than a true private form submission or Stripe deposit click. `plan_card_click_*` events are demand signals, not final conversion events.
 
@@ -56,6 +58,7 @@ Create goals for:
 - `deposit_click`
 - `page_view`
 - `private_intake_submit_success`
+- `install_snippet_copy`
 - `github_issue_start`
 - `cta_primary_click`
 - `cta_secondary_click`
@@ -86,3 +89,8 @@ The QA script checks title/canonical/schema/sitemap and verifies these live funn
 - `deposit_click`
 - `comparison_section_view`
 - `faq_expand_comparison`
+
+Install-page tracking is covered by unit tests and the static services-page QA assertions:
+
+- `install_snippet_copy`
+- `panda-install-event`

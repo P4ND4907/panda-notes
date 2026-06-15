@@ -47,6 +47,28 @@ describe('Panda Notes analytics collector helpers', () => {
     expect(validation.data.props.post).toBe('show-hn');
   });
 
+  it('accepts install promotion events for measuring widget adoption', () => {
+    const validation = validateAnalyticsPayload({
+      eventName: 'install_snippet_copy',
+      page: 'install',
+      path: '/panda-notes/install.html?ref=reddit',
+      title: 'Panda Notes Install',
+      sessionId: 'install-session-123',
+      props: {
+        ref: 'reddit',
+        role: 'beta',
+        hotkeyConfigured: true
+      }
+    });
+
+    expect(validation.ok).toBe(true);
+    expect(validation.data.page).toBe('install');
+    expect(validation.data.path).toBe('/panda-notes/install.html');
+    expect(validation.data.props.ref).toBe('reddit');
+    expect(validation.data.props.role).toBe('beta');
+    expect(validation.data.props.hotkeyConfigured).toBe(true);
+  });
+
   it('rejects unknown analytics events and invalid pages', () => {
     const validation = validateAnalyticsPayload({
       eventName: 'steal_everything',

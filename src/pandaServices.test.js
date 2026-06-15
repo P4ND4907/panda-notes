@@ -187,9 +187,16 @@ describe('Panda Notes services conversion path', () => {
     expect(installHtml).toContain('panda-notes-widget.js');
     expect(installHtml).toContain('data-panda-target');
     expect(installHtml).toContain('data-panda-file');
+    expect(installHtml).toContain('data-analytics-page="install"');
+    expect(installHtml).toContain('data-analytics-endpoint="https://panda-notes-smoky.vercel.app/api/analytics-event"');
+    expect(installHtml).toContain("trackInstallEvent('page_view'");
+    expect(installHtml).toContain("trackInstallEvent('install_snippet_copy'");
+    expect(installHtml).toContain('panda-install-event');
+    expect(installHtml).toContain('getCampaignProps');
     expect(installHtml).toContain('Get a scoped setup plan');
     expect(installHtml).toContain('https://buy.stripe.com');
     expect(installHtml).toContain('./private-intake.html');
+    expect(installHtml).toContain('./launch.html');
     expect(installHtml).toContain('local-first');
     expect(sitemapXml).toContain('<loc>https://p4nd4907.github.io/panda-notes/install.html</loc>');
   });

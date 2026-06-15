@@ -346,7 +346,10 @@
       }
     </style>
   </head>
-  <body>
+  <body
+    data-analytics-page="install"
+    data-analytics-endpoint="https://panda-notes-smoky.vercel.app/api/analytics-event"
+  >
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="topbar">
       <a class="brand" href="./">
@@ -368,6 +371,7 @@
         <a class="button-link" href="./">Console</a>
         <a class="button-link" href="./widget-demo.html">Widget demo</a>
         <a class="button-link" href="./services.html">Services</a>
+        <a class="button-link" href="./launch.html">Launch kit</a>
         <a class="button-link" href="https://github.com/P4ND4907/panda-notes">GitHub</a>
       </nav>
     </header>
@@ -380,9 +384,24 @@
           target-specific notes without sending private data anywhere automatically.
         </p>
         <div class="button-row">
-          <a class="button-link primary" href="https://buy.stripe.com/eVq6oH4AJ4G90v4bt46AM03">Get a scoped setup plan</a>
-          <a class="button-link" href="./private-intake.html">Open private intake</a>
-          <a class="button-link" href="./widget-demo.html">Try widget demo</a>
+          <a
+            class="button-link primary"
+            data-analytics-event="cta_primary_click"
+            data-analytics-offer="setup-sprint"
+            href="https://buy.stripe.com/eVq6oH4AJ4G90v4bt46AM03"
+          >Get a scoped setup plan</a>
+          <a
+            class="button-link"
+            data-analytics-event="private_request_start"
+            data-analytics-offer="private-intake"
+            href="./private-intake.html"
+          >Open private intake</a>
+          <a
+            class="button-link"
+            data-analytics-event="cta_secondary_click"
+            data-analytics-offer="widget-demo"
+            href="./widget-demo.html"
+          >Try widget demo</a>
         </div>
       </section>
 
@@ -462,6 +481,11 @@
       const baseUrl = 'https://p4nd4907.github.io/panda-notes/';
 
       initInstallBuilder();
+      initInstallAnalytics();
+      trackInstallEvent('page_view', {
+        page: 'install',
+        ...getCampaignProps()
+      });
 
       function initInstallBuilder() {
         if (!form || !output) return;
@@ -502,6 +526,11 @@
 
       async function copyInstallSnippet() {
         try {
+          const options = readInstallOptions();
+          trackInstallEvent('install_snippet_copy', {
+            role: options.role,
+            hotkeyConfigured: Boolean(options.hotkey)
+          });
           await navigator.clipboard.writeText(output.textContent || '');
           setStatus('Install snippet copied.');
         } catch {
@@ -520,6 +549,89 @@
 
       function setStatus(message) {
         if (status) status.textContent = message;
+      }
+
+      function initInstallAnalytics() {
+        document.querySelectorAll('[data-analytics-event]').forEach((element) => {
+          element.addEventListener('click', () => {
+            const props = {
+              offer: element.dataset.analyticsOffer || 'general',
+              destination: getSafeDestination(element),
+              ...getCampaignProps()
+            };
+            trackInstallEvent(element.dataset.analyticsEvent, props);
+            if (props.destination === 'buy.stripe.com') {
+              trackInstallEvent('deposit_click', props);
+            }
+          });
+        });
+      }
+
+      function trackInstallEvent(eventName, props = {}) {
+        if (!eventName) return;
+        const detail = { eventName, props };
+        window.dispatchEvent(new CustomEvent('panda-install-event', { detail }));
+        sendPandaAnalyticsEvent(eventName, props);
+      }
+
+      function sendPandaAnalyticsEvent(eventName, props = {}) {
+        const endpoint = document.body?.dataset.analyticsEndpoint || '';
+        if (!endpoint || ['localhost', '127.0.0.1'].includes(window.location.hostname)) return;
+
+        try {
+          fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
+            body: JSON.stringify({
+              eventName,
+              page: document.body?.dataset.analyticsPage || 'install',
+              path: window.location.pathname,
+              title: document.title,
+              referrer: document.referrer,
+              sessionId: getPandaAnalyticsSessionId(),
+              props
+            })
+          }).catch(() => {});
+        } catch {
+          // Install analytics should never block copying the widget.
+        }
+      }
+
+      function getCampaignProps() {
+        const params = new URLSearchParams(window.location.search);
+        return ['ref', 'utm_source', 'utm_medium', 'utm_campaign']
+          .reduce((props, key) => {
+            const value = cleanAnalyticsValue(params.get(key));
+            if (value) props[key] = value;
+            return props;
+          }, {});
+      }
+
+      function getPandaAnalyticsSessionId() {
+        const key = 'panda-notes-analytics-session-v1';
+        try {
+          let sessionId = sessionStorage.getItem(key);
+          if (!sessionId) {
+            sessionId = crypto.randomUUID ? crypto.randomUUID() : `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+            sessionStorage.setItem(key, sessionId);
+          }
+          return sessionId;
+        } catch {
+          return `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        }
+      }
+
+      function getSafeDestination(element) {
+        try {
+          return new URL(element.href, window.location.href).hostname;
+        } catch {
+          return 'unknown';
+        }
+      }
+
+      function cleanAnalyticsValue(value) {
+        return String(value || '').trim().replace(/[^a-zA-Z0-9._:-]/g, '').slice(0, 80);
       }
     </script>
   </body>

@@ -1,6 +1,6 @@
 import { createIssueComment, createPrivateIssue, findIssueByMarker, listPrivateIssuesByLabels } from './githubIssues.js';
 
-const allowedPages = new Set(['services', 'private-intake', 'launch']);
+const allowedPages = new Set(['services', 'private-intake', 'launch', 'install']);
 const exactEvents = new Set([
   'page_view',
   'cta_primary_click',
@@ -17,7 +17,8 @@ const exactEvents = new Set([
   'sample_output_view',
   'comparison_section_view',
   'launch_copy_post',
-  'launch_outbound_click'
+  'launch_outbound_click',
+  'install_snippet_copy'
 ]);
 
 export function validateAnalyticsPayload(payload = {}) {
